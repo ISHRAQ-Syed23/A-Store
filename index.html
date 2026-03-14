@@ -995,7 +995,7 @@ function renderApps(filter) {
   `).join('');
 }
 
-renderApps('all');
+window.addEventListener('DOMContentLoaded', () => renderApps('all'));
 
 function filterApps(cat, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
