@@ -7,66 +7,45 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#07070f;--surface:#0f0f1e;--card:#13132a;--border:rgba(120,80,255,0.18);--purple:#7c3aed;--purple-l:#a78bfa;--cyan:#06b6d4;--green:#10b981;--orange:#f59e0b;--white:#f0eeff;--gray:#6b7280;--gray-l:#9ca3af}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
-
-/* NAV — mobile-safe */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.25rem;background:rgba(7,7,15,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);gap:0.5rem}
-.logo{font-family:'Space Mono',monospace;font-size:0.9rem;font-weight:700;color:var(--white);letter-spacing:0.1em;flex-shrink:0}
-.logo span{color:var(--purple)}
+.logo{font-family:'Space Mono',monospace;font-size:0.9rem;font-weight:700;color:var(--white);letter-spacing:0.1em;flex-shrink:0}.logo span{color:var(--purple)}
 .nav-badges{display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .nbadge{font-family:'Space Mono',monospace;font-size:0.56rem;padding:0.18rem 0.45rem;letter-spacing:0.08em;white-space:nowrap;border:1px solid}
-.nbadge-cyan{color:var(--cyan);border-color:var(--cyan)}
-.nbadge-orange{color:var(--orange);border-color:var(--orange)}
-
-/* PROTO BANNER */
-.proto-banner{position:relative;z-index:1;background:rgba(245,158,11,0.07);border-bottom:1px solid rgba(245,158,11,0.25);padding:0.55rem 1.25rem;text-align:center;margin-top:0}
-.proto-banner p{font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--orange);letter-spacing:0.05em}
-
-/* HERO */
+.nbadge-cyan{color:var(--cyan);border-color:var(--cyan)}.nbadge-orange{color:var(--orange);border-color:var(--orange)}
+.proto-banner{position:relative;z-index:1;background:rgba(245,158,11,0.07);border-bottom:1px solid rgba(245,158,11,0.25);padding:0.55rem 1.25rem;text-align:center}
+.proto-banner p{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--orange);letter-spacing:0.05em}
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 1.25rem 4rem;z-index:1}
 .hero-glow{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(124,58,237,0.14) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
 .hero-tag{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.22em;color:var(--cyan);border:1px solid rgba(6,182,212,0.3);padding:0.32rem 0.85rem;margin-bottom:1.5rem;display:inline-block}
 h1{font-size:clamp(2.2rem,7vw,5.5rem);font-weight:800;line-height:1.05;letter-spacing:-0.02em;margin-bottom:1.25rem}
-h1 .accent{color:var(--purple-l)}
-h1 .stroke{-webkit-text-stroke:1px var(--purple-l);color:transparent}
+h1 .accent{color:var(--purple-l)}h1 .stroke{-webkit-text-stroke:1px var(--purple-l);color:transparent}
 .hero-sub{font-size:clamp(0.9rem,2.5vw,1.1rem);color:var(--gray-l);max-width:540px;line-height:1.7;margin-bottom:2rem}
 .hero-btns{display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center}
 .btn-primary{background:var(--purple);color:#fff;border:none;padding:0.75rem 1.6rem;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
 .btn-primary:hover{background:#6d28d9;transform:translateY(-2px)}
 .btn-ghost{background:transparent;color:var(--white);border:1px solid var(--border);padding:0.75rem 1.6rem;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
 .btn-ghost:hover{border-color:var(--purple-l);color:var(--purple-l)}
-
-/* TICKER */
 .ticker-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);padding:0.55rem 0;position:relative;z-index:1}
 .ticker{display:flex;width:max-content;animation:ticker 30s linear infinite;gap:2.5rem}
 .ticker-item{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.15em;color:var(--gray);white-space:nowrap}
 .ticker-item span{color:var(--purple-l);margin-right:0.35rem}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* STATS */
 .stats-bar{position:relative;z-index:1;display:flex;justify-content:center;flex-wrap:wrap;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface)}
-.stat{flex:1;min-width:120px;max-width:220px;text-align:center;padding:1.2rem 0.75rem;border-right:1px solid var(--border)}
-.stat:last-child{border-right:none}
+.stat{flex:1;min-width:120px;max-width:220px;text-align:center;padding:1.2rem 0.75rem;border-right:1px solid var(--border)}.stat:last-child{border-right:none}
 .stat-n{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--purple-l);display:block}
 .stat-l{font-size:0.68rem;color:var(--gray);letter-spacing:0.05em}
-
-/* SECTIONS */
 section{position:relative;z-index:1;padding:4rem 1.25rem;max-width:1080px;margin:0 auto}
 .section-tag{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.22em;color:var(--cyan);margin-bottom:0.55rem;display:block}
 h2{font-size:clamp(1.6rem,4vw,2.5rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:0.9rem;line-height:1.15}
-
-/* STEPS */
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin-top:2.25rem}
 .step{background:var(--card);padding:1.5rem 1.25rem;transition:background 0.2s}.step:hover{background:#1a1a35}
 .step-num{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--purple);letter-spacing:0.2em;margin-bottom:0.75rem;display:block}
 .step-icon{font-size:1.6rem;margin-bottom:0.75rem;display:block}
 .step h3{font-size:0.95rem;font-weight:700;margin-bottom:0.4rem;color:var(--white)}
 .step p{font-size:0.82rem;color:var(--gray-l);line-height:1.65}
-
-/* APPS */
 .apps-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem}
 .filter-tabs{display:flex;gap:0.4rem;flex-wrap:wrap}
 .tab{font-family:'Space Mono',monospace;font-size:0.65rem;padding:0.3rem 0.65rem;border:1px solid var(--border);color:var(--gray);background:transparent;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em}
@@ -87,21 +66,19 @@ h2{font-size:clamp(1.6rem,4vw,2.5rem);font-weight:800;letter-spacing:-0.02em;mar
 .device-tag.fit{border-color:var(--green);color:var(--green)}
 .get-btn{font-family:'Space Mono',monospace;font-size:0.65rem;padding:0.3rem 0.65rem;background:var(--purple);color:#fff;border:none;cursor:pointer;letter-spacing:0.05em;transition:background 0.2s;text-decoration:none;display:inline-block}
 .get-btn:hover{background:#6d28d9}
-
-/* DEVICE SECTION */
+.coming-badge{font-family:'Space Mono',monospace;font-size:0.6rem;padding:0.25rem 0.6rem;background:transparent;color:var(--orange);border:1px solid var(--orange);cursor:pointer;letter-spacing:0.05em;transition:all 0.2s}
+.coming-badge:hover{background:rgba(245,158,11,0.1)}
 .device-banner{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--cyan);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.9rem;flex-wrap:wrap}
 .device-banner p{font-size:0.82rem;color:var(--gray-l)}.device-banner strong{color:var(--cyan)}
 .attrib-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:2rem}
 .attrib-card{background:var(--card);border:1px solid var(--border);padding:1.25rem}
 .attrib-label{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;margin-bottom:0.4rem;display:block}
 .attrib-title{font-size:0.95rem;font-weight:700;margin-bottom:0.28rem}.attrib-sub{font-size:0.78rem;color:var(--gray-l);line-height:1.6}
-
-/* ANALYZER */
 .submit-section{background:var(--surface);border:1px solid var(--border);padding:2.5rem 1.5rem;text-align:center;position:relative;overflow:hidden}
 .submit-section::before{content:'';position:absolute;width:360px;height:360px;background:radial-gradient(circle,rgba(124,58,237,0.1) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
 .submit-section h2{margin-bottom:0.6rem}
 .submit-section>p{color:var(--gray-l);font-size:0.9rem;margin-bottom:1.5rem;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.7}
-.url-form{display:flex;max-width:520px;margin:0 auto 0.7rem;flex-direction:row}
+.url-form{display:flex;max-width:520px;margin:0 auto 0.7rem}
 .url-input{flex:1;min-width:0;background:var(--card);border:1px solid var(--border);border-right:none;color:var(--white);padding:0.75rem 0.85rem;font-family:'Space Mono',monospace;font-size:0.75rem;outline:none;transition:border-color 0.2s}
 .url-input::placeholder{color:var(--gray)}.url-input:focus{border-color:var(--purple)}
 .url-submit{background:var(--purple);color:#fff;border:none;padding:0.75rem 1.1rem;font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;transition:background 0.2s;white-space:nowrap;flex-shrink:0}
@@ -116,8 +93,8 @@ h2{font-size:clamp(1.6rem,4vw,2.5rem);font-weight:800;letter-spacing:-0.02em;mar
 .analysis-title{font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:0.35rem}
 .analysis-desc{font-size:0.82rem;color:var(--gray-l);line-height:1.65}
 .analysis-meta{display:flex;gap:0.5rem;margin-top:0.85rem;flex-wrap:wrap}
-.meta-pill{font-family:'Space Mono',monospace;font-size:0.6rem;padding:0.2rem 0.5rem;border:1px solid var(--border);color:var(--gray-l);letter-spacing:0.05em}
-.meta-pill.green{border-color:var(--green);color:var(--green)}.meta-pill.orange{border-color:var(--orange);color:var(--orange)}.meta-pill.cyan{border-color:var(--cyan);color:var(--cyan)}
+.meta-pill{font-family:'Space Mono',monospace;font-size:0.6rem;padding:0.2rem 0.5rem;border:1px solid var(--border);color:var(--gray-l)}
+.meta-pill.orange{border-color:var(--orange);color:var(--orange)}.meta-pill.cyan{border-color:var(--cyan);color:var(--cyan)}
 .analysis-rows{padding:1rem 1.25rem;display:flex;flex-direction:column;gap:0.85rem;border-top:1px solid var(--border)}
 .analysis-row{display:flex;gap:0.85rem;align-items:flex-start}
 .row-icon{font-size:1rem;width:24px;flex-shrink:0;margin-top:2px}
@@ -127,35 +104,46 @@ h2{font-size:clamp(1.6rem,4vw,2.5rem);font-weight:800;letter-spacing:-0.02em;mar
 .analysis-footer{padding:0.85rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:0.55rem;flex-wrap:wrap;align-items:center;background:rgba(124,58,237,0.04)}
 .analysis-footer p{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--gray);flex:1;min-width:160px}
 .err-box{display:none;margin-top:1.25rem;background:rgba(239,68,68,0.08);border:1px solid #ef4444;color:#f87171;padding:0.85rem 1.2rem;font-family:'Space Mono',monospace;font-size:0.75rem;max-width:520px;margin-left:auto;margin-right:auto}
-
-/* COMMUNITY REQUESTS */
 .requested-list{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.55rem;max-width:640px;margin-left:auto;margin-right:auto}
 .req-item{background:var(--card);border:1px solid var(--border);padding:0.85rem 1.1rem;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap}
 .req-repo{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--purple-l)}
 .req-meta{font-size:0.7rem;color:var(--gray)}
-.req-status{font-family:'Space Mono',monospace;font-size:0.58rem;padding:0.15rem 0.45rem;border:1px solid var(--border);white-space:nowrap}
+.req-status{font-family:'Space Mono',monospace;font-size:0.58rem;padding:0.15rem 0.45rem;border:1px solid;white-space:nowrap}
 .req-status.pending{border-color:var(--orange);color:var(--orange)}
 .req-status.building{border-color:var(--cyan);color:var(--cyan)}
 .req-status.live{border-color:var(--green);color:var(--green)}
 
-/* FOOTER */
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;align-items:center;justify-content:center;padding:1.25rem;backdrop-filter:blur(4px)}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);max-width:420px;width:100%;padding:2rem 1.5rem;position:relative;text-align:center}
+.modal-close{position:absolute;top:0.75rem;right:1rem;font-family:'Space Mono',monospace;font-size:1rem;color:var(--gray);cursor:pointer;background:none;border:none;line-height:1}
+.modal-close:hover{color:var(--white)}
+.modal-icon{font-size:2.5rem;margin-bottom:1rem;display:block}
+.modal h3{font-size:1.2rem;font-weight:800;margin-bottom:0.5rem;color:var(--white)}
+.modal p{font-size:0.85rem;color:var(--gray-l);line-height:1.65;margin-bottom:1.5rem}
+.modal-app-name{color:var(--purple-l);font-weight:700}
+.email-form{display:flex;flex-direction:column;gap:0.6rem}
+.email-input{background:var(--card);border:1px solid var(--border);color:var(--white);padding:0.75rem 0.9rem;font-family:'Space Mono',monospace;font-size:0.78rem;outline:none;transition:border-color 0.2s;width:100%}
+.email-input::placeholder{color:var(--gray)}.email-input:focus{border-color:var(--purple)}
+.email-submit{background:var(--purple);color:#fff;border:none;padding:0.75rem;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:background 0.2s;width:100%}
+.email-submit:hover{background:#6d28d9}
+.modal-success{display:none;background:rgba(16,185,129,0.1);border:1px solid var(--green);color:var(--green);padding:1rem;font-family:'Space Mono',monospace;font-size:0.78rem;margin-top:0.75rem}
+.modal-skip{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--gray);cursor:pointer;margin-top:0.75rem;display:block;text-align:center;text-decoration:underline}
+.modal-skip:hover{color:var(--gray-l)}
+
 footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:1.5rem 1.25rem;text-align:center}
 footer p{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--gray);margin-top:0.28rem;letter-spacing:0.05em}
 .version-tag{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--orange);border:1px solid rgba(245,158,11,0.3);padding:0.15rem 0.45rem;display:inline-block;margin-bottom:0.5rem}
-
-/* ANIMATIONS */
 .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
-
-/* MOBILE FIXES */
 @media(max-width:480px){
   .stats-bar{flex-wrap:wrap}
   .stat{min-width:50%;border-right:none;border-bottom:1px solid var(--border)}
   .stat:nth-child(odd){border-right:1px solid var(--border)}
-  .stat:last-child{border-bottom:none}
+  .stat:last-child,.stat:nth-last-child(2):nth-child(odd){border-bottom:none}
   .url-form{flex-direction:column}
-  .url-input{border-right:1px solid var(--border);border-bottom:none;border-radius:0}
-  .url-submit{border-radius:0}
+  .url-input{border-right:1px solid var(--border);border-bottom:none}
   .apps-grid{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr}
   .attrib-grid{grid-template-columns:1fr}
@@ -167,6 +155,22 @@ footer p{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--gray);
 </head>
 <body>
 
+<!-- COMING SOON MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <span class="modal-icon" id="modalIcon">🧠</span>
+    <h3><span class="modal-app-name" id="modalAppName">Llama 3</span> is Coming to A-Store</h3>
+    <p>We're building this app for your phone right now. Enter your email and we'll notify you the moment it's ready to install.</p>
+    <div class="email-form">
+      <input class="email-input" id="modalEmail" type="email" placeholder="your@email.com"/>
+      <button class="email-submit" onclick="submitEmail()">NOTIFY ME WHEN IT'S LIVE →</button>
+    </div>
+    <div class="modal-success" id="modalSuccess">✓ You're on the list! We'll email you when this app is live.</div>
+    <span class="modal-skip" onclick="closeModal()">No thanks, just browsing</span>
+  </div>
+</div>
+
 <nav>
   <div class="logo">A<span>—</span>STORE</div>
   <div class="nav-badges">
@@ -176,7 +180,7 @@ footer p{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--gray);
 </nav>
 
 <div class="proto-banner">
-  <p>⚠ PROTOTYPE v0.1 — This is an early demo. Features are being actively built. Not yet optimised for all devices.</p>
+  <p>⚠ PROTOTYPE v0.1 — This is an early demo. Features are being actively built.</p>
 </div>
 
 <div class="hero">
@@ -211,7 +215,7 @@ footer p{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--gray);
 
 <div class="stats-bar">
   <div class="stat"><span class="stat-n" id="repoCount">—</span><span class="stat-l">REPOS REQUESTED</span></div>
-  <div class="stat"><span class="stat-n">220M+</span><span class="stat-l">GITHUB REPOS AVAILABLE</span></div>
+  <div class="stat"><span class="stat-n" id="emailCount">—</span><span class="stat-l">ON WAITLIST</span></div>
   <div class="stat"><span class="stat-n">₹0</span><span class="stat-l">TO DOWNLOAD ANY APP</span></div>
   <div class="stat"><span class="stat-n">100%</span><span class="stat-l">OPEN SOURCE ONLY</span></div>
 </div>
@@ -308,38 +312,138 @@ const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const{createClient}=supabase;
 const db=createClient(SUPA_URL,SUPA_KEY);
 
+// App that's currently selected in modal
+let currentModalApp=null;
+
 const apps=[
-  {id:'llama3',category:'llm',icon:'🦙',iconBg:'rgba(124,58,237,0.2)',name:'Llama 3 Chat',maker:'META AI',desc:'Full conversational AI. Ask anything, get smart answers. Runs offline on your phone.',stars:'87.4k',accent:'#7c3aed',devices:['1B','3B','7B','CLOUD'],href:'https://huggingface.co/spaces/ISHRAQ-Syed23/A-Store-demo'},
+  {id:'llama3',category:'llm',icon:'🦙',iconBg:'rgba(124,58,237,0.2)',name:'Llama 3 Chat',maker:'META AI',desc:'Full conversational AI. Ask anything, get smart answers. Runs offline on your phone.',stars:'87.4k',accent:'#7c3aed',devices:['1B','3B','7B','CLOUD']},
   {id:'whisper',category:'audio',icon:'🎙️',iconBg:'rgba(6,182,212,0.2)',name:'Whisper STT',maker:'OPENAI',desc:'Speech to text in 99 languages. Record your voice, get instant accurate transcription.',stars:'74.1k',accent:'#06b6d4',devices:['TINY','BASE','LARGE'],href:'https://huggingface.co/spaces/ISHRAQ-Syed23/A-Store-demo'},
-  {id:'qwen',category:'llm',icon:'🌐',iconBg:'rgba(16,185,129,0.2)',name:'Qwen 2.5',maker:'ALIBABA',desc:'Powerful multilingual AI. Excellent at coding, math, and reasoning tasks.',stars:'42.8k',accent:'#10b981',devices:['1.5B','7B','CLOUD'],href:'https://huggingface.co/spaces/Qwen/Qwen2.5-72B-Instruct'},
-  {id:'sdxl',category:'vision',icon:'🎨',iconBg:'rgba(245,158,11,0.2)',name:'Stable Diffusion',maker:'STABILITY AI',desc:'Generate stunning images from text. Type what you imagine, see it come to life.',stars:'38.2k',accent:'#f59e0b',devices:['LITE','CLOUD'],href:'https://huggingface.co/spaces/stabilityai/stable-diffusion'},
-  {id:'mistral',category:'llm',icon:'💨',iconBg:'rgba(167,139,250,0.2)',name:'Mistral 7B',maker:'MISTRAL AI',desc:'Lightning fast, surprisingly smart. Best-in-class for speed on mid-range devices.',stars:'31.5k',accent:'#a78bfa',devices:['7B','CLOUD'],href:'https://huggingface.co/spaces/osanseviero/mistral-super-fast'},
-  {id:'deepseek',category:'llm',icon:'🔍',iconBg:'rgba(239,68,68,0.2)',name:'DeepSeek R1',maker:'DEEPSEEK AI',desc:'Reasoning model that shows its thinking step by step. Great for complex problems.',stars:'67.3k',accent:'#ef4444',devices:['1.5B','7B','CLOUD'],href:'https://huggingface.co/spaces/deepseek-ai/DeepSeek-R1'}
+  {id:'qwen',category:'llm',icon:'🌐',iconBg:'rgba(16,185,129,0.2)',name:'Qwen 2.5',maker:'ALIBABA',desc:'Powerful multilingual AI. Excellent at coding, math, and reasoning tasks.',stars:'42.8k',accent:'#10b981',devices:['1.5B','7B','CLOUD']},
+  {id:'sdxl',category:'vision',icon:'🎨',iconBg:'rgba(245,158,11,0.2)',name:'Stable Diffusion',maker:'STABILITY AI',desc:'Generate stunning images from text. Type what you imagine, see it come to life.',stars:'38.2k',accent:'#f59e0b',devices:['LITE','CLOUD']},
+  {id:'mistral',category:'llm',icon:'💨',iconBg:'rgba(167,139,250,0.2)',name:'Mistral 7B',maker:'MISTRAL AI',desc:'Lightning fast, surprisingly smart. Best-in-class for speed on mid-range devices.',stars:'31.5k',accent:'#a78bfa',devices:['7B','CLOUD']},
+  {id:'deepseek',category:'llm',icon:'🔍',iconBg:'rgba(239,68,68,0.2)',name:'DeepSeek R1',maker:'DEEPSEEK AI',desc:'Reasoning model that shows its thinking step by step. Great for complex problems.',stars:'67.3k',accent:'#ef4444',devices:['1.5B','7B','CLOUD']}
 ];
 
 function renderApps(f){
   const g=document.getElementById('appsGrid');
   const list=f==='all'?apps:apps.filter(a=>a.category===f);
-  g.innerHTML=list.map(a=>`<div class="app-card" style="--accent-color:${a.accent}" onclick="window.open('${a.href}','_blank')"><div class="card-header"><div class="app-icon" style="background:${a.iconBg}">${a.icon}</div><div class="card-meta"><h3>${a.name}</h3><span class="maker">${a.maker}</span></div></div><p class="app-desc">${a.desc}</p><div class="card-footer"><span class="stars">★ ${a.stars}</span><div class="device-tags">${a.devices.map((d,i)=>`<span class="device-tag ${i===0?'fit':''}">${d}</span>`).join('')}</div><a class="get-btn" href="${a.href}" target="_blank" onclick="event.stopPropagation()">TRY →</a></div></div>`).join('');
+  g.innerHTML=list.map(a=>`
+    <div class="app-card" style="--accent-color:${a.accent}">
+      <div class="card-header">
+        <div class="app-icon" style="background:${a.iconBg}">${a.icon}</div>
+        <div class="card-meta"><h3>${a.name}</h3><span class="maker">${a.maker}</span></div>
+      </div>
+      <p class="app-desc">${a.desc}</p>
+      <div class="card-footer">
+        <span class="stars">★ ${a.stars}</span>
+        <div class="device-tags">${a.devices.map((d,i)=>`<span class="device-tag ${i===0?'fit':''}">${d}</span>`).join('')}</div>
+        ${a.href
+          ? `<a class="get-btn" href="${a.href}" target="_blank">TRY DEMO →</a>`
+          : `<button class="coming-badge" onclick="openModal('${a.id}','${a.name}','${a.icon}')">NOTIFY ME →</button>`
+        }
+      </div>
+    </div>`).join('');
 }
-function filterApps(cat,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');renderApps(cat);}
-window.addEventListener('DOMContentLoaded',()=>{renderApps('all');loadStats();loadRequested();logEvent('page_view',{});});
+
+function filterApps(cat,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderApps(cat);
+}
+
+// MODAL
+function openModal(id,name,icon){
+  currentModalApp={id,name};
+  document.getElementById('modalIcon').textContent=icon;
+  document.getElementById('modalAppName').textContent=name;
+  document.getElementById('modalEmail').value='';
+  document.getElementById('modalSuccess').style.display='none';
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  setTimeout(()=>document.getElementById('modalEmail').focus(),100);
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow='';
+  currentModalApp=null;
+}
+
+function closeModalOnBg(e){
+  if(e.target===document.getElementById('modalOverlay'))closeModal();
+}
+
+async function submitEmail(){
+  const email=document.getElementById('modalEmail').value.trim();
+  if(!email||!email.includes('@')){
+    document.getElementById('modalEmail').style.borderColor='#ef4444';
+    setTimeout(()=>document.getElementById('modalEmail').style.borderColor='',2000);
+    return;
+  }
+  const btn=document.querySelector('.email-submit');
+  btn.textContent='SAVING...';btn.disabled=true;
+  try{
+    await db.from('email_waitlist').upsert({
+      email,
+      interest:currentModalApp?currentModalApp.name:'general',
+      source:'app_card'
+    },{onConflict:'email,interest'});
+    await logEvent('waitlist_added',{source:'modal',app:currentModalApp?.name});
+    document.getElementById('modalSuccess').style.display='block';
+    btn.style.display='none';
+    document.getElementById('modalEmail').style.display='none';
+    loadEmailCount();
+    setTimeout(closeModal,2500);
+  }catch(e){
+    btn.textContent='NOTIFY ME WHEN IT\'S LIVE →';
+    btn.disabled=false;
+    document.getElementById('modalEmail').style.borderColor='#ef4444';
+  }
+}
+
+// Allow Enter key in modal
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeModal();
+  if(e.key==='Enter'&&document.getElementById('modalOverlay').classList.contains('active'))submitEmail();
+});
+
+window.addEventListener('DOMContentLoaded',()=>{
+  renderApps('all');
+  loadStats();
+  loadEmailCount();
+  loadRequested();
+  logEvent('page_view',{});
+});
 
 async function loadStats(){
-  try{const{count}=await db.from('repo_requests').select('*',{count:'exact',head:true});document.getElementById('repoCount').textContent=count||0;}
-  catch(e){document.getElementById('repoCount').textContent='0';}
+  try{
+    const{count}=await db.from('repo_requests').select('*',{count:'exact',head:true});
+    document.getElementById('repoCount').textContent=count||0;
+  }catch(e){document.getElementById('repoCount').textContent='0';}
+}
+
+async function loadEmailCount(){
+  try{
+    const{count}=await db.from('email_waitlist').select('*',{count:'exact',head:true});
+    document.getElementById('emailCount').textContent=count||0;
+  }catch(e){document.getElementById('emailCount').textContent='0';}
 }
 
 async function loadRequested(){
   try{
     const{data,error}=await db.from('repo_requests').select('*').order('submitted_at',{ascending:false}).limit(10);
     const el=document.getElementById('requestedList');
-    if(error||!data||data.length===0){el.innerHTML='<div style="font-family:\'Space Mono\',monospace;font-size:0.72rem;color:var(--gray);text-align:center;padding:2rem">No requests yet. Be the first to submit a repo above.</div>';return;}
+    if(error||!data||data.length===0){
+      el.innerHTML='<div style="font-family:\'Space Mono\',monospace;font-size:0.72rem;color:var(--gray);text-align:center;padding:2rem">No requests yet. Be the first to submit a repo above.</div>';
+      return;
+    }
     el.innerHTML=data.map(r=>`<div class="req-item"><div><div class="req-repo">${r.repo_owner}/${r.repo_name}</div><div class="req-meta">${r.model_type||'AI Tool'}${r.stars?' · ★ '+r.stars:''}</div></div><span class="req-status ${r.status}">${r.status.toUpperCase()}</span></div>`).join('');
   }catch(e){console.log('load error',e);}
 }
 
-async function logEvent(type,meta){try{await db.from('analytics_events').insert({event_type:type,metadata:meta});}catch(e){}}
+async function logEvent(type,meta){
+  try{await db.from('analytics_events').insert({event_type:type,metadata:meta});}catch(e){}
+}
 
 async function analyzeRepo(){
   const raw=document.getElementById('repoUrl').value.trim();
@@ -350,19 +454,36 @@ async function analyzeRepo(){
   const ltxt=document.getElementById('loaderText');
   errEl.style.display='none';result.style.display='none';
   const match=raw.match(/github\.com\/([^\/]+)\/([^\/\?#]+)/);
-  if(!raw||!match){errEl.textContent='✗ Please paste a valid GitHub URL — e.g. https://github.com/openai/whisper';errEl.style.display='block';document.getElementById('repoUrl').style.borderColor='#ef4444';setTimeout(()=>document.getElementById('repoUrl').style.borderColor='',2000);return;}
+  if(!raw||!match){
+    errEl.textContent='✗ Please paste a valid GitHub URL — e.g. https://github.com/openai/whisper';
+    errEl.style.display='block';
+    document.getElementById('repoUrl').style.borderColor='#ef4444';
+    setTimeout(()=>document.getElementById('repoUrl').style.borderColor='',2000);
+    return;
+  }
   const owner=match[1],repo=match[2].replace(/\.git$/,'');
   loader.style.display='block';
   const steps=[[15,'Fetching repository data...'],[35,'Reading description and topics...'],[55,'Detecting model type...'],[72,'Checking license...'],[88,'Estimating device requirements...'],[100,'Analysis complete.']];
-  let si=0;const iv=setInterval(()=>{if(si<steps.length){fill.style.width=steps[si][0]+'%';ltxt.textContent=steps[si][1];si++;}else clearInterval(iv);},480);
+  let si=0;
+  const iv=setInterval(()=>{
+    if(si<steps.length){fill.style.width=steps[si][0]+'%';ltxt.textContent=steps[si][1];si++;}
+    else clearInterval(iv);
+  },480);
   try{
-    const[rr,readR]=await Promise.all([fetch(`https://api.github.com/repos/${owner}/${repo}`),fetch(`https://api.github.com/repos/${owner}/${repo}/readme`).then(r=>r.ok?r.json():null).catch(()=>null)]);
+    const[rr,readR]=await Promise.all([
+      fetch(`https://api.github.com/repos/${owner}/${repo}`),
+      fetch(`https://api.github.com/repos/${owner}/${repo}/readme`).then(r=>r.ok?r.json():null).catch(()=>null)
+    ]);
     if(!rr.ok)throw new Error(rr.status===404?'Repository not found. Make sure it is a public repo.':'GitHub API error. Please try again.');
     const data=await rr.json();
-    let readme='';if(readR&&readR.content){try{readme=atob(readR.content.replace(/\n/g,'')).substring(0,2000);}catch(e){}}
+    let readme='';
+    if(readR&&readR.content){try{readme=atob(readR.content.replace(/\n/g,'')).substring(0,2000);}catch(e){}}
     clearInterval(iv);fill.style.width='100%';ltxt.textContent='Analysis complete.';
     setTimeout(()=>{loader.style.display='none';renderAnalysis(data,readme,owner,repo);logEvent('repo_analyzed',{repo:`${owner}/${repo}`});},500);
-  }catch(err){clearInterval(iv);loader.style.display='none';errEl.textContent='✗ '+err.message;errEl.style.display='block';}
+  }catch(err){
+    clearInterval(iv);loader.style.display='none';
+    errEl.textContent='✗ '+err.message;errEl.style.display='block';
+  }
 }
 
 function detectModel(data,rm){
@@ -378,10 +499,10 @@ function detectModel(data,rm){
 
 function detectDevice(data,rm){
   const t=((data.description||'')+' '+rm).toLowerCase();
-  if(/70b|65b|34b|48b/.test(t))return{label:'Cloud Only',sub:'Very large model. Cloud streaming recommended for all devices.',col:'var(--orange)'};
-  if(/13b|20b|14b|22b/.test(t))return{label:'Laptop + Cloud',sub:'Runs on 16GB RAM laptop. Cloud recommended for phones.',col:'var(--cyan)'};
-  if(/7b|8b|9b|11b/.test(t))return{label:'Mid-Range Phone (Cloud) / Laptop (Local)',sub:'4–8GB device for local use. Cloud for low-end phones.',col:'var(--green)'};
-  if(/3b|2b|phi|tiny|small|lite|mini/.test(t))return{label:'Any Phone — Runs Locally',sub:'Lightweight. Works offline on 2GB+ RAM Android phones.',col:'var(--green)'};
+  if(/70b|65b|34b|48b/.test(t))return{label:'Cloud Only',sub:'Very large model. Cloud streaming recommended.',col:'var(--orange)'};
+  if(/13b|20b|14b|22b/.test(t))return{label:'Laptop + Cloud',sub:'Runs on 16GB RAM laptop. Cloud for phones.',col:'var(--cyan)'};
+  if(/7b|8b|9b|11b/.test(t))return{label:'Mid-Range Phone (Cloud) / Laptop (Local)',sub:'4–8GB device for local. Cloud for low-end phones.',col:'var(--green)'};
+  if(/3b|2b|phi|tiny|small|lite|mini/.test(t))return{label:'Any Phone — Runs Locally',sub:'Lightweight. Works offline on 2GB+ RAM phones.',col:'var(--green)'};
   if(/1b|0\.5b/.test(t))return{label:'Any Phone — Ultra Lightweight',sub:'Works even on 2GB RAM phones. Fully offline.',col:'var(--green)'};
   return{label:'Mid-Range Device Recommended',sub:'Estimated to need a mid-range phone or laptop.',col:'var(--cyan)'};
 }
@@ -403,9 +524,7 @@ function renderAnalysis(data,rm,owner,repo){
   const desc=data.description||'No description provided.';
   const updated=new Date(data.updated_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
   const licIcon=l.ok===true?'✅':l.ok===false?'❌':'⚠️';
-  const safeOwner=owner.replace(/'/g,"\\'"),safeRepo=repo.replace(/'/g,"\\'");
-  const safeFullName=data.full_name.replace(/'/g,"\\'");
-  const safeLicense=(l.label||'').replace(/'/g,"\\'");
+  const sf=s=>s.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   document.getElementById('analysisResult').style.display='block';
   document.getElementById('analysisResult').innerHTML=`
 <div class="analysis-card">
@@ -429,7 +548,7 @@ function renderAnalysis(data,rm,owner,repo){
   <div class="analysis-footer">
     <p>Auto-generated from public GitHub data. Full build review takes 24–48 hours.</p>
     <a class="get-btn" href="https://github.com/${owner}/${repo}" target="_blank">VIEW ON GITHUB →</a>
-    <button class="get-btn" style="background:var(--green)" onclick="addWaitlist('${safeFullName}','${data.html_url}','${m.type}','${safeLicense}',${data.stargazers_count},'${d.label}','${safeOwner}','${safeRepo}')">ADD TO WAITLIST →</button>
+    <button class="get-btn" style="background:var(--green)" onclick="addWaitlist('${sf(data.full_name)}','${data.html_url}','${m.type}','${sf(l.label||'')}',${data.stargazers_count},'${sf(d.label)}','${sf(owner)}','${sf(repo)}')">ADD TO WAITLIST →</button>
   </div>
 </div>`;
 }
@@ -442,7 +561,7 @@ async function addWaitlist(fullName,url,modelType,licenseName,stars,deviceReq,ow
       if(fp)fp.innerHTML=`<span style="color:var(--orange)">⚠ This repo is already in the waitlist.</span>`;
       return;
     }
-    await db.from('repo_requests').insert({github_url:url,repo_owner:owner,repo_name:repo,model_type:modelType,license_name:licenseName,stars:stars,device_requirement:deviceReq,status:'pending'});
+    await db.from('repo_requests').insert({github_url:url,repo_owner:owner,repo_name:repo,model_type:modelType,license_name:licenseName,stars,device_requirement:deviceReq,status:'pending'});
     await logEvent('waitlist_added',{repo:fullName});
     const fp=document.querySelector('.analysis-footer p');
     if(fp)fp.innerHTML=`<span style="color:var(--green)">✓ Added to waitlist — we'll notify you when <strong>${fullName}</strong> is live.</span>`;
@@ -455,7 +574,9 @@ async function addWaitlist(fullName,url,modelType,licenseName,stars,deviceReq,ow
   }
 }
 
-const obs=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),i*80);});},{threshold:0.1});
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),i*80);});
+},{threshold:0.1});
 document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
 </script>
 </body>
