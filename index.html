@@ -388,7 +388,6 @@ async function submitEmail(){
       interest:currentModalApp?currentModalApp.name:'general',
       source:'app_card'
     },{onConflict:'email,interest'});
-    await logEvent('waitlist_added',{source:'modal',app:currentModalApp?.name});
     document.getElementById('modalSuccess').style.display='block';
     btn.style.display='none';
     document.getElementById('modalEmail').style.display='none';
@@ -412,7 +411,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   loadStats();
   loadEmailCount();
   loadRequested();
-  logEvent('page_view',{});
+
 });
 
 async function loadStats(){
@@ -441,9 +440,7 @@ async function loadRequested(){
   }catch(e){console.log('load error',e);}
 }
 
-async function logEvent(type,meta){
-  try{await db.from('analytics_events').insert({event_type:type,metadata:meta});}catch(e){}
-}
+
 
 async function analyzeRepo(){
   const raw=document.getElementById('repoUrl').value.trim();
@@ -479,7 +476,7 @@ async function analyzeRepo(){
     let readme='';
     if(readR&&readR.content){try{readme=atob(readR.content.replace(/\n/g,'')).substring(0,2000);}catch(e){}}
     clearInterval(iv);fill.style.width='100%';ltxt.textContent='Analysis complete.';
-    setTimeout(()=>{loader.style.display='none';renderAnalysis(data,readme,owner,repo);logEvent('repo_analyzed',{repo:`${owner}/${repo}`});},500);
+    setTimeout(()=>{loader.style.display='none';renderAnalysis(data,readme,owner,repo);},500);
   }catch(err){
     clearInterval(iv);loader.style.display='none';
     errEl.textContent='✗ '+err.message;errEl.style.display='block';
@@ -562,7 +559,6 @@ async function addWaitlist(fullName,url,modelType,licenseName,stars,deviceReq,ow
       return;
     }
     await db.from('repo_requests').insert({github_url:url,repo_owner:owner,repo_name:repo,model_type:modelType,license_name:licenseName,stars,device_requirement:deviceReq,status:'pending'});
-    await logEvent('waitlist_added',{repo:fullName});
     const fp=document.querySelector('.analysis-footer p');
     if(fp)fp.innerHTML=`<span style="color:var(--green)">✓ Added to waitlist — we'll notify you when <strong>${fullName}</strong> is live.</span>`;
     const btn=document.querySelector('.analysis-footer button');
