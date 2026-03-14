@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>A-Store — The AI App Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07070f;
+    --surface: #0f0f1e;
+    --card: #13132a;
+    --border: rgba(120,80,255,0.18);
+    --purple: #7c3aed;
+    --purple-l: #a78bfa;
+    --cyan: #06b6d4;
+    --green: #10b981;
+    --orange: #f59e0b;
+    --white: #f0eeff;
+    --gray: #6b7280;
+    --gray-l: #9ca3af;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--purple);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(124,58,237,0.5);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.08s ease;
+  }
+
+  /* GRID TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,58,237,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,58,237,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: rgba(7,7,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--white);
+  }
+  .logo span { color: var(--purple); }
+
+  .nav-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+    padding: 0.25rem 0.6rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 1.5rem 4rem;
+    z-index: 1;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--cyan);
+    border: 1px solid rgba(6,182,212,0.3);
+    padding: 0.4rem 1rem;
+    margin-bottom: 2rem;
+    display: inline-block;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  h1 {
+    font-size: clamp(2.8rem, 8vw, 6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  h1 .accent { color: var(--purple-l); }
+  h1 .stroke {
+    -webkit-text-stroke: 1px var(--purple-l);
+    color: transparent;
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: var(--gray-l);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    padding: 0.85rem 2rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-primary:hover { background: #6d28d9; transform: translateY(-2px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--border);
+    padding: 0.85rem 2rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--purple-l); color: var(--purple-l); }
+
+  /* STATS BAR */
+  .stats-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .stat {
+    flex: 1;
+    max-width: 220px;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-n {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--purple-l);
+    display: block;
+  }
+  .stat-l {
+    font-size: 0.75rem;
+    color: var(--gray);
+    letter-spacing: 0.05em;
+  }
+
+  /* SECTION COMMON */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 5rem 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--cyan);
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+  }
+
+  /* HOW IT WORKS */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+
+  .step {
+    background: var(--card);
+    padding: 2rem 1.5rem;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .step:hover { background: #1a1a35; }
+
+  .step-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--purple);
+    letter-spacing: 0.2em;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .step-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .step h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--white);
+  }
+
+  .step p {
+    font-size: 0.88rem;
+    color: var(--gray-l);
+    line-height: 1.65;
+  }
+
+  /* APP STORE GRID */
+  .apps-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .tab.active, .tab:hover {
+    border-color: var(--purple);
+    color: var(--purple-l);
+    background: rgba(124,58,237,0.1);
+  }
+
+  .apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .app-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .app-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-color, var(--purple));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .app-card:hover::before { transform: scaleX(1); }
+  .app-card:hover { border-color: rgba(124,58,237,0.4); transform: translateY(-3px); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .app-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .card-meta h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.15rem;
+  }
+
+  .card-meta .maker {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gray);
+    letter-spacing: 0.05em;
+  }
+
+  .app-desc {
+    font-size: 0.83rem;
+    color: var(--gray-l);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .stars {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--orange);
+  }
+
+  .device-tags {
+    display: flex;
+    gap: 0.3rem;
+  }
+
+  .device-tag {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .device-tag.fit { border-color: var(--green); color: var(--green); }
+
+  .get-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.35rem 0.8rem;
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .get-btn:hover { background: #6d28d9; }
+
+  /* DEVICE MATCH BANNER */
+  .device-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--cyan);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .device-banner .icon { font-size: 1.5rem; }
+
+  .device-banner p {
+    font-size: 0.85rem;
+    color: var(--gray-l);
+  }
+
+  .device-banner strong { color: var(--cyan); }
+
+  /* SUBMIT SECTION */
+  .submit-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-section::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .submit-section h2 { margin-bottom: 0.75rem; }
+
+  .submit-section p {
+    color: var(--gray-l);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .url-form {
+    display: flex;
+    max-width: 560px;
+    margin: 0 auto 1rem;
+    gap: 0;
+  }
+
+  .url-input {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-right: none;
+    color: var(--white);
+    padding: 0.85rem 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .url-input::placeholder { color: var(--gray); }
+  .url-input:focus { border-color: var(--purple); }
+
+  .url-submit {
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    padding: 0.85rem 1.5rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .url-submit:hover { background: #6d28d9; }
+
+  .form-note {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--gray);
+    letter-spacing: 0.05em;
+  }
+
+  /* SUCCESS MSG */
+  .success-msg {
+    display: none;
+    background: rgba(16,185,129,0.1);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 1rem 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    max-width: 560px;
+    margin: 1rem auto 0;
+    text-align: left;
+  }
+
+  /* ATTRIBUTION SECTION */
+  .attrib-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  .attrib-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+
+  .attrib-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .attrib-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+
+  .attrib-sub {
+    font-size: 0.82rem;
+    color: var(--gray-l);
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+
+  footer .logo { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; }
+
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--gray);
+    letter-spacing: 0.05em;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* SCROLLING TICKER */
+  .ticker-wrap {
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 0.6rem 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ticker {
+    display: flex;
+    width: max-content;
+    animation: ticker 30s linear infinite;
+    gap: 3rem;
+  }
+
+  .ticker-item {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--gray);
+    white-space: nowrap;
+  }
+
+  .ticker-item span { color: var(--purple-l); margin-right: 0.5rem; }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    .stats-bar { flex-wrap: wrap; }
+    .stat { min-width: 50%; border-right: none; border-bottom: 1px solid var(--border); }
+    .url-form { flex-direction: column; }
+    .url-input { border-right: 1px solid var(--border); border-bottom: none; }
+    .cursor, .cursor-ring { display: none; }
+    body { cursor: auto; }
+    nav { padding: 0.85rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">A<span>—</span>STORE</div>
+  <div class="nav-badge">BETA COMING SOON</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <span class="hero-tag">THE OPEN-SOURCE AI APP STORE</span>
+  <h1>
+    Every AI Model.<br>
+    <span class="accent">One Store.</span><br>
+    <span class="stroke">Any Device.</span>
+  </h1>
+  <p class="hero-sub">
+    Paste a GitHub repo URL. We convert it into a real app — optimized for your device,
+    ready to install, no terminal required. Open-source AI for everyone.
+  </p>
+  <div class="hero-btns">
+    <a href="#submit" class="btn-primary">Submit a Repo →</a>
+    <a href="#apps" class="btn-ghost">Browse Apps</a>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker">
+    <span class="ticker-item"><span>▸</span> LLAMA 3 BY META</span>
+    <span class="ticker-item"><span>▸</span> WHISPER BY OPENAI</span>
+    <span class="ticker-item"><span>▸</span> QWEN 2.5 BY ALIBABA</span>
+    <span class="ticker-item"><span>▸</span> KIMI K2 BY MOONSHOT</span>
+    <span class="ticker-item"><span>▸</span> STABLE DIFFUSION</span>
+    <span class="ticker-item"><span>▸</span> MISTRAL 7B</span>
+    <span class="ticker-item"><span>▸</span> PHI-3 BY MICROSOFT</span>
+    <span class="ticker-item"><span>▸</span> DEEPSEEK R1</span>
+    <span class="ticker-item"><span>▸</span> LLAMA 3 BY META</span>
+    <span class="ticker-item"><span>▸</span> WHISPER BY OPENAI</span>
+    <span class="ticker-item"><span>▸</span> QWEN 2.5 BY ALIBABA</span>
+    <span class="ticker-item"><span>▸</span> KIMI K2 BY MOONSHOT</span>
+    <span class="ticker-item"><span>▸</span> STABLE DIFFUSION</span>
+    <span class="ticker-item"><span>▸</span> MISTRAL 7B</span>
+    <span class="ticker-item"><span>▸</span> PHI-3 BY MICROSOFT</span>
+    <span class="ticker-item"><span>▸</span> DEEPSEEK R1</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-n" id="repoCount">0</span>
+    <span class="stat-l">REPOS SUBMITTED</span>
+  </div>
+  <div class="stat">
+    <span class="stat-n">220M+</span>
+    <span class="stat-l">GITHUB REPOS AVAILABLE</span>
+  </div>
+  <div class="stat">
+    <span class="stat-n">₹0</span>
+    <span class="stat-l">TO DOWNLOAD ANY APP</span>
+  </div>
+  <div class="stat">
+    <span class="stat-n">100%</span>
+    <span class="stat-l">OPEN SOURCE ONLY</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section>
+  <span class="section-tag">HOW IT WORKS</span>
+  <h2>Three Steps.<br>From Repo to Reality.</h2>
+  <div class="steps reveal">
+    <div class="step">
+      <span class="step-num">STEP 01</span>
+      <span class="step-icon">🔗</span>
+      <h3>Paste the GitHub URL</h3>
+      <p>Any open-source repo. AI models, image generators, speech tools — if it's on GitHub, we'll handle it.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">STEP 02</span>
+      <span class="step-icon">⚙️</span>
+      <h3>We Build & Optimize</h3>
+      <p>Our engine analyzes the repo, detects the model type, checks legal licensing, and creates device-matched versions in 24–48 hrs.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">STEP 03</span>
+      <span class="step-icon">📲</span>
+      <h3>Download & Use</h3>
+      <p>You get notified. Install it like any normal app. No terminal. No Python. No setup. Just tap and run.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">STEP 04</span>
+      <span class="step-icon">☁️</span>
+      <h3>Run on Cloud if Needed</h3>
+      <p>Low-end device? Stream full-power models from our cloud. Pay only for what you use — starting at ₹1/minute.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DEVICE INTELLIGENCE -->
+<section>
+  <span class="section-tag">DEVICE INTELLIGENCE</span>
+  <h2>Right Model.<br>Right Device. Auto.</h2>
+  <div class="device-banner reveal">
+    <span class="icon">📱</span>
+    <p>
+      <strong>Your device is detected automatically.</strong>
+      Low RAM phone gets a 1B model. Mid-range gets 3B. Laptop gets 7B+.
+      Full cloud power available on any device anytime.
+    </p>
+  </div>
+  <div class="apps-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); margin-top:0;">
+    <div class="attrib-card reveal">
+      <span class="attrib-label" style="color:var(--purple-l)">📱 LOW-END PHONE (2–3GB RAM)</span>
+      <div class="attrib-title">Llama 1B · Whisper Tiny</div>
+      <div class="attrib-sub">Lightweight, fast, runs fully offline. No internet required after install.</div>
+    </div>
+    <div class="attrib-card reveal">
+      <span class="attrib-label" style="color:var(--cyan)">📱 MID-RANGE PHONE (4–6GB RAM)</span>
+      <div class="attrib-title">Llama 3B · Whisper Base</div>
+      <div class="attrib-sub">Smart and capable. Runs locally with good quality outputs.</div>
+    </div>
+    <div class="attrib-card reveal">
+      <span class="attrib-label" style="color:var(--green)">💻 LAPTOP / HIGH-END (8GB+ RAM)</span>
+      <div class="attrib-title">Llama 7B · Whisper Large</div>
+      <div class="attrib-sub">Near full performance, local inference, maximum quality.</div>
+    </div>
+    <div class="attrib-card reveal">
+      <span class="attrib-label" style="color:var(--orange)">☁️ ANY DEVICE — CLOUD MODE</span>
+      <div class="attrib-title">Full 70B+ Models</div>
+      <div class="attrib-sub">Stream the most powerful version from our cloud. Pay per use.</div>
+    </div>
+  </div>
+</section>
+
+<!-- APP STORE -->
+<section id="apps">
+  <div class="apps-header">
+    <div>
+      <span class="section-tag">BROWSE THE STORE</span>
+      <h2>Featured Apps</h2>
+    </div>
+    <div class="filter-tabs">
+      <button class="tab active" onclick="filterApps('all', this)">ALL</button>
+      <button class="tab" onclick="filterApps('llm', this)">CHAT AI</button>
+      <button class="tab" onclick="filterApps('vision', this)">IMAGE</button>
+      <button class="tab" onclick="filterApps('audio', this)">AUDIO</button>
+    </div>
+  </div>
+
+  <div class="apps-grid" id="appsGrid"></div>
+</section>
+
+<!-- ATTRIBUTION -->
+<section>
+  <span class="section-tag">ATTRIBUTION SYSTEM</span>
+  <h2>Credit Where<br>It's Due. Always.</h2>
+  <p style="color:var(--gray-l);max-width:560px;line-height:1.7;margin-bottom:0;">
+    Every app in A-Store shows exactly who built the original model and who improved it.
+    No confusion. Full transparency.
+  </p>
+  <div class="attrib-grid">
+    <div class="attrib-card reveal">
+      <span class="attrib-label" style="color:var(--purple-l)">🏷 ORIGINAL MODEL</span>
+      <div class="attrib-title">Llama 3 — Original by Meta</div>
+      <div class="attrib-sub">The base model exactly as Meta released it. Unmodified, verified, trusted.</div>
+    </div>
+    <div class="attrib-card reveal">
+      <span class="attrib-label" style="color:var(--cyan)">🔧 COMMUNITY EDITION</span>
+      <div class="attrib-title">Llama 3 — Improved by @devX</div>
+      <div class="attrib-sub">Fine-tuned by a verified community developer. Changes logged and visible.</div>
+    </div>
+    <div class="attrib-card reveal">
+      <span class="attrib-label" style="color:var(--green)">⭐ GITHUB STARS SYNCED</span>
+      <div class="attrib-title">Discovery via Real Reputation</div>
+      <div class="attrib-sub">GitHub stars are imported into our ranking. No paid promotion. Pure merit.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBMIT FORM -->
+<section id="submit">
+  <div class="submit-section reveal">
+    <span class="section-tag" style="color:var(--cyan)">JOIN THE WAITLIST</span>
+    <h2>Got a Repo in Mind?</h2>
+    <p>
+      Paste any open-source GitHub URL below. We'll analyze it,
+      check licensing, and notify you when the app is live in the store.
+    </p>
+
+    <div class="url-form">
+      <input
+        class="url-input"
+        id="repoUrl"
+        type="url"
+        placeholder="https://github.com/meta-llama/llama3"
+      />
+      <button class="url-submit" onclick="submitRepo()">SUBMIT →</button>
+    </div>
+
+    <p class="form-note">FREE · OPEN SOURCE ONLY · NO SPAM</p>
+
+    <div class="success-msg" id="successMsg">
+      ✓ SUBMITTED — We'll analyze the repo and notify you when it's live.<br>
+      <span style="color:var(--gray);font-size:0.75em;">Expected: 24–48 hours review window.</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="logo">A<span style="color:var(--purple)">—</span>STORE</span>
+  <p>THE OPEN-SOURCE AI APP STORE · BUILT FOR INDIA, MADE FOR THE WORLD</p>
+  <p style="margin-top:0.5rem;">© 2025 A-STORE · ALL MODELS REMAIN PROPERTY OF THEIR RESPECTIVE CREATORS</p>
+</footer>
+
+<script>
+// CURSOR
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 5 + 'px';
+  cursor.style.top = my - 5 + 'px';
+});
+
+function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) *.12;
+  ring.style.left = rx - 16 + 'px';
+  ring.style.top = ry - 16 + 'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+document.querySelectorAll('a,button,input').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.style.transform = 'scale(3)');
+  el.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+});
+
+// APPS DATA
+const apps = [
+  {
+    id: 'llama3', category: 'llm',
+    icon: '🦙', iconBg: 'rgba(124,58,237,0.2)',
+    name: 'Llama 3 Chat', maker: 'META AI',
+    desc: 'Full conversational AI. Ask anything, get smart answers. Runs offline on your phone.',
+    stars: '87.4k', accent: '#7c3aed',
+    devices: ['1B', '3B', '7B', 'CLOUD'],
+    href: 'https://huggingface.co/spaces/huggingface-projects/llama-2-7b-chat'
+  },
+  {
+    id: 'whisper', category: 'audio',
+    icon: '🎙️', iconBg: 'rgba(6,182,212,0.2)',
+    name: 'Whisper STT', maker: 'OPENAI',
+    desc: 'Speech to text in 99 languages. Record your voice, get instant accurate transcription.',
+    stars: '74.1k', accent: '#06b6d4',
+    devices: ['TINY', 'BASE', 'LARGE'],
+    href: 'https://huggingface.co/spaces/openai/whisper'
+  },
+  {
+    id: 'qwen', category: 'llm',
+    icon: '🌐', iconBg: 'rgba(16,185,129,0.2)',
+    name: 'Qwen 2.5', maker: 'ALIBABA',
+    desc: 'Powerful multilingual AI. Excellent at coding, math, and reasoning tasks.',
+    stars: '42.8k', accent: '#10b981',
+    devices: ['1.5B', '7B', 'CLOUD'],
+    href: 'https://huggingface.co/spaces/Qwen/Qwen2.5-72B-Instruct'
+  },
+  {
+    id: 'sdxl', category: 'vision',
+    icon: '🎨', iconBg: 'rgba(245,158,11,0.2)',
+    name: 'Stable Diffusion', maker: 'STABILITY AI',
+    desc: 'Generate stunning images from text. Type what you imagine, see it come to life.',
+    stars: '38.2k', accent: '#f59e0b',
+    devices: ['LITE', 'CLOUD'],
+    href: 'https://huggingface.co/spaces/stabilityai/stable-diffusion'
+  },
+  {
+    id: 'mistral', category: 'llm',
+    icon: '💨', iconBg: 'rgba(167,139,250,0.2)',
+    name: 'Mistral 7B', maker: 'MISTRAL AI',
+    desc: 'Lightning fast, surprisingly smart. Best-in-class for speed on mid-range devices.',
+    stars: '31.5k', accent: '#a78bfa',
+    devices: ['7B', 'CLOUD'],
+    href: 'https://huggingface.co/spaces/osanseviero/mistral-super-fast'
+  },
+  {
+    id: 'deepseek', category: 'llm',
+    icon: '🔍', iconBg: 'rgba(239,68,68,0.2)',
+    name: 'DeepSeek R1', maker: 'DEEPSEEK AI',
+    desc: 'Reasoning model that shows its thinking step by step. Great for complex problems.',
+    stars: '67.3k', accent: '#ef4444',
+    devices: ['1.5B', '7B', 'CLOUD'],
+    href: 'https://huggingface.co/spaces/deepseek-ai/DeepSeek-R1'
+  }
+];
+
+function renderApps(filter) {
+  const grid = document.getElementById('appsGrid');
+  const filtered = filter === 'all' ? apps : apps.filter(a => a.category === filter);
+  grid.innerHTML = filtered.map(app => `
+    <div class="app-card" style="--accent-color:${app.accent};" onclick="window.open('${app.href}','_blank')">
+      <div class="card-header">
+        <div class="app-icon" style="background:${app.iconBg}">${app.icon}</div>
+        <div class="card-meta">
+          <h3>${app.name}</h3>
+          <span class="maker">${app.maker}</span>
+        </div>
+      </div>
+      <p class="app-desc">${app.desc}</p>
+      <div class="card-footer">
+        <span class="stars">★ ${app.stars}</span>
+        <div class="device-tags">
+          ${app.devices.map((d,i) => `<span class="device-tag ${i===0?'fit':''}">${d}</span>`).join('')}
+        </div>
+        <a class="get-btn" href="${app.href}" target="_blank" onclick="event.stopPropagation()">TRY →</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+renderApps('all');
+
+function filterApps(cat, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderApps(cat);
+}
+
+// SUBMIT REPO
+let repoCount = parseInt(localStorage.getItem('astore_count') || '0');
+
+function updateCount() {
+  const el = document.getElementById('repoCount');
+  let cur = 0;
+  const target = repoCount;
+  const step = Math.ceil(target / 40);
+  const t = setInterval(() => {
+    cur = Math.min(cur + step, target);
+    el.textContent = cur;
+    if (cur >= target) clearInterval(t);
+  }, 40);
+}
+updateCount();
+
+function submitRepo() {
+  const url = document.getElementById('repoUrl').value.trim();
+  if (!url || !url.includes('github.com')) {
+    document.getElementById('repoUrl').style.borderColor = '#ef4444';
+    setTimeout(() => document.getElementById('repoUrl').style.borderColor = '', 1500);
+    return;
+  }
+
+  repoCount++;
+  localStorage.setItem('astore_count', repoCount);
+  document.getElementById('repoCount').textContent = repoCount;
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('repoUrl').value = '';
+
+  // Also open Google Form if you set it up
+  // window.open('YOUR_GOOGLE_FORM_URL?entry.XXX=' + encodeURIComponent(url), '_blank');
+}
+
+// SCROLL REVEAL
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
