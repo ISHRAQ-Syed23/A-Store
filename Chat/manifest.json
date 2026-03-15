@@ -1,20 +1,23 @@
 {
-  "name": "Llama 3 Chat — A-Store",
+  "name": "Llama 3 Chat \u2014 A-Store",
   "short_name": "Llama Chat",
   "description": "Chat with Llama 3 by Meta. Free, fast, private. Via A-Store.",
-  "start_url": "/",
+  "start_url": "/chat/",
   "display": "standalone",
   "background_color": "#07070f",
   "theme_color": "#07070f",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2307070f'/><text y='.9em' font-size='80'>🦙</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2307070f'/><text y='.9em' font-size='80'>\ud83e\udd99</text></svg>",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ],
-  "categories": ["productivity", "utilities"],
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
   "lang": "en"
 }
