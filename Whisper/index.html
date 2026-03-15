@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Whisper"/>
+<meta name="theme-color" content="#07070f"/>
+<link rel="manifest" href="manifest.json"/>
+<title>Whisper — A-Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#07070f;--card:#13132a;--border:rgba(120,80,255,0.18);--purple:#7c3aed;--purple-l:#a78bfa;--cyan:#06b6d4;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--white:#f0eeff;--gray:#6b7280;--gray-l:#9ca3af}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;position:relative;z-index:1}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem 0.75rem;border-bottom:1px solid var(--border);background:rgba(7,7,15,0.95);backdrop-filter:blur(20px)}
+.topbar-left{display:flex;align-items:center;gap:0.6rem}
+.app-icon-sm{width:32px;height:32px;background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.app-name{font-weight:800;font-size:1rem}
+.app-maker{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--gray);letter-spacing:0.05em}
+.store-badge{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--purple-l);border:1px solid rgba(124,58,237,0.3);padding:0.15rem 0.4rem;text-decoration:none}
+.content{flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:1rem}
+.install-banner{background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);padding:0.65rem 1rem;display:none;align-items:center;justify-content:space-between;gap:0.75rem}
+.install-text{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--purple-l);line-height:1.5}
+.btn-install{font-family:'Space Mono',monospace;font-size:0.6rem;padding:0.28rem 0.6rem;background:var(--purple);color:#fff;border:none;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.usage-row{display:flex;align-items:center;gap:0.6rem}
+.usage-label{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--gray);white-space:nowrap}
+.usage-bar-wrap{flex:1;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.usage-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:2px;transition:width 0.4s ease}
+.usage-count{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--gray-l);white-space:nowrap}
+.record-area{background:var(--card);border:1px solid var(--border);padding:1.75rem 1.25rem;text-align:center;position:relative;overflow:hidden}
+.record-area::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple))}
+.mic-ring{width:90px;height:90px;border-radius:50%;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:center;font-size:2.2rem;background:rgba(6,182,212,0.08);border:2px solid rgba(6,182,212,0.25);transition:all 0.3s;cursor:pointer;position:relative}
+.mic-ring.recording{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.5);animation:pulse 1.2s ease-in-out infinite}
+.mic-ring.processing{background:rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.5)}
+@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(239,68,68,0.3)}50%{transform:scale(1.05);box-shadow:0 0 0 12px rgba(239,68,68,0)}}
+.record-timer{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--red);margin:0.5rem 0;display:none}
+.record-title{font-size:1.05rem;font-weight:800;margin-bottom:0.25rem}
+.record-sub{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--gray);letter-spacing:0.05em}
+.lang-row{display:flex;align-items:center;gap:0.6rem;margin-top:0.85rem;flex-wrap:wrap}
+.lang-label{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--gray);white-space:nowrap}
+.lang-select{background:var(--card);border:1px solid var(--border);color:var(--white);padding:0.28rem 0.5rem;font-family:'Space Mono',monospace;font-size:0.68rem;outline:none;flex:1;min-width:0}
+.lang-select option{background:var(--card)}
+.btn-record{width:100%;margin-top:1rem;padding:0.85rem;background:var(--cyan);color:var(--bg);border:none;font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.2s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
+.btn-record:hover{opacity:0.9}
+.btn-record.recording{background:var(--red)}
+.btn-record:disabled{background:var(--gray);cursor:not-allowed}
+.output-card{background:var(--card);border:1px solid var(--border);flex:1;min-height:160px;display:flex;flex-direction:column}
+.output-header{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 1rem;border-bottom:1px solid var(--border)}
+.output-label{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--cyan);letter-spacing:0.1em}
+.output-actions{display:flex;gap:0.35rem}
+.btn-action{font-family:'Space Mono',monospace;font-size:0.56rem;padding:0.18rem 0.45rem;border:1px solid var(--border);color:var(--gray);background:transparent;cursor:pointer;transition:all 0.2s}
+.btn-action:hover{border-color:var(--purple-l);color:var(--purple-l)}
+.btn-action:disabled{opacity:0.35;cursor:not-allowed}
+.output-text{flex:1;padding:0.9rem 1rem;font-size:0.85rem;line-height:1.7;color:var(--white);overflow-y:auto;min-height:100px;white-space:pre-wrap;word-break:break-word}
+.output-text.empty{color:var(--gray);font-family:'Space Mono',monospace;font-size:0.7rem}
+.output-text.error{color:var(--red)}
+.history-card{background:var(--card);border:1px solid var(--border)}
+.history-header{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1rem;border-bottom:1px solid var(--border);cursor:pointer}
+.history-title{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--gray);letter-spacing:0.1em}
+.history-toggle{font-size:0.65rem;color:var(--gray)}
+.history-list{display:none;max-height:180px;overflow-y:auto}
+.history-item{padding:0.6rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s}
+.history-item:last-child{border-bottom:none}
+.history-item:hover{background:rgba(124,58,237,0.06)}
+.history-item-text{font-size:0.78rem;color:var(--gray-l);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-item-time{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--gray);margin-top:0.12rem}
+.history-empty{padding:0.9rem 1rem;font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--gray);text-align:center}
+.bottombar{padding:0.65rem 1.25rem;border-top:1px solid var(--border);background:rgba(7,7,15,0.95);display:flex;align-items:center;justify-content:space-between}
+.bottom-credit{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--gray)}
+.bottom-credit a{color:var(--purple-l);text-decoration:none}
+.bottom-status{font-family:'Space Mono',monospace;font-size:0.54rem;color:var(--gray);display:flex;align-items:center;gap:0.3rem}
+.status-dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="install-banner" id="installBanner">
+    <div class="install-text">📲 Install on your home screen for quick access</div>
+    <button class="btn-install" id="installBtn">INSTALL</button>
+  </div>
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="app-icon-sm">🎙️</div>
+      <div><div class="app-name">Whisper</div><div class="app-maker">BY OPENAI · VIA A-STORE</div></div>
+    </div>
+    <a href="https://ishraq-syed23.github.io/A-Store" class="store-badge">A—STORE ↗</a>
+  </div>
+  <div class="content">
+    <div class="usage-row">
+      <span class="usage-label">DAILY USAGE</span>
+      <div class="usage-bar-wrap"><div class="usage-bar-fill" id="usageBar" style="width:0%"></div></div>
+      <span class="usage-count" id="usageCount">0 / 20</span>
+    </div>
+    <div class="record-area">
+      <div class="mic-ring" id="micRing" onclick="toggleRecording()">
+        <span id="micIcon">🎙️</span>
+      </div>
+      <div class="record-timer" id="recordTimer">0:00</div>
+      <div class="record-title" id="recordTitle">Tap to Record</div>
+      <div class="record-sub" id="recordSub">SPEECH TO TEXT · 99 LANGUAGES</div>
+      <div class="lang-row">
+        <span class="lang-label">LANGUAGE:</span>
+        <select class="lang-select" id="langSelect">
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="te">Telugu</option>
+          <option value="ta">Tamil</option>
+          <option value="ml">Malayalam</option>
+          <option value="kn">Kannada</option>
+          <option value="mr">Marathi</option>
+          <option value="bn">Bengali</option>
+          <option value="gu">Gujarati</option>
+          <option value="pa">Punjabi</option>
+          <option value="ur">Urdu</option>
+          <option value="ar">Arabic</option>
+          <option value="zh">Chinese</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="es">Spanish</option>
+          <option value="ja">Japanese</option>
+          <option value="ko">Korean</option>
+          <option value="pt">Portuguese</option>
+          <option value="ru">Russian</option>
+        </select>
+      </div>
+      <button class="btn-record" id="recordBtn" onclick="toggleRecording()">START RECORDING</button>
+    </div>
+    <div class="output-card">
+      <div class="output-header">
+        <span class="output-label">TRANSCRIPTION OUTPUT</span>
+        <div class="output-actions">
+          <button class="btn-action" id="copyBtn" onclick="copyText()" disabled>COPY</button>
+          <button class="btn-action" id="shareBtn" onclick="shareText()" disabled>SHARE</button>
+          <button class="btn-action" onclick="clearOutput()">CLEAR</button>
+        </div>
+      </div>
+      <div class="output-text empty" id="outputText">Your transcription will appear here...</div>
+    </div>
+    <div class="history-card">
+      <div class="history-header" onclick="toggleHistory()">
+        <span class="history-title">RECENT TRANSCRIPTIONS</span>
+        <span class="history-toggle" id="histToggle">▼</span>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </div>
+  <div class="bottombar">
+    <span class="bottom-credit">Part of <a href="https://ishraq-syed23.github.io/A-Store">A—Store</a></span>
+    <span class="bottom-status"><span class="status-dot"></span>WHISPER SMALL</span>
+  </div>
+</div>
+<script>
+const HF_API='https://api-inference.huggingface.co/models/openai/whisper-small';
+const DAILY_LIMIT=20;
+const STORAGE_KEY='whisper_usage';
+const HISTORY_KEY='whisper_history';
+let mediaRecorder=null,audioChunks=[],isRecording=false,timerInterval=null,recordSeconds=0,deferredPrompt=null;
+
+function getUsage(){const today=new Date().toDateString();const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');return s.date===today?s.count||0:0;}
+function incrementUsage(){const today=new Date().toDateString();const c=getUsage()+1;localStorage.setItem(STORAGE_KEY,JSON.stringify({date:today,count:c}));updateUsageUI(c);return c;}
+function updateUsageUI(c){const pct=Math.min((c/DAILY_LIMIT)*100,100);document.getElementById('usageBar').style.width=pct+'%';document.getElementById('usageCount').textContent=c+' / '+DAILY_LIMIT;const bar=document.getElementById('usageBar');bar.style.background=pct>80?'linear-gradient(90deg,#f59e0b,#ef4444)':pct>50?'linear-gradient(90deg,#10b981,#f59e0b)':'linear-gradient(90deg,var(--green),var(--cyan))';}
+
+async function toggleRecording(){if(isRecording){stopRecording();}else{await startRecording();}}
+
+async function startRecording(){
+  if(getUsage()>=DAILY_LIMIT){setOutput('Daily limit reached (20 transcriptions). Come back tomorrow!\n\nJoin the waitlist at A-Store for priority access.','error');return;}
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const mime=['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+    mediaRecorder=new MediaRecorder(stream,mime?{mimeType:mime}:{});
+    audioChunks=[];
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
+    mediaRecorder.onstop=processAudio;
+    mediaRecorder.start(250);
+    isRecording=true;recordSeconds=0;startTimer();setRecordingUI(true);
+  }catch(err){setOutput('Microphone access denied. Please allow microphone permission.','error');}
+}
+
+function stopRecording(){
+  if(mediaRecorder&&mediaRecorder.state!=='inactive'){mediaRecorder.stop();mediaRecorder.stream.getTracks().forEach(t=>t.stop());}
+  clearInterval(timerInterval);isRecording=false;setRecordingUI(false);setProcessingUI(true);
+}
+
+function startTimer(){
+  const el=document.getElementById('recordTimer');el.style.display='block';
+  timerInterval=setInterval(()=>{recordSeconds++;const m=Math.floor(recordSeconds/60);const s=recordSeconds%60;el.textContent=m+':'+String(s).padStart(2,'0');if(recordSeconds>=60)stopRecording();},1000);
+}
+
+async function processAudio(){
+  const blob=new Blob(audioChunks,{type:audioChunks[0]?.type||'audio/webm'});
+  if(blob.size<1000){setProcessingUI(false);setOutput('Recording too short. Please speak clearly and try again.','error');return;}
+  try{
+    const res=await fetch(HF_API,{method:'POST',headers:{'Content-Type':blob.type},body:blob});
+    setProcessingUI(false);
+    if(!res.ok){
+      if(res.status===503)setOutput('Model is loading (~20 seconds on first use). Please try again in a moment.','error');
+      else if(res.status===429)setOutput('API limit reached for today. Come back tomorrow or visit A-Store to join the priority waitlist.','error');
+      else setOutput('Transcription failed (error '+res.status+'). Please try again.','error');
+      return;
+    }
+    const result=await res.json();
+    const text=result.text||result[0]?.generated_text||'';
+    if(!text||text.trim()===''){setOutput('Could not detect speech. Please speak clearly and try again.','error');return;}
+    incrementUsage();setOutput(text.trim(),'success');addToHistory(text.trim());
+  }catch(err){setProcessingUI(false);setOutput('Network error. Check your internet connection.','error');}
+}
+
+function setRecordingUI(r){
+  const ring=document.getElementById('micRing'),btn=document.getElementById('recordBtn'),title=document.getElementById('recordTitle'),sub=document.getElementById('recordSub'),icon=document.getElementById('micIcon'),timer=document.getElementById('recordTimer');
+  if(r){ring.className='mic-ring recording';btn.className='btn-record recording';btn.textContent='TAP TO STOP';title.textContent='Recording...';sub.textContent='MAX 60 SECONDS';icon.textContent='⏹️';}
+  else{ring.className='mic-ring';btn.className='btn-record';btn.textContent='START RECORDING';title.textContent='Tap to Record';sub.textContent='SPEECH TO TEXT · 99 LANGUAGES';icon.textContent='🎙️';timer.style.display='none';}
+}
+
+function setProcessingUI(p){
+  const ring=document.getElementById('micRing'),btn=document.getElementById('recordBtn'),title=document.getElementById('recordTitle'),sub=document.getElementById('recordSub'),icon=document.getElementById('micIcon');
+  if(p){ring.className='mic-ring processing';btn.disabled=true;btn.textContent='TRANSCRIBING...';title.textContent='Processing...';sub.textContent='SENDING TO WHISPER AI';icon.textContent='⚡';}
+  else{ring.className='mic-ring';btn.disabled=false;btn.textContent='START RECORDING';title.textContent='Tap to Record';sub.textContent='SPEECH TO TEXT · 99 LANGUAGES';icon.textContent='🎙️';}
+}
+
+function setOutput(text,type){
+  const el=document.getElementById('outputText');el.textContent=text;
+  el.className='output-text'+(type==='error'?' error':'');
+  document.getElementById('copyBtn').disabled=type==='error';
+  document.getElementById('shareBtn').disabled=type==='error';
+}
+
+function clearOutput(){document.getElementById('outputText').textContent='Your transcription will appear here...';document.getElementById('outputText').className='output-text empty';document.getElementById('copyBtn').disabled=true;document.getElementById('shareBtn').disabled=true;}
+
+function copyText(){const text=document.getElementById('outputText').textContent;if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copyBtn');btn.textContent='COPIED!';setTimeout(()=>btn.textContent='COPY',1500);});}}
+function shareText(){const text=document.getElementById('outputText').textContent;if(navigator.share){navigator.share({text,title:'Transcribed with Whisper on A-Store'});}else copyText();}
+
+function addToHistory(text){const h=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');h.unshift({text,time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})});if(h.length>20)h.pop();localStorage.setItem(HISTORY_KEY,JSON.stringify(h));renderHistory();}
+function renderHistory(){const list=document.getElementById('historyList');const h=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');if(!h.length){list.innerHTML='<div class="history-empty">No transcriptions yet</div>';return;}list.innerHTML=h.map(i=>`<div class="history-item" onclick="loadFromHistory('${i.text.replace(/'/g,"\\'")}')"><div class="history-item-text">${i.text}</div><div class="history-item-time">${i.time}</div></div>`).join('');}
+function loadFromHistory(text){setOutput(text,'success');document.getElementById('copyBtn').disabled=false;document.getElementById('shareBtn').disabled=false;}
+function toggleHistory(){const list=document.getElementById('historyList');const toggle=document.getElementById('histToggle');const open=list.style.display==='block';list.style.display=open?'none':'block';toggle.textContent=open?'▼':'▲';if(!open)renderHistory();}
+
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').style.display='flex';});
+document.getElementById('installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();const{outcome}=await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('installBanner').style.display='none';});
+
+updateUsageUI(getUsage());
+renderHistory();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+  </html>
