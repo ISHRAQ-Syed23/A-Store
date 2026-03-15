@@ -1,0 +1,20 @@
+{
+  "name": "Whisper by OpenAI — A-Store",
+  "short_name": "Whisper",
+  "description": "Speech to text in 99 languages. Powered by OpenAI Whisper via A-Store.",
+  "start_url": "/A-Store/whisper/",
+  "display": "standalone",
+  "background_color": "#07070f",
+  "theme_color": "#07070f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2307070f'/><text y='.9em' font-size='80'>🎙️</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "lang": "en"
+}
