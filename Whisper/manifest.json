@@ -2,7 +2,7 @@
   "name": "Whisper by OpenAI — A-Store",
   "short_name": "Whisper",
   "description": "Speech to text in 99 languages. Powered by OpenAI Whisper via A-Store.",
-  "start_url": "/A-Store/whisper/",
+  "start_url": "/A-Store/Whisper/",
   "display": "standalone",
   "background_color": "#07070f",
   "theme_color": "#07070f",
