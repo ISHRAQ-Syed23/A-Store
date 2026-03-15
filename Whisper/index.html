@@ -154,8 +154,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
   </div>
 </div>
 <script>
-const HF_API='https://api-inference.huggingface.co/models/openai/whisper-small';
-const HF_TOKEN='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';
+const PROXY_API='https://jzqmjvxwtguaubsfklpf.supabase.co/functions/v1/whisper';
 const DAILY_LIMIT=20;
 const STORAGE_KEY='whisper_usage';
 const HISTORY_KEY='whisper_history';
@@ -195,27 +194,13 @@ async function processAudio(){
   const blob=new Blob(audioChunks,{type:audioChunks[0]?.type||'audio/webm'});
   if(blob.size<1000){setProcessingUI(false);setOutput('Recording too short. Please speak clearly and try again.','error');return;}
   try{
-    // Retry up to 3 times (model may be cold-starting)
-    let res, attempts = 0;
-    while (attempts < 3) {
-      res = await fetch(HF_API, {
-        method: 'POST',
-        headers: {
-          'Content-Type': blob.type,
-          'Authorization': 'Bearer ' + HF_TOKEN
-        },
-        body: blob
-      });
-      if (res.status === 503) {
-        attempts++;
-        if (attempts < 3) {
-          setOutput('Model is warming up... retrying in 20 seconds (attempt ' + attempts + '/3)', 'error');
-          await new Promise(r => setTimeout(r, 20000));
-        }
-      } else {
-        break;
-      }
-    }
+    // Call Supabase proxy (token stored securely server-side)
+    setOutput('Transcribing... (first request may take ~20 seconds to warm up)', 'error');
+    const res = await fetch(PROXY_API, {
+      method: 'POST',
+      headers: { 'Content-Type': blob.type },
+      body: blob
+    });
     setProcessingUI(false);
     if(!res.ok){
       if(res.status===503)setOutput('Model is loading (~20 seconds on first use). Please try again in a moment.','error');
@@ -267,4 +252,4 @@ renderHistory();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
-  </html>
+</html>
