@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Llama Chat"/>
+<meta name="theme-color" content="#07070f"/>
+<link rel="manifest" href="manifest.json"/>
+<title>Llama 3 Chat — A-Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#07070f;--surface:#0f0f1e;--card:#13132a;--border:rgba(120,80,255,0.18);--purple:#7c3aed;--purple-l:#a78bfa;--cyan:#06b6d4;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--white:#f0eeff;--gray:#6b7280;--gray-l:#9ca3af}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.app{display:flex;flex-direction:column;height:100%;max-width:520px;margin:0 auto;position:relative;z-index:1}
+
+/* TOP BAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1.25rem;border-bottom:1px solid var(--border);background:rgba(7,7,15,0.97);backdrop-filter:blur(20px);flex-shrink:0}
+.topbar-left{display:flex;align-items:center;gap:0.65rem}
+.app-icon{width:34px;height:34px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.35);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+.app-name{font-weight:800;font-size:0.95rem}
+.app-maker{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--gray);letter-spacing:0.05em}
+.topbar-right{display:flex;align-items:center;gap:0.5rem}
+.model-badge{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--purple-l);border:1px solid rgba(124,58,237,0.3);padding:0.18rem 0.45rem;white-space:nowrap}
+.store-link{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--gray);text-decoration:none;border:1px solid var(--border);padding:0.15rem 0.38rem}
+.store-link:hover{color:var(--purple-l);border-color:var(--purple)}
+.btn-clear{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--gray);background:none;border:1px solid var(--border);padding:0.15rem 0.38rem;cursor:pointer;transition:all 0.2s}
+.btn-clear:hover{color:var(--red);border-color:var(--red)}
+
+/* MESSAGES */
+.messages{flex:1;overflow-y:auto;padding:1rem 1.25rem;display:flex;flex-direction:column;gap:0.85rem;scroll-behavior:smooth}
+.messages::-webkit-scrollbar{width:3px}
+.messages::-webkit-scrollbar-track{background:transparent}
+.messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* WELCOME */
+.welcome{text-align:center;padding:2rem 1rem;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem}
+.welcome-icon{font-size:2.5rem}
+.welcome h2{font-size:1.3rem;font-weight:800;color:var(--white)}
+.welcome p{font-size:0.82rem;color:var(--gray-l);line-height:1.65;max-width:320px}
+.suggestions{display:flex;flex-direction:column;gap:0.5rem;width:100%;max-width:360px;margin-top:0.5rem}
+.suggestion{background:var(--card);border:1px solid var(--border);padding:0.65rem 0.9rem;text-align:left;cursor:pointer;font-size:0.8rem;color:var(--gray-l);transition:all 0.2s;font-family:'Syne',sans-serif}
+.suggestion:hover{border-color:var(--purple);color:var(--white);background:#1a1a35}
+
+/* MESSAGE BUBBLES */
+.msg{display:flex;gap:0.6rem;align-items:flex-start;animation:msgIn 0.25s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.msg-avatar{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;margin-top:2px}
+.msg.user .msg-avatar{background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.35)}
+.msg.ai .msg-avatar{background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3)}
+.msg-bubble{max-width:82%;padding:0.7rem 0.9rem;font-size:0.85rem;line-height:1.65;word-break:break-word;position:relative}
+.msg.user .msg-bubble{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);color:var(--white)}
+.msg.ai .msg-bubble{background:var(--card);border:1px solid var(--border);color:var(--gray-l)}
+.msg.ai .msg-bubble strong{color:var(--white)}
+.msg-time{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--gray);margin-top:0.25rem;display:block}
+.msg-copy{position:absolute;top:0.4rem;right:0.4rem;font-family:'Space Mono',monospace;font-size:0.5rem;color:var(--gray);background:none;border:none;cursor:pointer;opacity:0;transition:opacity 0.2s;padding:0.1rem 0.3rem}
+.msg-bubble:hover .msg-copy{opacity:1}
+.msg-copy:hover{color:var(--purple-l)}
+
+/* TYPING INDICATOR */
+.typing-indicator{display:flex;gap:0.6rem;align-items:center;padding:0.5rem 0}
+.typing-dots{display:flex;gap:4px;align-items:center;background:var(--card);border:1px solid var(--border);padding:0.6rem 0.9rem}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--purple-l);animation:dotPulse 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:0.2s}
+.dot:nth-child(3){animation-delay:0.4s}
+@keyframes dotPulse{0%,60%,100%{opacity:0.2;transform:scale(0.85)}30%{opacity:1;transform:scale(1)}}
+
+/* USAGE BAR */
+.usage-strip{padding:0.4rem 1.25rem;background:rgba(7,7,15,0.8);border-top:1px solid var(--border);display:flex;align-items:center;gap:0.6rem;flex-shrink:0}
+.usage-label{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--gray);white-space:nowrap}
+.usage-bar-wrap{flex:1;height:2px;background:rgba(255,255,255,0.05);border-radius:1px;overflow:hidden}
+.usage-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan));border-radius:1px;transition:width 0.4s ease}
+.usage-count{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--gray-l);white-space:nowrap}
+
+/* INPUT AREA */
+.input-area{padding:0.75rem 1.25rem 1rem;border-top:1px solid var(--border);background:rgba(7,7,15,0.97);flex-shrink:0}
+.model-row{display:flex;gap:0.4rem;margin-bottom:0.6rem;flex-wrap:wrap}
+.model-btn{font-family:'Space Mono',monospace;font-size:0.58rem;padding:0.22rem 0.55rem;border:1px solid var(--border);color:var(--gray);background:transparent;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em}
+.model-btn.active{border-color:var(--purple);color:var(--purple-l);background:rgba(124,58,237,0.1)}
+.input-row{display:flex;gap:0.5rem;align-items:flex-end}
+.msg-input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--white);padding:0.7rem 0.9rem;font-family:'Syne',sans-serif;font-size:0.88rem;outline:none;resize:none;min-height:44px;max-height:120px;transition:border-color 0.2s;line-height:1.5}
+.msg-input::placeholder{color:var(--gray)}
+.msg-input:focus{border-color:var(--purple)}
+.btn-send{background:var(--purple);border:none;color:#fff;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:1.1rem;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
+.btn-send:hover{background:#6d28d9;transform:translateY(-1px)}
+.btn-send:disabled{background:var(--gray);cursor:not-allowed;transform:none}
+
+/* INSTALL */
+.install-banner{background:rgba(124,58,237,0.08);border-bottom:1px solid rgba(124,58,237,0.2);padding:0.6rem 1.25rem;display:none;align-items:center;justify-content:space-between;gap:0.75rem;flex-shrink:0}
+.install-text{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--purple-l)}
+.btn-install{font-family:'Space Mono',monospace;font-size:0.58rem;padding:0.25rem 0.6rem;background:var(--purple);color:#fff;border:none;cursor:pointer}
+
+/* ERROR */
+.error-msg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#f87171;padding:0.65rem 0.9rem;font-family:'Space Mono',monospace;font-size:0.72rem;max-width:82%}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="install-banner" id="installBanner">
+    <span class="install-text">📲 Install Llama Chat on your home screen</span>
+    <button class="btn-install" id="installBtn">INSTALL</button>
+  </div>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="app-icon">🦙</div>
+      <div>
+        <div class="app-name">Llama 3 Chat</div>
+        <div class="app-maker">BY META · VIA A-STORE</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="model-badge" id="activeModelBadge">LLAMA 3 8B</span>
+      <button class="btn-clear" onclick="clearChat()" title="Clear chat">✕</button>
+      <a href="https://ishraq-syed23.github.io/A-Store" class="store-link">A—STORE</a>
+    </div>
+  </div>
+
+  <div class="usage-strip">
+    <span class="usage-label">DAILY USAGE</span>
+    <div class="usage-bar-wrap"><div class="usage-bar-fill" id="usageBar" style="width:0%"></div></div>
+    <span class="usage-count" id="usageCount">0 / 50</span>
+  </div>
+
+  <div class="messages" id="messages">
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">🦙</div>
+      <h2>Llama 3 by Meta</h2>
+      <p>Open-source AI running via A-Store. Ask me anything — I'm fast, free, and private.</p>
+      <div class="suggestions">
+        <button class="suggestion" onclick="sendSuggestion(this)">✍️ Write a cover letter for a software internship</button>
+        <button class="suggestion" onclick="sendSuggestion(this)">🔢 Explain calculus in simple terms</button>
+        <button class="suggestion" onclick="sendSuggestion(this)">💡 Give me 5 startup ideas for India</button>
+        <button class="suggestion" onclick="sendSuggestion(this)">🐛 Debug this: why does my code crash?</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="model-row">
+      <button class="model-btn active" onclick="setModel('llama3-8b-8192','LLAMA 3 8B',this)">LLAMA 3 8B</button>
+      <button class="model-btn" onclick="setModel('llama3-70b-8192','LLAMA 3 70B',this)">LLAMA 3 70B</button>
+      <button class="model-btn" onclick="setModel('mixtral-8x7b-32768','MIXTRAL 8X7B',this)">MIXTRAL</button>
+      <button class="model-btn" onclick="setModel('gemma2-9b-it','GEMMA 2 9B',this)">GEMMA 2</button>
+    </div>
+    <div class="input-row">
+      <textarea
+        class="msg-input"
+        id="msgInput"
+        placeholder="Ask anything..."
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="btn-send" id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CHAT_API = 'https://jzqmjvxwtguaubsfklpf.supabase.co/functions/v1/chat';
+const DAILY_LIMIT = 50;
+const STORAGE_KEY = 'llama_usage';
+const HISTORY_KEY = 'llama_history';
+
+let messages = [];
+let currentModel = 'llama3-8b-8192';
+let isLoading = false;
+let deferredPrompt = null;
+
+// Usage tracking
+function getUsage(){
+  const today = new Date().toDateString();
+  const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  return s.date === today ? (s.count || 0) : 0;
+}
+function incrementUsage(){
+  const today = new Date().toDateString();
+  const c = getUsage() + 1;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({date: today, count: c}));
+  updateUsageUI(c);
+  return c;
+}
+function updateUsageUI(c){
+  const pct = Math.min((c / DAILY_LIMIT) * 100, 100);
+  document.getElementById('usageBar').style.width = pct + '%';
+  document.getElementById('usageCount').textContent = c + ' / ' + DAILY_LIMIT;
+  const bar = document.getElementById('usageBar');
+  bar.style.background = pct > 80
+    ? 'linear-gradient(90deg,#f59e0b,#ef4444)'
+    : pct > 50
+    ? 'linear-gradient(90deg,#10b981,#f59e0b)'
+    : 'linear-gradient(90deg,var(--purple),var(--cyan))';
+}
+
+function setModel(modelId, label, btn){
+  currentModel = modelId;
+  document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('activeModelBadge').textContent = label;
+}
+
+function autoResize(el){
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e){
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function sendSuggestion(btn){
+  const text = btn.textContent.replace(/^[^\s]+\s/, '');
+  document.getElementById('msgInput').value = text;
+  sendMessage();
+}
+
+function clearChat(){
+  messages = [];
+  const container = document.getElementById('messages');
+  container.innerHTML = `
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">🦙</div>
+      <h2>Llama 3 by Meta</h2>
+      <p>Open-source AI running via A-Store. Ask me anything — I'm fast, free, and private.</p>
+      <div class="suggestions">
+        <button class="suggestion" onclick="sendSuggestion(this)">✍️ Write a cover letter for a software internship</button>
+        <button class="suggestion" onclick="sendSuggestion(this)">🔢 Explain calculus in simple terms</button>
+        <button class="suggestion" onclick="sendSuggestion(this)">💡 Give me 5 startup ideas for India</button>
+        <button class="suggestion" onclick="sendSuggestion(this)">🐛 Debug this: why does my code crash?</button>
+      </div>
+    </div>`;
+}
+
+function formatTime(){
+  return new Date().toLocaleTimeString('en-IN', {hour: '2-digit', minute: '2-digit'});
+}
+
+function renderMessage(role, text){
+  const container = document.getElementById('messages');
+  const welcome = document.getElementById('welcome');
+  if(welcome) welcome.remove();
+
+  const isUser = role === 'user';
+  const div = document.createElement('div');
+  div.className = 'msg ' + (isUser ? 'user' : 'ai');
+
+  // Format AI text — convert **bold** markdown
+  const formatted = isUser ? text : text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+
+  div.innerHTML = `
+    <div class="msg-avatar">${isUser ? '👤' : '🦙'}</div>
+    <div>
+      <div class="msg-bubble">
+        ${formatted}
+        ${!isUser ? `<button class="msg-copy" onclick="copyMsg(this)">COPY</button>` : ''}
+      </div>
+      <span class="msg-time">${formatTime()}</span>
+    </div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showTyping(){
+  const container = document.getElementById('messages');
+  const el = document.createElement('div');
+  el.className = 'typing-indicator';
+  el.id = 'typingIndicator';
+  el.innerHTML = `
+    <div class="msg-avatar" style="background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3);width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.85rem">🦙</div>
+    <div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  container.appendChild(el);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideTyping(){
+  const el = document.getElementById('typingIndicator');
+  if(el) el.remove();
+}
+
+function showError(text){
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.innerHTML = `
+    <div class="msg-avatar" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;">⚠️</div>
+    <div><div class="error-msg">${text}</div></div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function copyMsg(btn){
+  const bubble = btn.closest('.msg-bubble');
+  const text = bubble.innerText.replace('COPY','').trim();
+  if(navigator.clipboard) navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'COPIED!';
+    setTimeout(() => btn.textContent = 'COPY', 1500);
+  });
+}
+
+async function sendMessage(){
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if(!text || isLoading) return;
+
+  if(getUsage() >= DAILY_LIMIT){
+    showError('Daily limit reached (50 messages). Come back tomorrow or join the priority waitlist at A-Store.');
+    return;
+  }
+
+  input.value = '';
+  input.style.height = 'auto';
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  // Add to messages array and render
+  messages.push({role: 'user', content: text});
+  renderMessage('user', text);
+  showTyping();
+
+  try{
+    const res = await fetch(CHAT_API, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful, knowledgeable assistant running via A-Store — an open-source AI app store built in India. Be concise, clear, and genuinely useful. Format responses with markdown when helpful.'
+          },
+          ...messages
+        ],
+        model: currentModel
+      })
+    });
+
+    hideTyping();
+
+    if(!res.ok){
+      const err = await res.json().catch(() => ({}));
+      showError('Error ' + res.status + ': ' + (err.error || 'Please try again.'));
+      messages.pop();
+      return;
+    }
+
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content || 'No response. Please try again.';
+    messages.push({role: 'assistant', content: reply});
+    renderMessage('ai', reply);
+    incrementUsage();
+
+    // Keep conversation history manageable (last 20 messages)
+    if(messages.length > 20) messages = messages.slice(-20);
+
+  }catch(err){
+    hideTyping();
+    showError('Network error: ' + err.message + '. Check your internet connection.');
+    messages.pop();
+  }finally{
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+    document.getElementById('msgInput').focus();
+  }
+}
+
+// PWA Install
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').style.display = 'flex';
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const {outcome} = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBanner').style.display = 'none';
+});
+
+// Init
+updateUsageUI(getUsage());
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+  </html>
