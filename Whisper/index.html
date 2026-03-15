@@ -191,28 +191,43 @@ function startTimer(){
 }
 
 async function processAudio(){
-  const blob=new Blob(audioChunks,{type:audioChunks[0]?.type||'audio/webm'});
-  if(blob.size<1000){setProcessingUI(false);setOutput('Recording too short. Please speak clearly and try again.','error');return;}
+  // Always use a safe default MIME type - Android often returns empty string
+  const mimeType = (audioChunks[0] && audioChunks[0].type) ? audioChunks[0].type : 'audio/webm';
+  const blob = new Blob(audioChunks, {type: mimeType});
+  if(blob.size < 1000){
+    setProcessingUI(false);
+    setOutput('Recording too short. Please hold the button and speak clearly.','error');
+    return;
+  }
   try{
-    // Call Supabase proxy (token stored securely server-side)
-    setOutput('Transcribing... (first request may take ~20 seconds to warm up)', 'error');
+    setOutput('Transcribing... first request takes ~20 seconds to warm up.','error');
     const res = await fetch(PROXY_API, {
       method: 'POST',
-      headers: { 'Content-Type': blob.type },
+      headers: { 'Content-Type': 'audio/webm' },
       body: blob
     });
     setProcessingUI(false);
     if(!res.ok){
-      if(res.status===503)setOutput('Model is loading (~20 seconds on first use). Please try again in a moment.','error');
-      else if(res.status===429)setOutput('API limit reached for today. Come back tomorrow or visit A-Store to join the priority waitlist.','error');
-      else setOutput('Transcription failed (error '+res.status+'). Please try again.','error');
+      let errMsg = 'Transcription failed (error '+res.status+').';
+      if(res.status===503) errMsg = 'Model is warming up. Please wait 20 seconds and try again.';
+      if(res.status===429) errMsg = 'Daily limit reached. Come back tomorrow!';
+      if(res.status===401) errMsg = 'Auth error — please contact A-Store support.';
+      setOutput(errMsg,'error');
       return;
     }
-    const result=await res.json();
-    const text=result.text||result[0]?.generated_text||'';
-    if(!text||text.trim()===''){setOutput('Could not detect speech. Please speak clearly and try again.','error');return;}
-    incrementUsage();setOutput(text.trim(),'success');addToHistory(text.trim());
-  }catch(err){setProcessingUI(false);setOutput('Network error. Check your internet connection.','error');}
+    const result = await res.json();
+    const text = result.text || (result[0] && result[0].generated_text) || '';
+    if(!text || text.trim()===''){
+      setOutput('Could not detect speech. Please speak clearly and try again.','error');
+      return;
+    }
+    incrementUsage();
+    setOutput(text.trim(),'success');
+    addToHistory(text.trim());
+  }catch(err){
+    setProcessingUI(false);
+    setOutput('Error: ' + err.message + '. Make sure you are on HTTPS and try again.','error');
+  }
 }
 
 function setRecordingUI(r){
@@ -252,4 +267,4 @@ renderHistory();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
-</html>
+  </html>
