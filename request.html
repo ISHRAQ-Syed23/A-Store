@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Request an App — A-Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07070f;--surface:#0f0f1e;--card:#13132a;--border:rgba(120,80,255,0.18);--purple:#7c3aed;--purple-l:#a78bfa;--cyan:#06b6d4;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--white:#f0eeff;--gray:#6b7280;--gray-l:#9ca3af}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.25rem;background:rgba(7,7,15,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);gap:0.5rem}
+.logo{font-family:'Space Mono',monospace;font-size:0.9rem;font-weight:700;color:var(--white);letter-spacing:0.1em;text-decoration:none;flex-shrink:0}.logo span{color:var(--purple)}
+.nav-back{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--gray);text-decoration:none;border:1px solid var(--border);padding:0.2rem 0.6rem;transition:all 0.2s}
+.nav-back:hover{color:var(--purple-l);border-color:var(--purple)}
+.page-hero{position:relative;z-index:1;padding:7rem 1.25rem 3rem;text-align:center;max-width:700px;margin:0 auto}
+.hero-tag{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.22em;color:var(--cyan);border:1px solid rgba(6,182,212,0.3);padding:0.32rem 0.85rem;margin-bottom:1.5rem;display:inline-block}
+h1{font-size:clamp(2rem,6vw,3.5rem);font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-bottom:1rem}
+h1 span{color:var(--purple-l)}
+.hero-sub{font-size:clamp(0.88rem,2vw,1rem);color:var(--gray-l);line-height:1.7;max-width:520px;margin:0 auto 2.5rem}
+.stats-row{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:0}
+.stat-box{text-align:center}
+.stat-box .n{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--purple-l);display:block}
+.stat-box .l{font-size:0.68rem;color:var(--gray);letter-spacing:0.05em}
+.main{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:0 1.25rem 5rem}
+.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+
+/* SUBMIT FORM */
+.submit-card{background:var(--surface);border:1px solid var(--border);padding:2rem 1.5rem;margin-bottom:2.5rem;position:relative;overflow:hidden}
+.submit-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--cyan))}
+.card-title{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.2em;color:var(--cyan);margin-bottom:1.25rem}
+.form-grid{display:flex;flex-direction:column;gap:0.85rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem}
+.field label{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--gray);letter-spacing:0.1em;margin-bottom:0.35rem;display:block}
+.field input,.field textarea,.field select{width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:0.75rem 0.9rem;font-family:'Space Mono',monospace;font-size:0.78rem;outline:none;transition:border-color 0.2s;resize:none}
+.field input::placeholder,.field textarea::placeholder{color:var(--gray)}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--purple)}
+.field select option{background:var(--card);color:var(--white)}
+.field textarea{min-height:80px}
+.submit-row{display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;margin-top:0.5rem}
+.btn-submit{background:var(--purple);color:#fff;border:none;padding:0.8rem 1.8rem;font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;transition:all 0.2s;flex-shrink:0;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
+.btn-submit:hover{background:#6d28d9;transform:translateY(-1px)}
+.btn-submit:disabled{background:var(--gray);cursor:not-allowed;transform:none}
+.submit-note{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--gray)}
+.form-success{display:none;background:rgba(16,185,129,0.08);border:1px solid var(--green);color:var(--green);padding:1rem 1.25rem;font-family:'Space Mono',monospace;font-size:0.78rem;margin-top:1rem}
+.form-error{display:none;background:rgba(239,68,68,0.08);border:1px solid var(--red);color:#f87171;padding:0.85rem 1.25rem;font-family:'Space Mono',monospace;font-size:0.75rem;margin-top:0.75rem}
+
+/* FILTER + SORT */
+.list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem}
+.list-title{font-size:1.3rem;font-weight:800}
+.sort-tabs{display:flex;gap:0.4rem}
+.sort-tab{font-family:'Space Mono',monospace;font-size:0.62rem;padding:0.28rem 0.65rem;border:1px solid var(--border);color:var(--gray);background:transparent;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em}
+.sort-tab.active{border-color:var(--purple);color:var(--purple-l);background:rgba(124,58,237,0.1)}
+
+/* REQUEST CARDS */
+.requests-list{display:flex;flex-direction:column;gap:0.75rem}
+.req-card{background:var(--card);border:1px solid var(--border);padding:1.1rem 1.25rem;display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;transition:border-color 0.2s}
+.req-card:hover{border-color:rgba(124,58,237,0.35)}
+
+/* VOTE BUTTON */
+.vote-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;background:transparent;border:1px solid var(--border);width:52px;min-width:52px;height:58px;cursor:pointer;transition:all 0.2s;flex-shrink:0}
+.vote-btn:hover{border-color:var(--purple);background:rgba(124,58,237,0.08)}
+.vote-btn.voted{border-color:var(--purple);background:rgba(124,58,237,0.15);cursor:default}
+.vote-arrow{font-size:1rem;line-height:1;color:var(--gray);transition:color 0.2s}
+.vote-btn:hover .vote-arrow,.vote-btn.voted .vote-arrow{color:var(--purple-l)}
+.vote-count{font-family:'Space Mono',monospace;font-size:0.8rem;font-weight:700;color:var(--gray-l);transition:color 0.2s}
+.vote-btn.voted .vote-count{color:var(--purple-l)}
+
+/* CARD CONTENT */
+.req-content{}
+.req-top{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.3rem}
+.req-name{font-weight:700;font-size:0.95rem;color:var(--white)}
+.req-maker{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--gray)}
+.req-desc{font-size:0.8rem;color:var(--gray-l);line-height:1.55;margin-bottom:0.6rem}
+.req-tags{display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center}
+.tag{font-family:'Space Mono',monospace;font-size:0.58rem;padding:0.15rem 0.4rem;border:1px solid var(--border);color:var(--gray-l)}
+.tag.type-llm{border-color:rgba(124,58,237,0.4);color:var(--purple-l)}
+.tag.type-audio{border-color:rgba(6,182,212,0.4);color:var(--cyan)}
+.tag.type-vision{border-color:rgba(245,158,11,0.4);color:var(--orange)}
+.tag.type-other{border-color:rgba(16,185,129,0.4);color:var(--green)}
+.tag.stars{color:var(--orange);border-color:rgba(245,158,11,0.3)}
+.req-status{font-family:'Space Mono',monospace;font-size:0.58rem;padding:0.15rem 0.4rem;border:1px solid}
+.req-status.pending{border-color:var(--orange);color:var(--orange)}
+.req-status.building{border-color:var(--cyan);color:var(--cyan)}
+.req-status.live{border-color:var(--green);color:var(--green)}
+
+/* RIGHT SIDE */
+.req-right{display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0}
+.req-link{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--purple-l);text-decoration:none;border:1px solid rgba(124,58,237,0.3);padding:0.2rem 0.5rem;transition:all 0.2s;white-space:nowrap}
+.req-link:hover{background:rgba(124,58,237,0.1)}
+.req-date{font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--gray)}
+
+/* RANK BADGE */
+.rank-badge{font-family:'Space Mono',monospace;font-size:0.6rem;padding:0.12rem 0.38rem;background:rgba(124,58,237,0.15);color:var(--purple-l);border:1px solid rgba(124,58,237,0.3)}
+
+/* EMPTY + LOADING */
+.list-empty{text-align:center;padding:3rem 1rem;font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--gray)}
+.list-loading{text-align:center;padding:2rem;font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--cyan)}
+
+/* HOW IT WORKS */
+.how-section{background:var(--surface);border:1px solid var(--border);padding:1.75rem 1.5rem;margin-top:2.5rem}
+.how-title{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;color:var(--cyan);margin-bottom:1.25rem}
+.how-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
+.how-step{text-align:center}
+.how-num{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--purple);letter-spacing:0.2em;margin-bottom:0.5rem}
+.how-icon{font-size:1.5rem;margin-bottom:0.5rem;display:block}
+.how-text{font-size:0.8rem;color:var(--gray-l);line-height:1.55}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:1.5rem 1.25rem;text-align:center;margin-top:2rem}
+footer p{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--gray);margin-top:0.25rem}
+
+@media(max-width:520px){
+  .form-row{grid-template-columns:1fr}
+  .req-card{grid-template-columns:auto 1fr;grid-template-rows:auto auto}
+  .req-right{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start}
+  .stats-row{gap:1.25rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">A<span>—</span>STORE</a>
+  <a href="index.html" class="nav-back">← BACK TO STORE</a>
+</nav>
+
+<div class="page-hero">
+  <span class="hero-tag">COMMUNITY REQUESTS</span>
+  <h1>What App Do You <span>Want?</span></h1>
+  <p class="hero-sub">Submit any open-source GitHub repo and vote for the apps you want built first. The most-voted apps get built first. Your voice shapes what A-Store builds next.</p>
+  <div class="stats-row">
+    <div class="stat-box"><span class="n" id="totalRequests">—</span><span class="l">TOTAL REQUESTS</span></div>
+    <div class="stat-box"><span class="n" id="totalVotes">—</span><span class="l">TOTAL VOTES</span></div>
+    <div class="stat-box"><span class="n" id="totalEmails">—</span><span class="l">PEOPLE WAITING</span></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SUBMIT FORM -->
+  <div class="submit-card">
+    <div class="card-title">▸ SUBMIT A REPO REQUEST</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>GITHUB REPO URL *</label>
+        <input type="url" id="submitUrl" placeholder="https://github.com/openai/whisper"/>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>YOUR NAME (optional)</label>
+          <input type="text" id="submitName" placeholder="Ishraq"/>
+        </div>
+        <div class="field">
+          <label>YOUR EMAIL (optional)</label>
+          <input type="email" id="submitEmail" placeholder="you@email.com"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>WHY DO YOU WANT THIS APP? (optional)</label>
+        <textarea id="submitReason" placeholder="I want to use Whisper to transcribe lectures on my phone without internet..."></textarea>
+      </div>
+    </div>
+    <div class="submit-row">
+      <button class="btn-submit" id="submitBtn" onclick="submitRequest()">SUBMIT REQUEST →</button>
+      <span class="submit-note">FREE · NO ACCOUNT NEEDED · OPEN SOURCE ONLY</span>
+    </div>
+    <div class="form-success" id="formSuccess">✓ REQUEST SUBMITTED — Your repo has been added to the community list. Vote for it below!</div>
+    <div class="form-error" id="formError"></div>
+  </div>
+
+  <!-- REQUESTS LIST -->
+  <div class="list-header">
+    <div class="list-title">Community Requests</div>
+    <div class="sort-tabs">
+      <button class="sort-tab active" onclick="setSort('votes',this)">TOP VOTED</button>
+      <button class="sort-tab" onclick="setSort('newest',this)">NEWEST</button>
+      <button class="sort-tab" onclick="setSort('stars',this)">MOST STARS</button>
+    </div>
+  </div>
+
+  <div class="requests-list" id="requestsList">
+    <div class="list-loading">Loading community requests...</div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-section">
+    <div class="how-title">▸ HOW REQUESTS WORK</div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-num">STEP 01</div>
+        <span class="how-icon">🔗</span>
+        <div class="how-text">Submit any open-source GitHub repo you want as a phone app</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">STEP 02</div>
+        <span class="how-icon">🗳️</span>
+        <div class="how-text">The community votes for apps they want. Most votes = built first</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">STEP 03</div>
+        <span class="how-icon">🔔</span>
+        <div class="how-text">Leave your email and we notify you the moment your app goes live</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">STEP 04</div>
+        <span class="how-icon">📲</span>
+        <div class="how-text">Install it like any normal app. No terminal. No setup. Just tap.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div style="font-family:'Space Mono',monospace;font-size:0.85rem;font-weight:700">A<span style="color:var(--purple)">—</span>STORE</div>
+  <p>THE OPEN-SOURCE AI APP STORE · BUILT FOR INDIA, MADE FOR THE WORLD</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPA_URL='https://jzqmjvxwtguaubsfklpf.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6cW1qdnh3dGd1YXVic2ZrbHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NDIzNzAsImV4cCI6MjA4ODMxODM3MH0.vuXY2Py1VjcNbD2H7IL68cFN6jkO1tBBUyzIB6yziSA';
+const{createClient}=supabase;
+const db=createClient(SUPA_URL,SUPA_KEY);
+
+let currentSort='votes';
+let allRequests=[];
+
+// Load votes from localStorage
+function getVotedSet(){
+  try{return new Set(JSON.parse(localStorage.getItem('astore_voted')||'[]'));}
+  catch(e){return new Set();}
+}
+function saveVote(id){
+  const s=getVotedSet();s.add(id);
+  localStorage.setItem('astore_voted',JSON.stringify([...s]));
+}
+function hasVoted(id){return getVotedSet().has(id);}
+
+// Stats
+async function loadStats(){
+  try{
+    const[{count:rc},{count:ec}]=await Promise.all([
+      db.from('repo_requests').select('*',{count:'exact',head:true}),
+      db.from('email_waitlist').select('*',{count:'exact',head:true})
+    ]);
+    // Total votes
+    const{data:vd}=await db.from('repo_requests').select('votes');
+    const tv=vd?vd.reduce((s,r)=>s+(r.votes||0),0):0;
+    document.getElementById('totalRequests').textContent=rc||0;
+    document.getElementById('totalVotes').textContent=tv||0;
+    document.getElementById('totalEmails').textContent=ec||0;
+  }catch(e){}
+}
+
+// Load requests
+async function loadRequests(){
+  try{
+    let q=db.from('repo_requests').select('*');
+    if(currentSort==='votes') q=q.order('votes',{ascending:false}).order('submitted_at',{ascending:false});
+    else if(currentSort==='newest') q=q.order('submitted_at',{ascending:false});
+    else if(currentSort==='stars') q=q.order('stars',{ascending:false});
+    const{data,error}=await q.limit(50);
+    if(error)throw error;
+    allRequests=data||[];
+    renderRequests();
+  }catch(e){
+    document.getElementById('requestsList').innerHTML='<div class="list-empty">Could not load requests. Please refresh.</div>';
+  }
+}
+
+function setSort(s,btn){
+  currentSort=s;
+  document.querySelectorAll('.sort-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  loadRequests();
+}
+
+function getTypeClass(t){
+  if(!t)return'type-other';
+  const tl=t.toLowerCase();
+  if(/llm|language|chat/.test(tl))return'type-llm';
+  if(/speech|audio|whisper|stt/.test(tl))return'type-audio';
+  if(/image|vision|diffusion/.test(tl))return'type-vision';
+  return'type-other';
+}
+
+function renderRequests(){
+  const el=document.getElementById('requestsList');
+  if(!allRequests.length){
+    el.innerHTML='<div class="list-empty">No requests yet. Be the first to submit one above! 👆</div>';
+    return;
+  }
+  el.innerHTML=allRequests.map((r,idx)=>{
+    const voted=hasVoted(r.id);
+    const votes=r.votes||0;
+    const stars=r.stars>=1000?(r.stars/1000).toFixed(1)+'k':r.stars||0;
+    const date=new Date(r.submitted_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    const typeClass=getTypeClass(r.model_type);
+    const rankLabel=idx===0?'#1 MOST WANTED':idx===1?'#2':idx===2?'#3':'';
+    return `
+<div class="req-card" id="card-${r.id}">
+  <button class="vote-btn ${voted?'voted':''}" onclick="castVote('${r.id}',${votes})" title="${voted?'Already voted':'Upvote this request'}">
+    <span class="vote-arrow">▲</span>
+    <span class="vote-count" id="vc-${r.id}">${votes}</span>
+  </button>
+  <div class="req-content">
+    <div class="req-top">
+      <span class="req-name">${r.repo_owner}/${r.repo_name}</span>
+      ${rankLabel?`<span class="rank-badge">${rankLabel}</span>`:''}
+      <span class="req-status ${r.status}">${r.status.toUpperCase()}</span>
+    </div>
+    ${r.reason?`<div class="req-desc">${r.reason}</div>`:''}
+    <div class="req-tags">
+      ${r.model_type?`<span class="tag ${typeClass}">${r.model_type}</span>`:''}
+      ${r.stars?`<span class="tag stars">★ ${stars}</span>`:''}
+      ${r.device_requirement?`<span class="tag">${r.device_requirement.split(' ')[0]}</span>`:''}
+    </div>
+  </div>
+  <div class="req-right">
+    <a class="req-link" href="${r.github_url}" target="_blank">GITHUB →</a>
+    <span class="req-date">${date}</span>
+  </div>
+</div>`;
+  }).join('');
+}
+
+async function castVote(id,currentVotes){
+  if(hasVoted(id))return;
+  saveVote(id);
+  // Optimistic UI update
+  const btn=document.querySelector(`#card-${id} .vote-btn`);
+  const vc=document.getElementById(`vc-${id}`);
+  if(btn)btn.classList.add('voted');
+  if(vc)vc.textContent=currentVotes+1;
+  try{
+    await db.from('repo_requests').update({votes:(currentVotes+1)}).eq('id',id);
+    loadStats();
+  }catch(e){
+    // Revert on failure
+    if(btn)btn.classList.remove('voted');
+    if(vc)vc.textContent=currentVotes;
+    const s=getVotedSet();s.delete(id);
+    localStorage.setItem('astore_voted',JSON.stringify([...s]));
+  }
+}
+
+async function submitRequest(){
+  const url=document.getElementById('submitUrl').value.trim();
+  const name=document.getElementById('submitName').value.trim();
+  const email=document.getElementById('submitEmail').value.trim();
+  const reason=document.getElementById('submitReason').value.trim();
+  const errEl=document.getElementById('formError');
+  const sucEl=document.getElementById('formSuccess');
+  const btn=document.getElementById('submitBtn');
+  errEl.style.display='none';sucEl.style.display='none';
+
+  // Validate URL
+  const match=url.match(/github\.com\/([^\/]+)\/([^\/\?#]+)/);
+  if(!url||!match){
+    errEl.textContent='✗ Please paste a valid GitHub URL — e.g. https://github.com/openai/whisper';
+    errEl.style.display='block';return;
+  }
+  const owner=match[1],repo=match[2].replace(/\.git$/,'');
+
+  btn.textContent='ANALYZING...';btn.disabled=true;
+
+  try{
+    // Check duplicate
+    const{data:existing}=await db.from('repo_requests').select('id,votes').eq('github_url',url).maybeSingle();
+    if(existing){
+      errEl.textContent='⚠ This repo is already in the list! Scroll down to find it and vote for it.';
+      errEl.style.display='block';
+      btn.textContent='SUBMIT REQUEST →';btn.disabled=false;
+      // Scroll to the card
+      setTimeout(()=>{
+        const el=document.getElementById(`card-${existing.id}`);
+        if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
+      },300);
+      return;
+    }
+
+    // Fetch GitHub data
+    const res=await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+    if(!res.ok)throw new Error('Repository not found. Make sure it is a public GitHub repo.');
+    const data=await res.json();
+
+    // Detect model type
+    const t=((data.description||'')+' '+(data.topics||[]).join(' ')).toLowerCase();
+    let modelType='AI / ML Tool';
+    if(/whisper|speech|transcri|asr|stt/.test(t))modelType='Speech-to-Text';
+    else if(/diffusion|text.to.image|image.gen|sdxl|flux/.test(t))modelType='Image Generation';
+    else if(/llm|language.model|llama|mistral|qwen|chat|instruct|deepseek|gemma|phi/.test(t))modelType='Large Language Model';
+    else if(/vision|object.detect|yolo|clip/.test(t))modelType='Computer Vision';
+    else if(/embed|rag|retriev/.test(t))modelType='Embedding / RAG';
+
+    // Device
+    const body=((data.description||'')).toLowerCase();
+    let deviceReq='Mid-Range Device';
+    if(/70b|65b|34b/.test(body))deviceReq='Cloud Only';
+    else if(/7b|8b/.test(body))deviceReq='Laptop or Cloud';
+    else if(/3b|1b|tiny|small|lite/.test(body))deviceReq='Any Phone';
+
+    // License
+    const license=data.license?data.license.name:'No License';
+
+    // Save to Supabase
+    const{data:inserted,error}=await db.from('repo_requests').insert({
+      github_url:url,
+      repo_owner:owner,
+      repo_name:repo,
+      model_type:modelType,
+      license_name:license,
+      stars:data.stargazers_count||0,
+      device_requirement:deviceReq,
+      status:'pending',
+      votes:0,
+      reason:reason||null,
+      submitted_by:name||null,
+      user_email:email||null
+    }).select().single();
+    if(error)throw error;
+
+    // Save email to waitlist if provided
+    if(email){
+      await db.from('email_waitlist').upsert({
+        email,interest:`${owner}/${repo}`,source:'request_page'
+      },{onConflict:'email,interest'});
+    }
+
+    sucEl.style.display='block';
+    document.getElementById('submitUrl').value='';
+    document.getElementById('submitName').value='';
+    document.getElementById('submitEmail').value='';
+    document.getElementById('submitReason').value='';
+    btn.textContent='SUBMIT REQUEST →';btn.disabled=false;
+    loadRequests();loadStats();
+
+  }catch(e){
+    errEl.textContent='✗ '+e.message;
+    errEl.style.display='block';
+    btn.textContent='SUBMIT REQUEST →';btn.disabled=false;
+  }
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  loadStats();
+  loadRequests();
+});
+</script>
+</body>
+</html>
