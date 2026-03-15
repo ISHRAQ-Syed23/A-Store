@@ -142,8 +142,8 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 
   <div class="input-area">
     <div class="model-row">
-      <button class="model-btn active" onclick="setModel('llama3-8b-8192','LLAMA 3 8B',this)">LLAMA 3 8B</button>
-      <button class="model-btn" onclick="setModel('llama3-70b-8192','LLAMA 3 70B',this)">LLAMA 3 70B</button>
+      <button class="model-btn active" onclick="setModel('llama-3.1-8b-instant','LLAMA 3.1 8B',this)">LLAMA 3 8B</button>
+      <button class="model-btn" onclick="setModel('llama-3.3-70b-versatile','LLAMA 3.3 70B',this)">LLAMA 3 70B</button>
       <button class="model-btn" onclick="setModel('mixtral-8x7b-32768','MIXTRAL 8X7B',this)">MIXTRAL</button>
       <button class="model-btn" onclick="setModel('gemma2-9b-it','GEMMA 2 9B',this)">GEMMA 2</button>
     </div>
@@ -168,7 +168,7 @@ const STORAGE_KEY = 'llama_usage';
 const HISTORY_KEY = 'llama_history';
 
 let messages = [];
-let currentModel = 'llama3-8b-8192';
+let currentModel = 'llama-3.1-8b-instant';
 let isLoading = false;
 let deferredPrompt = null;
 
