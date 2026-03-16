@@ -3,8 +3,8 @@
 > **Paste a GitHub repo URL. See what app it becomes.**
 > Built by a 17-year-old student from India — no laptop, no money, no team.
 
-[![Prototype](https://img.shields.io/badge/status-prototype_v0.1-orange?style=flat-square)](https://ishraq-syed23.github.io/A-Store)
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=flat-square)](https://ishraq-syed23.github.io/A-Store)
+[![Prototype](https://img.shields.io/badge/status-prototype_v0.1-orange?style=flat-square)](https://a-store-ishraq.vercel.app)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=flat-square)](https://a-store-ishraq.vercel.app)
 [![HuggingFace](https://img.shields.io/badge/🤗_HuggingFace-demo-yellow?style=flat-square)](https://huggingface.co/spaces/ISHRAQ-Syed23/A-Store-demo)
 [![Built in Public](https://img.shields.io/badge/building-in_public-purple?style=flat-square)](https://x.com/syedishraq23)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
@@ -25,7 +25,7 @@ You paste a GitHub repo URL. A-Store analyzes it, detects the model type, checks
 
 | Feature | Status | Link |
 |---|---|---|
-| Store UI | ✅ Live | [ishraq-syed23.github.io/A-Store](https://ishraq-syed23.github.io/A-Store) |
+| Store UI | ✅ Live | [a-store-ishraq.vercel.app](https://a-store-ishraq.vercel.app) |
 | GitHub Repo Analyzer | ✅ Working | Paste any GitHub URL in the store |
 | Whisper AI Demo | ✅ Running | [HuggingFace Space](https://huggingface.co/spaces/ISHRAQ-Syed23/A-Store-demo) |
 | Community Waitlist | ✅ Live | Powered by Supabase |
@@ -96,7 +96,7 @@ Frontend    → HTML / CSS / JavaScript (GitHub Pages)
 Backend     → Supabase (PostgreSQL, free tier)
 Repo Data   → GitHub Public API (no auth required)
 AI Demo     → HuggingFace Spaces (Gradio, free CPU)
-Hosting     → GitHub Pages (free)
+Hosting     → Vercel (free)
 ```
 
 ---
@@ -109,7 +109,7 @@ Hosting     → GitHub Pages (free)
 - [x] Supabase backend
 - [x] Email waitlist capture
 - [x] HuggingFace demo
-- [ ] Request an App dedicated page
+- [x] Request an App dedicated page
 - [ ] Email notification system
 
 ### Phase 2 — Beta
@@ -160,7 +160,7 @@ MIT — see [LICENSE](LICENSE)
 
 ## Links
 
-- 🌐 **Store:** [ishraq-syed23.github.io/A-Store](https://ishraq-syed23.github.io/A-Store)
+- 🌐 **Store:** [a-store-ishraq.vercel.app](https://a-store-ishraq.vercel.apl)
 - 🤗 **Demo:** [huggingface.co/spaces/ISHRAQ-Syed23/A-Store-demo](https://huggingface.co/spaces/ISHRAQ-Syed23/A-Store-demo)
 - 🐦 **Twitter:** [@syedishraq23](https://x.com/syedishraq23)
 - 📧 **Contact:** Open an issue or DM on Twitter
