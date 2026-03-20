@@ -4,391 +4,180 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Llama Chat"/>
-<meta name="theme-color" content="#07070f"/>
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme:light)"/>
+<meta name="theme-color" content="#0c0c0c" media="(prefers-color-scheme:dark)"/>
 <link rel="manifest" href="manifest.json"/>
 <title>Llama 3 Chat — A-Store</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+:root{--ink:#0c0c0c;--ink-2:#1a1a1a;--ink-3:#404040;--ink-4:#737373;--ink-5:#a3a3a3;--paper:#ffffff;--paper-2:#fafafa;--paper-3:#f5f5f5;--line:#e5e5e5;--line-2:#d4d4d4;--fire:#f97316;--fire-dim:#fff7ed;--fire-ring:#fed7aa;--go:#16a34a;--go-dim:#f0fdf4;--stop:#dc2626;--sh:0 1px 2px rgba(0,0,0,.06);--sh-md:0 2px 8px rgba(0,0,0,.08)}
+@media(prefers-color-scheme:dark){:root{--ink:#fafafa;--ink-2:#e5e5e5;--ink-3:#a3a3a3;--ink-4:#737373;--ink-5:#525252;--paper:#0c0c0c;--paper-2:#141414;--paper-3:#1c1c1c;--line:#262626;--line-2:#333333;--fire-dim:#2d1a0a;--fire-ring:#7c2d12;--go-dim:#052e16;--sh:0 1px 2px rgba(0,0,0,.4);--sh-md:0 2px 8px rgba(0,0,0,.4)}}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#07070f;--surface:#0f0f1e;--card:#13132a;--border:rgba(120,80,255,0.18);--purple:#7c3aed;--purple-l:#a78bfa;--cyan:#06b6d4;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--white:#f0eeff;--gray:#6b7280;--gray-l:#9ca3af}
-html,body{height:100%;background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;overflow:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
-.app{display:flex;flex-direction:column;height:100%;max-width:520px;margin:0 auto;position:relative;z-index:1}
+html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Instrument Sans',sans-serif;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100%;max-width:520px;margin:0 auto}
 
-/* TOP BAR */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1.25rem;border-bottom:1px solid var(--border);background:rgba(7,7,15,0.97);backdrop-filter:blur(20px);flex-shrink:0}
-.topbar-left{display:flex;align-items:center;gap:0.65rem}
-.app-icon{width:34px;height:34px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.35);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.05rem}
-.app-name{font-weight:800;font-size:0.95rem}
-.app-maker{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--gray);letter-spacing:0.05em}
-.topbar-right{display:flex;align-items:center;gap:0.5rem}
-.model-badge{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--purple-l);border:1px solid rgba(124,58,237,0.3);padding:0.18rem 0.45rem;white-space:nowrap}
-.store-link{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--gray);text-decoration:none;border:1px solid var(--border);padding:0.15rem 0.38rem}
-.store-link:hover{color:var(--purple-l);border-color:var(--purple)}
-.btn-clear{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--gray);background:none;border:1px solid var(--border);padding:0.15rem 0.38rem;cursor:pointer;transition:all 0.2s}
-.btn-clear:hover{color:var(--red);border-color:var(--red)}
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.25rem;border-bottom:1px solid var(--line);flex-shrink:0;background:var(--paper)}
+.h-left{display:flex;align-items:center;gap:.6rem}
+.h-mark{width:30px;height:30px;background:var(--ink);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.h-name{font-size:.95rem;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.h-by{font-size:.67rem;color:var(--ink-5);margin-top:1px;font-family:'Instrument Mono',monospace}
+.h-right{display:flex;align-items:center;gap:.4rem}
+.h-model{font-family:'Instrument Mono',monospace;font-size:.58rem;font-weight:500;padding:.15rem .4rem;border-radius:100px;background:var(--paper-3);color:var(--ink-4);border:1px solid var(--line)}
+.h-clear{width:26px;height:26px;background:transparent;border:1px solid var(--line);border-radius:6px;color:var(--ink-5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .15s}
+.h-clear:hover{color:var(--stop);border-color:var(--stop)}
+.h-link{font-size:.7rem;font-weight:500;color:var(--ink-4);text-decoration:none;border:1px solid var(--line);padding:.25rem .55rem;border-radius:6px;transition:all .15s}
+.h-link:hover{background:var(--paper-3);color:var(--ink-3)}
+
+/* USAGE LINE */
+.usage-line{height:2px;background:var(--line);flex-shrink:0}
+.usage-fill{height:100%;background:var(--go);transition:width .4s ease}
 
 /* MESSAGES */
-.messages{flex:1;overflow-y:auto;padding:1rem 1.25rem;display:flex;flex-direction:column;gap:0.85rem;scroll-behavior:smooth}
-.messages::-webkit-scrollbar{width:3px}
-.messages::-webkit-scrollbar-track{background:transparent}
-.messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.msgs{flex:1;overflow-y:auto;padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.875rem}
+.msgs::-webkit-scrollbar{width:2px}
+.msgs::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:2px}
 
 /* WELCOME */
-.welcome{text-align:center;padding:2rem 1rem;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem}
-.welcome-icon{font-size:2.5rem}
-.welcome h2{font-size:1.3rem;font-weight:800;color:var(--white)}
-.welcome p{font-size:0.82rem;color:var(--gray-l);line-height:1.65;max-width:320px}
-.suggestions{display:flex;flex-direction:column;gap:0.5rem;width:100%;max-width:360px;margin-top:0.5rem}
-.suggestion{background:var(--card);border:1px solid var(--border);padding:0.65rem 0.9rem;text-align:left;cursor:pointer;font-size:0.8rem;color:var(--gray-l);transition:all 0.2s;font-family:'Syne',sans-serif}
-.suggestion:hover{border-color:var(--purple);color:var(--white);background:#1a1a35}
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.875rem;padding:2rem 1rem}
+.w-mark{width:48px;height:48px;background:var(--ink);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto}
+.w-title{font-size:1.05rem;font-weight:700;letter-spacing:-.025em}
+.w-sub{font-size:.82rem;color:var(--ink-4);line-height:1.65;max-width:280px}
+.w-sugs{display:flex;flex-direction:column;gap:.4rem;width:100%;max-width:320px;margin-top:.25rem}
+.sug{background:transparent;border:1px solid var(--line);padding:.58rem .875rem;text-align:left;cursor:pointer;font-size:.8rem;color:var(--ink-3);transition:all .15s;font-family:'Instrument Sans',sans-serif;border-radius:8px}
+.sug:hover{background:var(--paper-2);border-color:var(--line-2);color:var(--ink-2)}
 
 /* MESSAGE BUBBLES */
-.msg{display:flex;gap:0.6rem;align-items:flex-start;animation:msgIn 0.25s ease}
-@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg{display:flex;gap:.5rem;align-items:flex-start;animation:pop .2s ease}
+@keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .msg.user{flex-direction:row-reverse}
-.msg-avatar{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;margin-top:2px}
-.msg.user .msg-avatar{background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.35)}
-.msg.ai .msg-avatar{background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3)}
-.msg-bubble{max-width:82%;padding:0.7rem 0.9rem;font-size:0.85rem;line-height:1.65;word-break:break-word;position:relative}
-.msg.user .msg-bubble{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);color:var(--white)}
-.msg.ai .msg-bubble{background:var(--card);border:1px solid var(--border);color:var(--gray-l)}
-.msg.ai .msg-bubble strong{color:var(--white)}
-.msg-time{font-family:'Space Mono',monospace;font-size:0.52rem;color:var(--gray);margin-top:0.25rem;display:block}
-.msg-copy{position:absolute;top:0.4rem;right:0.4rem;font-family:'Space Mono',monospace;font-size:0.5rem;color:var(--gray);background:none;border:none;cursor:pointer;opacity:0;transition:opacity 0.2s;padding:0.1rem 0.3rem}
-.msg-bubble:hover .msg-copy{opacity:1}
-.msg-copy:hover{color:var(--purple-l)}
+.m-av{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0;margin-top:2px}
+.msg.user .m-av{background:var(--ink);font-size:.7rem}
+.msg.ai .m-av{background:var(--paper-3);border:1px solid var(--line)}
+.m-wrap{max-width:82%}
+.m-bub{padding:.62rem .875rem;font-size:.85rem;line-height:1.65;word-break:break-word;position:relative}
+.msg.user .m-bub{background:var(--ink);color:var(--paper);border-radius:10px 10px 3px 10px}
+.msg.ai .m-bub{background:var(--paper-2);border:1px solid var(--line);color:var(--ink-3);border-radius:10px 10px 10px 3px}
+.msg.ai .m-bub strong{color:var(--ink-2)}
+.m-time{font-family:'Instrument Mono',monospace;font-size:.56rem;color:var(--ink-5);margin-top:.2rem;display:block}
+.m-copy{position:absolute;top:.3rem;right:.35rem;font-size:.56rem;color:var(--ink-5);background:none;border:none;cursor:pointer;opacity:0;transition:opacity .15s;padding:.1rem .28rem;border-radius:4px}
+.m-bub:hover .m-copy{opacity:1}.m-copy:hover{color:var(--ink-3);background:var(--paper-3)}
 
-/* TYPING INDICATOR */
-.typing-indicator{display:flex;gap:0.6rem;align-items:center;padding:0.5rem 0}
-.typing-dots{display:flex;gap:4px;align-items:center;background:var(--card);border:1px solid var(--border);padding:0.6rem 0.9rem}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--purple-l);animation:dotPulse 1.2s ease-in-out infinite}
-.dot:nth-child(2){animation-delay:0.2s}
-.dot:nth-child(3){animation-delay:0.4s}
-@keyframes dotPulse{0%,60%,100%{opacity:0.2;transform:scale(0.85)}30%{opacity:1;transform:scale(1)}}
+/* TYPING */
+.typing{display:flex;gap:.5rem;align-items:center}
+.t-bub{display:flex;gap:4px;align-items:center;background:var(--paper-2);border:1px solid var(--line);padding:.5rem .875rem;border-radius:10px 10px 10px 3px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--ink-4);animation:dp 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes dp{0%,60%,100%{opacity:.2;transform:scale(.8)}30%{opacity:1;transform:scale(1)}}
+.err-bub{background:var(--paper-2);border:1px solid var(--line);color:var(--stop);padding:.6rem .875rem;border-radius:10px;font-size:.78rem;max-width:82%}
 
-/* USAGE BAR */
-.usage-strip{padding:0.4rem 1.25rem;background:rgba(7,7,15,0.8);border-top:1px solid var(--border);display:flex;align-items:center;gap:0.6rem;flex-shrink:0}
-.usage-label{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--gray);white-space:nowrap}
-.usage-bar-wrap{flex:1;height:2px;background:rgba(255,255,255,0.05);border-radius:1px;overflow:hidden}
-.usage-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan));border-radius:1px;transition:width 0.4s ease}
-.usage-count{font-family:'Space Mono',monospace;font-size:0.56rem;color:var(--gray-l);white-space:nowrap}
-
-/* INPUT AREA */
-.input-area{padding:0.75rem 1.25rem 1rem;border-top:1px solid var(--border);background:rgba(7,7,15,0.97);flex-shrink:0}
-.model-row{display:flex;gap:0.4rem;margin-bottom:0.6rem;flex-wrap:wrap}
-.model-btn{font-family:'Space Mono',monospace;font-size:0.58rem;padding:0.22rem 0.55rem;border:1px solid var(--border);color:var(--gray);background:transparent;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em}
-.model-btn.active{border-color:var(--purple);color:var(--purple-l);background:rgba(124,58,237,0.1)}
-.input-row{display:flex;gap:0.5rem;align-items:flex-end}
-.msg-input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--white);padding:0.7rem 0.9rem;font-family:'Syne',sans-serif;font-size:0.88rem;outline:none;resize:none;min-height:44px;max-height:120px;transition:border-color 0.2s;line-height:1.5}
-.msg-input::placeholder{color:var(--gray)}
-.msg-input:focus{border-color:var(--purple)}
-.btn-send{background:var(--purple);border:none;color:#fff;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:1.1rem;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
-.btn-send:hover{background:#6d28d9;transform:translateY(-1px)}
-.btn-send:disabled{background:var(--gray);cursor:not-allowed;transform:none}
+/* MODEL ROW + INPUT */
+.input-area{padding:.75rem 1.25rem .9rem;border-top:1px solid var(--line);background:var(--paper);flex-shrink:0}
+.model-row{display:flex;gap:.3rem;margin-bottom:.55rem;flex-wrap:wrap}
+.m-chip{font-family:'Instrument Mono',monospace;font-size:.58rem;font-weight:500;padding:.2rem .5rem;border-radius:100px;border:1px solid var(--line);color:var(--ink-4);background:transparent;cursor:pointer;transition:all .15s}
+.m-chip:hover{background:var(--paper-3);color:var(--ink-3);border-color:var(--line-2)}
+.m-chip.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.input-row{display:flex;gap:.5rem;align-items:flex-end}
+.txt-in{flex:1;background:var(--paper-2);border:1px solid var(--line-2);border-radius:8px;padding:.62rem .875rem;font-family:'Instrument Sans',sans-serif;font-size:.88rem;color:var(--ink);outline:none;resize:none;min-height:42px;max-height:120px;transition:border-color .15s;line-height:1.5}
+.txt-in::placeholder{color:var(--ink-5)}.txt-in:focus{border-color:var(--ink);background:var(--paper)}
+.btn-send{background:var(--ink);border:none;color:var(--paper);width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:.95rem;transition:all .15s}
+.btn-send:hover{background:var(--ink-2);transform:translateY(-1px)}.btn-send:disabled{background:var(--ink-5);cursor:not-allowed;transform:none}
 
 /* INSTALL */
-.install-banner{background:rgba(124,58,237,0.08);border-bottom:1px solid rgba(124,58,237,0.2);padding:0.6rem 1.25rem;display:none;align-items:center;justify-content:space-between;gap:0.75rem;flex-shrink:0}
-.install-text{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--purple-l)}
-.btn-install{font-family:'Space Mono',monospace;font-size:0.58rem;padding:0.25rem 0.6rem;background:var(--purple);color:#fff;border:none;cursor:pointer}
-
-/* ERROR */
-.error-msg{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#f87171;padding:0.65rem 0.9rem;font-family:'Space Mono',monospace;font-size:0.72rem;max-width:82%}
+.install-bar{background:var(--fire-dim);border-bottom:1px solid var(--fire-ring);padding:.55rem 1.25rem;display:none;align-items:center;justify-content:space-between;gap:.75rem;flex-shrink:0}
+.ib-text{font-size:.73rem;color:var(--fire);font-weight:500}
+.ib-btn{font-size:.7rem;font-weight:600;padding:.27rem .6rem;background:var(--fire);color:#fff;border:none;cursor:pointer;border-radius:6px;font-family:'Instrument Sans',sans-serif}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="install-banner" id="installBanner">
-    <span class="install-text">📲 Install Llama Chat on your home screen</span>
-    <button class="btn-install" id="installBtn">INSTALL</button>
+  <div class="install-bar" id="ib">
+    <span class="ib-text">Add Llama Chat to your Home Screen</span>
+    <button class="ib-btn" id="iBtn">Install</button>
   </div>
-
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="app-icon">🦙</div>
-      <div>
-        <div class="app-name">Llama 3 Chat</div>
-        <div class="app-maker">BY META · VIA A-STORE</div>
-      </div>
+  <div class="header">
+    <div class="h-left">
+      <div class="h-mark"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div><div class="h-name">Llama 3 Chat</div><div class="h-by">by Meta · via A-Store</div></div>
     </div>
-    <div class="topbar-right">
-      <span class="model-badge" id="activeModelBadge">LLAMA 3 8B</span>
-      <button class="btn-clear" onclick="clearChat()" title="Clear chat">✕</button>
-      <a href="https://a-store-ishraq.vercel.app" class="store-link">A—STORE</a>
+    <div class="h-right">
+      <span class="h-model" id="hm">LLAMA 3.1 8B</span>
+      <button class="h-clear" onclick="clearChat()" title="Clear">✕</button>
+      <a href="https://a-store-ishraq.vercel.app" class="h-link">A-Store</a>
     </div>
   </div>
-
-  <div class="usage-strip">
-    <span class="usage-label">DAILY USAGE</span>
-    <div class="usage-bar-wrap"><div class="usage-bar-fill" id="usageBar" style="width:0%"></div></div>
-    <span class="usage-count" id="usageCount">0 / 50</span>
-  </div>
-
-  <div class="messages" id="messages">
-    <div class="welcome" id="welcome">
-      <div class="welcome-icon">🦙</div>
-      <h2>Llama 3 by Meta</h2>
-      <p>Open-source AI running via A-Store. Ask me anything — I'm fast, free, and private.</p>
-      <div class="suggestions">
-        <button class="suggestion" onclick="sendSuggestion(this)">✍️ Write a cover letter for a software internship</button>
-        <button class="suggestion" onclick="sendSuggestion(this)">🔢 Explain calculus in simple terms</button>
-        <button class="suggestion" onclick="sendSuggestion(this)">💡 Give me 5 startup ideas for India</button>
-        <button class="suggestion" onclick="sendSuggestion(this)">🐛 Debug this: why does my code crash?</button>
+  <div class="usage-line"><div class="usage-fill" id="uf" style="width:0%"></div></div>
+  <div class="msgs" id="msgs">
+    <div class="welcome" id="wc">
+      <div class="w-mark"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="9" y2="10" stroke-width="2.5"/><line x1="12" y1="10" x2="12" y2="10" stroke-width="2.5"/><line x1="15" y1="10" x2="15" y2="10" stroke-width="2.5"/></svg></div>
+      <div class="w-title">Llama 3 by Meta</div>
+      <div class="w-sub">Open-source AI running via A-Store. Fast, free, and private.</div>
+      <div class="w-sugs">
+        <button class="sug" onclick="sendSug(this)">✍️ Write a cover letter for a software internship</button>
+        <button class="sug" onclick="sendSug(this)">🔢 Explain calculus in simple terms</button>
+        <button class="sug" onclick="sendSug(this)">💡 Give me 5 startup ideas for India</button>
+        <button class="sug" onclick="sendSug(this)">🐛 How do I debug this code?</button>
       </div>
     </div>
   </div>
-
   <div class="input-area">
     <div class="model-row">
-      <button class="model-btn active" onclick="setModel('llama-3.1-8b-instant','LLAMA 3.1 8B',this)">LLAMA 3 8B</button>
-      <button class="model-btn" onclick="setModel('llama-3.3-70b-versatile','LLAMA 3.3 70B',this)">LLAMA 3 70B</button>
-      <button class="model-btn" onclick="setModel('mixtral-8x7b-32768','QWEN 3 32B',this)">MIXTRAL</button>
-      <button class="model-btn" onclick="setModel('gemma2-9b-it','LLAMA 4 SCOUT',this)">GEMMA 2</button>
+      <button class="m-chip on" onclick="setM('llama-3.1-8b-instant','LLAMA 3.1 8B',this)">LLAMA 3.1 8B</button>
+      <button class="m-chip" onclick="setM('llama-3.3-70b-versatile','LLAMA 3.3 70B',this)">LLAMA 3.3 70B</button>
+      <button class="m-chip" onclick="setM('mixtral-8x7b-32768','QWEN 3 32B',this)">QWEN 3 32B</button>
+      <button class="m-chip" onclick="setM('gemma2-9b-it','LLAMA 4 SCOUT',this)">LLAMA 4 SCOUT</button>
     </div>
     <div class="input-row">
-      <textarea
-        class="msg-input"
-        id="msgInput"
-        placeholder="Ask anything..."
-        rows="1"
-        onkeydown="handleKey(event)"
-        oninput="autoResize(this)"
-      ></textarea>
-      <button class="btn-send" id="sendBtn" onclick="sendMessage()">➤</button>
+      <textarea class="txt-in" id="ti" placeholder="Ask anything..." rows="1" onkeydown="hk(event)" oninput="ar(this)"></textarea>
+      <button class="btn-send" id="sb" onclick="send()">➤</button>
     </div>
   </div>
 </div>
-
 <script>
-const CHAT_API = 'https://jzqmjvxwtguaubsfklpf.supabase.co/functions/v1/chat';
-const DAILY_LIMIT = 50;
-const STORAGE_KEY = 'llama_usage';
-const HISTORY_KEY = 'llama_history';
-
-let messages = [];
-let currentModel = 'llama-3.1-8b-instant';
-let isLoading = false;
-let deferredPrompt = null;
-
-// Usage tracking
-function getUsage(){
-  const today = new Date().toDateString();
-  const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  return s.date === today ? (s.count || 0) : 0;
+const API='https://jzqmjvxwtguaubsfklpf.supabase.co/functions/v1/chat';
+const DL=50,UK='llama_v4';
+let msgs=[],model='llama-3.1-8b-instant',loading=false,dp=null;
+function getU(){const t=new Date().toDateString();const s=JSON.parse(localStorage.getItem(UK)||'{}');return s.date===t?s.count||0:0;}
+function addU(){const t=new Date().toDateString();const c=getU()+1;localStorage.setItem(UK,JSON.stringify({date:t,count:c}));uUI(c);}
+function uUI(c){const p=Math.min((c/DL)*100,100);document.getElementById('uf').style.width=p+'%';document.getElementById('uf').style.background=p>80?'#dc2626':p>50?'#f97316':'#16a34a';}
+function setM(id,label,btn){model=id;document.querySelectorAll('.m-chip').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('hm').textContent=label;}
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function sendSug(btn){document.getElementById('ti').value=btn.textContent.replace(/^[^\s]+\s/,'');send();}
+function clearChat(){msgs=[];document.getElementById('msgs').innerHTML=`<div class="welcome" id="wc"><div class="w-mark"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="9" y2="10" stroke-width="2.5"/><line x1="12" y1="10" x2="12" y2="10" stroke-width="2.5"/><line x1="15" y1="10" x2="15" y2="10" stroke-width="2.5"/></svg></div><div class="w-title">Llama 3 by Meta</div><div class="w-sub">Open-source AI running via A-Store. Fast, free, and private.</div><div class="w-sugs"><button class="sug" onclick="sendSug(this)">✍️ Write a cover letter for a software internship</button><button class="sug" onclick="sendSug(this)">🔢 Explain calculus in simple terms</button><button class="sug" onclick="sendSug(this)">💡 Give me 5 startup ideas for India</button><button class="sug" onclick="sendSug(this)">🐛 How do I debug this code?</button></div></div>`;}
+function fmt(){return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
+function renderMsg(role,text){
+  const c=document.getElementById('msgs');const w=document.getElementById('wc');if(w)w.remove();
+  const isU=role==='user';const d=document.createElement('div');d.className='msg '+(isU?'user':'ai');
+  const html=isU?text:text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  d.innerHTML=`<div class="m-av">${isU?:}</div><div class="m-wrap"><div class="m-bub">${html}${!isU?`<button class="m-copy" onclick="cp(this)">copy</button>`:''}</div><span class="m-time">${fmt()}</span></div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
-function incrementUsage(){
-  const today = new Date().toDateString();
-  const c = getUsage() + 1;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({date: today, count: c}));
-  updateUsageUI(c);
-  return c;
-}
-function updateUsageUI(c){
-  const pct = Math.min((c / DAILY_LIMIT) * 100, 100);
-  document.getElementById('usageBar').style.width = pct + '%';
-  document.getElementById('usageCount').textContent = c + ' / ' + DAILY_LIMIT;
-  const bar = document.getElementById('usageBar');
-  bar.style.background = pct > 80
-    ? 'linear-gradient(90deg,#f59e0b,#ef4444)'
-    : pct > 50
-    ? 'linear-gradient(90deg,#10b981,#f59e0b)'
-    : 'linear-gradient(90deg,var(--purple),var(--cyan))';
-}
-
-function setModel(modelId, label, btn){
-  currentModel = modelId;
-  document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('activeModelBadge').textContent = label;
-}
-
-function autoResize(el){
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
-
-function handleKey(e){
-  if(e.key === 'Enter' && !e.shiftKey){
-    e.preventDefault();
-    sendMessage();
-  }
-}
-
-function sendSuggestion(btn){
-  const text = btn.textContent.replace(/^[^\s]+\s/, '');
-  document.getElementById('msgInput').value = text;
-  sendMessage();
-}
-
-function clearChat(){
-  messages = [];
-  const container = document.getElementById('messages');
-  container.innerHTML = `
-    <div class="welcome" id="welcome">
-      <div class="welcome-icon">🦙</div>
-      <h2>Llama 3 by Meta</h2>
-      <p>Open-source AI running via A-Store. Ask me anything — I'm fast, free, and private.</p>
-      <div class="suggestions">
-        <button class="suggestion" onclick="sendSuggestion(this)">✍️ Write a cover letter for a software internship</button>
-        <button class="suggestion" onclick="sendSuggestion(this)">🔢 Explain calculus in simple terms</button>
-        <button class="suggestion" onclick="sendSuggestion(this)">💡 Give me 5 startup ideas for India</button>
-        <button class="suggestion" onclick="sendSuggestion(this)">🐛 Debug this: why does my code crash?</button>
-      </div>
-    </div>`;
-}
-
-function formatTime(){
-  return new Date().toLocaleTimeString('en-IN', {hour: '2-digit', minute: '2-digit'});
-}
-
-function renderMessage(role, text){
-  const container = document.getElementById('messages');
-  const welcome = document.getElementById('welcome');
-  if(welcome) welcome.remove();
-
-  const isUser = role === 'user';
-  const div = document.createElement('div');
-  div.className = 'msg ' + (isUser ? 'user' : 'ai');
-
-  // Format AI text — convert **bold** markdown
-  const formatted = isUser ? text : text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n/g, '<br>');
-
-  div.innerHTML = `
-    <div class="msg-avatar">${isUser ? '👤' : '🦙'}</div>
-    <div>
-      <div class="msg-bubble">
-        ${formatted}
-        ${!isUser ? `<button class="msg-copy" onclick="copyMsg(this)">COPY</button>` : ''}
-      </div>
-      <span class="msg-time">${formatTime()}</span>
-    </div>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function showTyping(){
-  const container = document.getElementById('messages');
-  const el = document.createElement('div');
-  el.className = 'typing-indicator';
-  el.id = 'typingIndicator';
-  el.innerHTML = `
-    <div class="msg-avatar" style="background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3);width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.85rem">🦙</div>
-    <div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
-  container.appendChild(el);
-  container.scrollTop = container.scrollHeight;
-}
-
-function hideTyping(){
-  const el = document.getElementById('typingIndicator');
-  if(el) el.remove();
-}
-
-function showError(text){
-  const container = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = 'msg ai';
-  div.innerHTML = `
-    <div class="msg-avatar" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;">⚠️</div>
-    <div><div class="error-msg">${text}</div></div>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function copyMsg(btn){
-  const bubble = btn.closest('.msg-bubble');
-  const text = bubble.innerText.replace('COPY','').trim();
-  if(navigator.clipboard) navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'COPIED!';
-    setTimeout(() => btn.textContent = 'COPY', 1500);
-  });
-}
-
-async function sendMessage(){
-  const input = document.getElementById('msgInput');
-  const text = input.value.trim();
-  if(!text || isLoading) return;
-
-  if(getUsage() >= DAILY_LIMIT){
-    showError('Daily limit reached (50 messages). Come back tomorrow or join the priority waitlist at A-Store.');
-    return;
-  }
-
-  input.value = '';
-  input.style.height = 'auto';
-  isLoading = true;
-  document.getElementById('sendBtn').disabled = true;
-
-  // Add to messages array and render
-  messages.push({role: 'user', content: text});
-  renderMessage('user', text);
-  showTyping();
-
+function showTyping(){const c=document.getElementById('msgs');const d=document.createElement('div');d.className='typing';d.id='typ';d.innerHTML=`<div class="m-av" style="background:var(--paper-3);border:1px solid var(--line)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="t-bub"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function hideTyping(){const el=document.getElementById('typ');if(el)el.remove();}
+function showErr(text){const c=document.getElementById('msgs');const d=document.createElement('div');d.className='msg ai';d.innerHTML=`<div class="m-av" style="background:var(--paper-3);border:1px solid var(--line)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--stop)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><div class="err-bub">${text}</div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function cp(btn){const t=btn.closest('.m-bub').innerText.replace('copy','').trim();navigator.clipboard?.writeText(t).then(()=>{btn.textContent='✓';setTimeout(()=>btn.textContent='copy',1500);});}
+async function send(){
+  const ti=document.getElementById('ti');const text=ti.value.trim();
+  if(!text||loading)return;
+  if(getU()>=DL){showErr('Daily limit reached (50 messages). Come back tomorrow.');return;}
+  ti.value='';ti.style.height='auto';loading=true;document.getElementById('sb').disabled=true;
+  msgs.push({role:'user',content:text});renderMsg('user',text);showTyping();
   try{
-    const res = await fetch(CHAT_API, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a helpful, knowledgeable assistant running via A-Store — an open-source AI app store built in India. Be concise, clear, and genuinely useful. Format responses with markdown when helpful.'
-          },
-          ...messages
-        ],
-        model: currentModel
-      })
-    });
-
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are a helpful assistant running via A-Store — an open-source AI app store built in India. Be concise, clear, and genuinely useful.'},...msgs],model})});
     hideTyping();
-
-    if(!res.ok){
-      const err = await res.json().catch(() => ({}));
-      showError('Error ' + res.status + ': ' + (err.error || 'Please try again.'));
-      messages.pop();
-      return;
-    }
-
-    const data = await res.json();
-    const reply = data.choices?.[0]?.message?.content || 'No response. Please try again.';
-    messages.push({role: 'assistant', content: reply});
-    renderMessage('ai', reply);
-    incrementUsage();
-
-    // Keep conversation history manageable (last 20 messages)
-    if(messages.length > 20) messages = messages.slice(-20);
-
-  }catch(err){
-    hideTyping();
-    showError('Network error: ' + err.message + '. Check your internet connection.');
-    messages.pop();
-  }finally{
-    isLoading = false;
-    document.getElementById('sendBtn').disabled = false;
-    document.getElementById('msgInput').focus();
-  }
+    if(!res.ok){const e=await res.json().catch(()=>({}));showErr('Error '+res.status+': '+(e.error||'Please try again.'));msgs.pop();return;}
+    const data=await res.json();const reply=data.choices?.[0]?.message?.content||'No response.';
+    msgs.push({role:'assistant',content:reply});renderMsg('ai',reply);addU();
+    if(msgs.length>20)msgs=msgs.slice(-20);
+  }catch(e){hideTyping();showErr('Network error. Check your connection.');msgs.pop();}
+  finally{loading=false;document.getElementById('sb').disabled=false;document.getElementById('ti').focus();}
 }
-
-// PWA Install
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('installBanner').style.display = 'flex';
-});
-document.getElementById('installBtn').addEventListener('click', async () => {
-  if(!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const {outcome} = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  document.getElementById('installBanner').style.display = 'none';
-});
-
-// Init
-updateUsageUI(getUsage());
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;document.getElementById('ib').style.display='flex';});
+document.getElementById('iBtn').addEventListener('click',async()=>{if(!dp)return;dp.prompt();await dp.userChoice;dp=null;document.getElementById('ib').style.display='none';});
+uUI(getU());
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
