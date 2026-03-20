@@ -3,579 +3,600 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>A-Store — The AI App Store</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>A-Store — AI App Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#07070f;--surface:#0f0f1e;--card:#13132a;--border:rgba(120,80,255,0.18);--purple:#7c3aed;--purple-l:#a78bfa;--cyan:#06b6d4;--green:#10b981;--orange:#f59e0b;--white:#f0eeff;--gray:#6b7280;--gray-l:#9ca3af}
-*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.25rem;background:rgba(7,7,15,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);gap:0.5rem}
-.logo{font-family:'Space Mono',monospace;font-size:0.9rem;font-weight:700;color:var(--white);letter-spacing:0.1em;flex-shrink:0}.logo span{color:var(--purple)}
-.nav-badges{display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-.nbadge{font-family:'Space Mono',monospace;font-size:0.56rem;padding:0.18rem 0.45rem;letter-spacing:0.08em;white-space:nowrap;border:1px solid}
-.nbadge-cyan{color:var(--cyan);border-color:var(--cyan)}.nbadge-orange{color:var(--orange);border-color:var(--orange)}
-.proto-banner{position:relative;z-index:1;background:rgba(245,158,11,0.07);border-bottom:1px solid rgba(245,158,11,0.25);padding:0.55rem 1.25rem;text-align:center}
-.proto-banner p{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--orange);letter-spacing:0.05em}
-.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 1.25rem 4rem;z-index:1}
-.hero-glow{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(124,58,237,0.14) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
-.hero-tag{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.22em;color:var(--cyan);border:1px solid rgba(6,182,212,0.3);padding:0.32rem 0.85rem;margin-bottom:1.5rem;display:inline-block}
-h1{font-size:clamp(2.2rem,7vw,5.5rem);font-weight:800;line-height:1.05;letter-spacing:-0.02em;margin-bottom:1.25rem}
-h1 .accent{color:var(--purple-l)}h1 .stroke{-webkit-text-stroke:1px var(--purple-l);color:transparent}
-.hero-sub{font-size:clamp(0.9rem,2.5vw,1.1rem);color:var(--gray-l);max-width:540px;line-height:1.7;margin-bottom:2rem}
-.hero-btns{display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center}
-.btn-primary{background:var(--purple);color:#fff;border:none;padding:0.75rem 1.6rem;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
-.btn-primary:hover{background:#6d28d9;transform:translateY(-2px)}
-.btn-ghost{background:transparent;color:var(--white);border:1px solid var(--border);padding:0.75rem 1.6rem;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
-.btn-ghost:hover{border-color:var(--purple-l);color:var(--purple-l)}
-.ticker-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);padding:0.55rem 0;position:relative;z-index:1}
-.ticker{display:flex;width:max-content;animation:ticker 30s linear infinite;gap:2.5rem}
-.ticker-item{font-family:'Space Mono',monospace;font-size:0.68rem;letter-spacing:0.15em;color:var(--gray);white-space:nowrap}
-.ticker-item span{color:var(--purple-l);margin-right:0.35rem}
-@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.stats-bar{position:relative;z-index:1;display:flex;justify-content:center;flex-wrap:wrap;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface)}
-.stat{flex:1;min-width:120px;max-width:220px;text-align:center;padding:1.2rem 0.75rem;border-right:1px solid var(--border)}.stat:last-child{border-right:none}
-.stat-n{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--purple-l);display:block}
-.stat-l{font-size:0.68rem;color:var(--gray);letter-spacing:0.05em}
-section{position:relative;z-index:1;padding:4rem 1.25rem;max-width:1080px;margin:0 auto}
-.section-tag{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.22em;color:var(--cyan);margin-bottom:0.55rem;display:block}
-h2{font-size:clamp(1.6rem,4vw,2.5rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:0.9rem;line-height:1.15}
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin-top:2.25rem}
-.step{background:var(--card);padding:1.5rem 1.25rem;transition:background 0.2s}.step:hover{background:#1a1a35}
-.step-num{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--purple);letter-spacing:0.2em;margin-bottom:0.75rem;display:block}
-.step-icon{font-size:1.6rem;margin-bottom:0.75rem;display:block}
-.step h3{font-size:0.95rem;font-weight:700;margin-bottom:0.4rem;color:var(--white)}
-.step p{font-size:0.82rem;color:var(--gray-l);line-height:1.65}
-.apps-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem}
-.filter-tabs{display:flex;gap:0.4rem;flex-wrap:wrap}
-.tab{font-family:'Space Mono',monospace;font-size:0.65rem;padding:0.3rem 0.65rem;border:1px solid var(--border);color:var(--gray);background:transparent;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em}
-.tab.active,.tab:hover{border-color:var(--purple);color:var(--purple-l);background:rgba(124,58,237,0.1)}
-.apps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
-.app-card{background:var(--card);border:1px solid var(--border);padding:1.25rem;transition:all 0.25s;position:relative;overflow:hidden;cursor:pointer}
-.app-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent-color,var(--purple));transform:scaleX(0);transform-origin:left;transition:transform 0.3s ease}
-.app-card:hover::before{transform:scaleX(1)}.app-card:hover{border-color:rgba(124,58,237,0.4);transform:translateY(-2px)}
-.card-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem}
-.app-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-.card-meta h3{font-size:0.9rem;font-weight:700;color:var(--white);margin-bottom:0.1rem}
-.card-meta .maker{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--gray);letter-spacing:0.05em}
-.app-desc{font-size:0.8rem;color:var(--gray-l);line-height:1.6;margin-bottom:1rem}
-.card-footer{display:flex;align-items:center;justify-content:space-between;gap:0.4rem;flex-wrap:wrap}
-.stars{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--orange)}
-.device-tags{display:flex;gap:0.22rem;flex-wrap:wrap}
-.device-tag{font-size:0.56rem;padding:0.15rem 0.35rem;border:1px solid var(--border);color:var(--gray);font-family:'Space Mono',monospace}
-.device-tag.fit{border-color:var(--green);color:var(--green)}
-.get-btn{font-family:'Space Mono',monospace;font-size:0.65rem;padding:0.3rem 0.65rem;background:var(--purple);color:#fff;border:none;cursor:pointer;letter-spacing:0.05em;transition:background 0.2s;text-decoration:none;display:inline-block}
-.get-btn:hover{background:#6d28d9}
-.coming-badge{font-family:'Space Mono',monospace;font-size:0.6rem;padding:0.25rem 0.6rem;background:transparent;color:var(--orange);border:1px solid var(--orange);cursor:pointer;letter-spacing:0.05em;transition:all 0.2s}
-.coming-badge:hover{background:rgba(245,158,11,0.1)}
-.device-banner{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--cyan);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.9rem;flex-wrap:wrap}
-.device-banner p{font-size:0.82rem;color:var(--gray-l)}.device-banner strong{color:var(--cyan)}
-.attrib-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:2rem}
-.attrib-card{background:var(--card);border:1px solid var(--border);padding:1.25rem}
-.attrib-label{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;margin-bottom:0.4rem;display:block}
-.attrib-title{font-size:0.95rem;font-weight:700;margin-bottom:0.28rem}.attrib-sub{font-size:0.78rem;color:var(--gray-l);line-height:1.6}
-.submit-section{background:var(--surface);border:1px solid var(--border);padding:2.5rem 1.5rem;text-align:center;position:relative;overflow:hidden}
-.submit-section::before{content:'';position:absolute;width:360px;height:360px;background:radial-gradient(circle,rgba(124,58,237,0.1) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
-.submit-section h2{margin-bottom:0.6rem}
-.submit-section>p{color:var(--gray-l);font-size:0.9rem;margin-bottom:1.5rem;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.7}
-.url-form{display:flex;max-width:520px;margin:0 auto 0.7rem}
-.url-input{flex:1;min-width:0;background:var(--card);border:1px solid var(--border);border-right:none;color:var(--white);padding:0.75rem 0.85rem;font-family:'Space Mono',monospace;font-size:0.75rem;outline:none;transition:border-color 0.2s}
-.url-input::placeholder{color:var(--gray)}.url-input:focus{border-color:var(--purple)}
-.url-submit{background:var(--purple);color:#fff;border:none;padding:0.75rem 1.1rem;font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;transition:background 0.2s;white-space:nowrap;flex-shrink:0}
-.url-submit:hover{background:#6d28d9}
-.form-note{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--gray);letter-spacing:0.05em}
-.loader-bar{width:100%;max-width:520px;height:3px;background:var(--card);margin:0 auto 0.85rem;overflow:hidden;border-radius:2px}
-.loader-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan));width:0%;transition:width 0.4s ease;border-radius:2px}
-.loader-text{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--cyan);letter-spacing:0.1em;text-align:center}
-.analysis-card{background:var(--card);border:1px solid var(--border);max-width:640px;margin:0 auto;overflow:hidden;text-align:left}
-.analysis-top{border-left:4px solid var(--cyan);padding:1.25rem;background:rgba(6,182,212,0.04)}
-.analysis-repo-name{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--cyan);letter-spacing:0.1em;margin-bottom:0.3rem}
-.analysis-title{font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:0.35rem}
-.analysis-desc{font-size:0.82rem;color:var(--gray-l);line-height:1.65}
-.analysis-meta{display:flex;gap:0.5rem;margin-top:0.85rem;flex-wrap:wrap}
-.meta-pill{font-family:'Space Mono',monospace;font-size:0.6rem;padding:0.2rem 0.5rem;border:1px solid var(--border);color:var(--gray-l)}
-.meta-pill.orange{border-color:var(--orange);color:var(--orange)}.meta-pill.cyan{border-color:var(--cyan);color:var(--cyan)}
-.analysis-rows{padding:1rem 1.25rem;display:flex;flex-direction:column;gap:0.85rem;border-top:1px solid var(--border)}
-.analysis-row{display:flex;gap:0.85rem;align-items:flex-start}
-.row-icon{font-size:1rem;width:24px;flex-shrink:0;margin-top:2px}
-.row-label{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--gray);letter-spacing:0.1em;margin-bottom:0.15rem}
-.row-value{font-size:0.85rem;color:var(--white);font-weight:600;line-height:1.5}
-.row-sub{font-size:0.74rem;color:var(--gray-l);margin-top:0.1rem;line-height:1.5}
-.analysis-footer{padding:0.85rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:0.55rem;flex-wrap:wrap;align-items:center;background:rgba(124,58,237,0.04)}
-.analysis-footer p{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--gray);flex:1;min-width:160px}
-.err-box{display:none;margin-top:1.25rem;background:rgba(239,68,68,0.08);border:1px solid #ef4444;color:#f87171;padding:0.85rem 1.2rem;font-family:'Space Mono',monospace;font-size:0.75rem;max-width:520px;margin-left:auto;margin-right:auto}
-.requested-list{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.55rem;max-width:640px;margin-left:auto;margin-right:auto}
-.req-item{background:var(--card);border:1px solid var(--border);padding:0.85rem 1.1rem;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap}
-.req-repo{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--purple-l)}
-.req-meta{font-size:0.7rem;color:var(--gray)}
-.req-status{font-family:'Space Mono',monospace;font-size:0.58rem;padding:0.15rem 0.45rem;border:1px solid;white-space:nowrap}
-.req-status.pending{border-color:var(--orange);color:var(--orange)}
-.req-status.building{border-color:var(--cyan);color:var(--cyan)}
-.req-status.live{border-color:var(--green);color:var(--green)}
+:root {
+  --ink: #0c0c0c;
+  --ink-2: #1a1a1a;
+  --ink-3: #404040;
+  --ink-4: #737373;
+  --ink-5: #a3a3a3;
+  --paper: #ffffff;
+  --paper-2: #fafafa;
+  --paper-3: #f5f5f5;
+  --line: #e5e5e5;
+  --line-2: #d4d4d4;
+  --fire: #f97316;
+  --fire-dim: #fff7ed;
+  --fire-ring: #fed7aa;
+  --go: #16a34a;
+  --go-dim: #f0fdf4;
+  --stop: #dc2626;
+  --stop-dim: #fef2f2;
+  --sky: #0369a1;
+  --sky-dim: #f0f9ff;
+  --r: 10px;
+  --r-sm: 7px;
+  --r-lg: 14px;
+  --shadow: 0 1px 2px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 2px 8px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.1), 0 2px 8px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #fafafa;
+    --ink-2: #e5e5e5;
+    --ink-3: #a3a3a3;
+    --ink-4: #737373;
+    --ink-5: #525252;
+    --paper: #0c0c0c;
+    --paper-2: #141414;
+    --paper-3: #1c1c1c;
+    --line: #262626;
+    --line-2: #333333;
+    --fire-dim: #2d1a0a;
+    --fire-ring: #7c2d12;
+    --go-dim: #052e16;
+    --stop-dim: #2d1515;
+    --sky-dim: #0c1a2d;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 1px 3px rgba(0,0,0,.3);
+    --shadow-md: 0 2px 8px rgba(0,0,0,.4), 0 1px 3px rgba(0,0,0,.3);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.3);
+  }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  padding: 0 1.25rem;
+  height: 54px;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.logo { display: flex; align-items: center; gap: .5rem; text-decoration: none; }
+.logo-mark {
+  width: 26px; height: 26px;
+  background: var(--ink);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-weight: 700;
+  color: var(--paper);
+  font-family: 'Instrument Mono', monospace;
+  letter-spacing: -.02em;
+  flex-shrink: 0;
+}
+.logo-name { font-size: .95rem; font-weight: 700; color: var(--ink); letter-spacing: -.02em; }
+.nav-r { display: flex; align-items: center; gap: .5rem; }
+.nav-proto {
+  font-family: 'Instrument Mono', monospace;
+  font-size: .6rem; font-weight: 500;
+  padding: .18rem .45rem; border-radius: 4px;
+  background: var(--fire-dim); color: var(--fire);
+  border: 1px solid var(--fire-ring);
+}
+.nav-btn {
+  font-size: .82rem; font-weight: 500; color: var(--ink-3);
+  text-decoration: none; padding: .3rem .7rem;
+  border-radius: var(--r-sm); border: 1px solid var(--line);
+  background: transparent; cursor: pointer;
+  transition: all .15s; font-family: 'Instrument Sans', sans-serif;
+}
+.nav-btn:hover { background: var(--paper-3); color: var(--ink-2); border-color: var(--line-2); }
+
+/* HERO */
+.hero {
+  padding: 4rem 1.25rem 3rem;
+  max-width: 640px; margin: 0 auto; text-align: center;
+}
+.hero-eyebrow {
+  font-family: 'Instrument Mono', monospace;
+  font-size: .7rem; font-weight: 500; letter-spacing: .1em;
+  color: var(--fire); text-transform: uppercase;
+  margin-bottom: 1.1rem; display: block;
+}
+h1 {
+  font-size: clamp(2rem, 6.5vw, 3.4rem);
+  font-weight: 700; letter-spacing: -.04em;
+  line-height: 1.1; color: var(--ink);
+  margin-bottom: .875rem;
+}
+h1 em { font-style: normal; color: var(--fire); }
+.hero-body {
+  font-size: .98rem; color: var(--ink-4); line-height: 1.75;
+  max-width: 460px; margin: 0 auto 2.25rem;
+}
+.hero-actions { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
+.btn-fill {
+  background: var(--ink); color: var(--paper);
+  padding: .62rem 1.35rem; border-radius: var(--r-sm);
+  font-size: .88rem; font-weight: 600; font-family: 'Instrument Sans', sans-serif;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all .15s; display: inline-flex; align-items: center; gap: .4rem;
+}
+.btn-fill:hover { background: var(--ink-2); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-line {
+  background: transparent; color: var(--ink-3);
+  padding: .62rem 1.35rem; border-radius: var(--r-sm);
+  font-size: .88rem; font-weight: 500; font-family: 'Instrument Sans', sans-serif;
+  text-decoration: none; border: 1px solid var(--line-2); cursor: pointer;
+  transition: all .15s; display: inline-flex; align-items: center; gap: .4rem;
+}
+.btn-line:hover { background: var(--paper-3); border-color: var(--line-2); color: var(--ink-2); }
+
+/* MARQUEE */
+.marquee-wrap {
+  overflow: hidden; background: var(--paper-2);
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  padding: .55rem 0;
+}
+.marquee { display: flex; width: max-content; animation: scroll 35s linear infinite; gap: 2.5rem; }
+.mi {
+  font-family: 'Instrument Mono', monospace;
+  font-size: .68rem; color: var(--ink-5); white-space: nowrap;
+  display: flex; align-items: center; gap: .4rem;
+}
+.mi::before { content: '◆'; font-size: .4rem; color: var(--fire); }
+@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* STATS */
+.stats-row {
+  display: flex;
+  border-bottom: 1px solid var(--line); background: var(--paper);
+}
+.stat { flex: 1; padding: 1.25rem .5rem; text-align: center; border-right: 1px solid var(--line); }
+.stat:last-child { border-right: none; }
+.stat-num {
+  display: block; font-size: 1.5rem; font-weight: 700;
+  letter-spacing: -.04em; color: var(--ink);
+  font-family: 'Instrument Mono', monospace;
+}
+.stat-label { font-size: .68rem; color: var(--ink-5); letter-spacing: .02em; margin-top: .15rem; }
+
+/* LAYOUT */
+.main { max-width: 780px; margin: 0 auto; padding: 2.5rem 1.25rem 5rem; }
+
+/* SECTION HEAD */
+.s-head { margin-bottom: 1.25rem; }
+.s-tag {
+  font-family: 'Instrument Mono', monospace;
+  font-size: .63rem; color: var(--ink-5); letter-spacing: .1em;
+  text-transform: uppercase; display: block; margin-bottom: .2rem;
+}
+.s-title { font-size: 1.2rem; font-weight: 700; letter-spacing: -.025em; color: var(--ink); }
+
+/* HOW */
+.how-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+  margin-top: 1.1rem; border-radius: var(--r); overflow: hidden;
+}
+.how-cell {
+  background: var(--paper); padding: 1.1rem 1rem;
+  transition: background .15s;
+}
+.how-cell:hover { background: var(--paper-2); }
+.how-num {
+  font-family: 'Instrument Mono', monospace; font-size: .6rem;
+  color: var(--fire); font-weight: 500; letter-spacing: .08em;
+  margin-bottom: .55rem;
+}
+.how-icon { font-size: 1.3rem; margin-bottom: .55rem; display: block; }
+.how-name { font-size: .88rem; font-weight: 650; margin-bottom: .22rem; color: var(--ink); }
+.how-desc { font-size: .76rem; color: var(--ink-4); line-height: 1.55; }
+
+/* DIVIDER */
+.rule { height: 1px; background: var(--line); margin: 2.5rem 0; }
+
+/* FILTER */
+.filter-bar { display: flex; gap: .35rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
+.ftab {
+  font-size: .78rem; font-weight: 500; padding: .3rem .8rem;
+  border-radius: 100px; border: 1px solid var(--line);
+  background: transparent; color: var(--ink-4); cursor: pointer;
+  transition: all .15s; font-family: 'Instrument Sans', sans-serif;
+}
+.ftab:hover { background: var(--paper-3); color: var(--ink-3); border-color: var(--line-2); }
+.ftab.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+/* APP GRID */
+.app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(265px, 1fr)); gap: .875rem; }
+.acard {
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 1.1rem; cursor: pointer;
+  transition: all .2s; box-shadow: var(--shadow);
+}
+.acard:hover { border-color: var(--line-2); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.ac-top { display: flex; align-items: flex-start; gap: .75rem; margin-bottom: .7rem; }
+.ac-icon {
+  width: 46px; height: 46px; border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; flex-shrink: 0; border: 1px solid var(--line);
+}
+.ac-name { font-size: .93rem; font-weight: 650; color: var(--ink); letter-spacing: -.01em; }
+.ac-maker { font-size: .72rem; color: var(--ink-5); margin-top: .1rem; }
+.ac-desc {
+  font-size: .8rem; color: var(--ink-4); line-height: 1.55; margin-bottom: .875rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ac-foot { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.ac-tags { display: flex; gap: .3rem; flex-wrap: wrap; flex: 1; }
+.atag {
+  font-size: .65rem; font-weight: 500; padding: .15rem .42rem;
+  border-radius: 100px; background: var(--paper-3); color: var(--ink-4);
+  border: 1px solid var(--line);
+}
+.ac-stars { font-family: 'Instrument Mono', monospace; font-size: .68rem; color: var(--ink-5); white-space: nowrap; }
+.btn-open {
+  font-size: .78rem; font-weight: 600; padding: .32rem .8rem;
+  border-radius: var(--r-sm); border: none; cursor: pointer;
+  text-decoration: none; display: inline-block; transition: all .15s;
+  font-family: 'Instrument Sans', sans-serif;
+}
+.btn-open.live { background: var(--ink); color: var(--paper); }
+.btn-open.live:hover { background: var(--ink-2); }
+.btn-open.soon {
+  background: transparent; color: var(--ink-3);
+  border: 1px solid var(--line);
+}
+.btn-open.soon:hover { background: var(--paper-3); border-color: var(--line-2); }
+
+/* ANALYZER */
+.az-wrap {
+  background: var(--paper-2); border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: 1.75rem 1.5rem; box-shadow: var(--shadow);
+}
+.az-title { font-size: 1.05rem; font-weight: 700; letter-spacing: -.025em; margin-bottom: .3rem; }
+.az-sub { font-size: .84rem; color: var(--ink-4); line-height: 1.6; margin-bottom: 1.1rem; }
+.url-row { display: flex; gap: .5rem; margin-bottom: .5rem; }
+.url-in {
+  flex: 1; min-width: 0;
+  background: var(--paper); border: 1px solid var(--line-2);
+  border-radius: var(--r-sm); padding: .62rem .875rem;
+  font-family: 'Instrument Mono', monospace; font-size: .78rem;
+  color: var(--ink); outline: none; transition: all .15s;
+}
+.url-in::placeholder { color: var(--ink-5); }
+.url-in:focus { border-color: var(--ink); background: var(--paper); box-shadow: 0 0 0 3px rgba(0,0,0,.06); }
+@media (prefers-color-scheme: dark) {
+  .url-in:focus { box-shadow: 0 0 0 3px rgba(255,255,255,.06); }
+}
+.btn-az {
+  background: var(--ink); color: var(--paper); border: none;
+  border-radius: var(--r-sm); padding: .62rem 1rem;
+  font-size: .84rem; font-weight: 600; cursor: pointer;
+  white-space: nowrap; transition: all .15s;
+  font-family: 'Instrument Sans', sans-serif; flex-shrink: 0;
+}
+.btn-az:hover { background: var(--ink-2); }
+.az-note { font-family: 'Instrument Mono', monospace; font-size: .67rem; color: var(--ink-5); }
+.prog-wrap { display: none; margin-top: 1rem; }
+.prog-bar { height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; margin-bottom: .5rem; }
+.prog-fill { height: 100%; background: var(--fire); border-radius: 2px; transition: width .4s ease; width: 0%; }
+.prog-text { font-family: 'Instrument Mono', monospace; font-size: .7rem; color: var(--ink-4); }
+.res-card { display: none; margin-top: 1rem; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.res-top { padding: .9rem 1rem; border-bottom: 1px solid var(--line); }
+.res-path { font-family: 'Instrument Mono', monospace; font-size: .65rem; color: var(--ink-5); margin-bottom: .25rem; }
+.res-name { font-size: .95rem; font-weight: 650; color: var(--ink); margin-bottom: .3rem; }
+.res-desc { font-size: .8rem; color: var(--ink-4); line-height: 1.55; margin-bottom: .65rem; }
+.res-chips { display: flex; gap: .3rem; flex-wrap: wrap; }
+.chip {
+  font-family: 'Instrument Mono', monospace; font-size: .65rem; font-weight: 500;
+  padding: .17rem .48rem; border-radius: 100px;
+  background: var(--paper-3); color: var(--ink-4); border: 1px solid var(--line);
+}
+.chip.hi { background: var(--fire-dim); color: var(--fire); border-color: var(--fire-ring); }
+.res-body { padding: .875rem 1rem; display: flex; flex-direction: column; gap: .65rem; }
+.rr { display: flex; gap: .65rem; align-items: flex-start; }
+.rr-icon { font-size: .9rem; width: 18px; flex-shrink: 0; margin-top: 2px; }
+.rr-tag { font-family: 'Instrument Mono', monospace; font-size: .58rem; color: var(--ink-5); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .1rem; }
+.rr-val { font-size: .83rem; font-weight: 600; color: var(--ink); }
+.res-foot {
+  padding: .875rem 1rem; border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .75rem; flex-wrap: wrap; background: var(--paper-2);
+}
+.res-note { font-size: .73rem; color: var(--ink-4); flex: 1; min-width: 140px; line-height: 1.5; }
+.res-acts { display: flex; gap: .4rem; }
+.err-bar {
+  display: none; margin-top: .875rem; padding: .65rem .9rem;
+  background: var(--stop-dim); border: 1px solid #fca5a5;
+  border-radius: var(--r-sm); font-size: .78rem; color: var(--stop);
+}
+@media (prefers-color-scheme: dark) { .err-bar { border-color: #7f1d1d; } }
+
+/* REQUESTS */
+.req-stack { display: flex; flex-direction: column; gap: .5rem; }
+.req-row {
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--r-sm); padding: .8rem .9rem;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .75rem; flex-wrap: wrap; transition: border-color .15s;
+}
+.req-row:hover { border-color: var(--line-2); }
+.req-repo { font-family: 'Instrument Mono', monospace; font-size: .75rem; color: var(--ink-2); font-weight: 500; }
+.req-meta { font-size: .7rem; color: var(--ink-5); margin-top: .1rem; }
+.req-badge {
+  font-family: 'Instrument Mono', monospace; font-size: .6rem; font-weight: 600;
+  padding: .17rem .48rem; border-radius: 100px; white-space: nowrap;
+}
+.req-badge.pending { background: var(--fire-dim); color: var(--fire); }
+.req-badge.building { background: var(--sky-dim); color: var(--sky); }
+.req-badge.live { background: var(--go-dim); color: var(--go); }
 
 /* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;align-items:center;justify-content:center;padding:1.25rem;backdrop-filter:blur(4px)}
-.modal-overlay.active{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border);max-width:420px;width:100%;padding:2rem 1.5rem;position:relative;text-align:center}
-.modal-close{position:absolute;top:0.75rem;right:1rem;font-family:'Space Mono',monospace;font-size:1rem;color:var(--gray);cursor:pointer;background:none;border:none;line-height:1}
-.modal-close:hover{color:var(--white)}
-.modal-icon{font-size:2.5rem;margin-bottom:1rem;display:block}
-.modal h3{font-size:1.2rem;font-weight:800;margin-bottom:0.5rem;color:var(--white)}
-.modal p{font-size:0.85rem;color:var(--gray-l);line-height:1.65;margin-bottom:1.5rem}
-.modal-app-name{color:var(--purple-l);font-weight:700}
-.email-form{display:flex;flex-direction:column;gap:0.6rem}
-.email-input{background:var(--card);border:1px solid var(--border);color:var(--white);padding:0.75rem 0.9rem;font-family:'Space Mono',monospace;font-size:0.78rem;outline:none;transition:border-color 0.2s;width:100%}
-.email-input::placeholder{color:var(--gray)}.email-input:focus{border-color:var(--purple)}
-.email-submit{background:var(--purple);color:#fff;border:none;padding:0.75rem;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:background 0.2s;width:100%}
-.email-submit:hover{background:#6d28d9}
-.modal-success{display:none;background:rgba(16,185,129,0.1);border:1px solid var(--green);color:var(--green);padding:1rem;font-family:'Space Mono',monospace;font-size:0.78rem;margin-top:0.75rem}
-.modal-skip{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--gray);cursor:pointer;margin-top:0.75rem;display:block;text-align:center;text-decoration:underline}
-.modal-skip:hover{color:var(--gray-l)}
+.modal-bg {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.55); z-index: 500;
+  align-items: center; justify-content: center;
+  padding: 1.25rem; backdrop-filter: blur(6px);
+}
+.modal-bg.on { display: flex; }
+.modal-box {
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--r-lg); max-width: 380px; width: 100%;
+  padding: 1.75rem 1.5rem; position: relative;
+  box-shadow: var(--shadow-lg);
+}
+.modal-x {
+  position: absolute; top: .875rem; right: .875rem;
+  width: 26px; height: 26px; border-radius: 6px;
+  background: var(--paper-3); border: 1px solid var(--line);
+  color: var(--ink-4); cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  font-size: .72rem; transition: all .15s;
+}
+.modal-x:hover { color: var(--ink); background: var(--paper-2); }
+.m-ico { font-size: 1.9rem; margin-bottom: .875rem; display: block; }
+.modal-box h3 { font-size: 1.02rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: .35rem; }
+.modal-box p { font-size: .83rem; color: var(--ink-4); line-height: 1.65; margin-bottom: 1.1rem; }
+.m-app-name { color: var(--fire); font-weight: 650; }
+.email-fld {
+  width: 100%; background: var(--paper-2);
+  border: 1px solid var(--line-2); border-radius: var(--r-sm);
+  padding: .62rem .875rem; font-family: 'Instrument Sans', sans-serif;
+  font-size: .86rem; color: var(--ink); outline: none; margin-bottom: .55rem;
+  transition: all .15s;
+}
+.email-fld:focus { border-color: var(--ink); background: var(--paper); }
+.btn-notify {
+  width: 100%; background: var(--ink); color: var(--paper);
+  border: none; border-radius: var(--r-sm); padding: .68rem;
+  font-family: 'Instrument Sans', sans-serif; font-size: .88rem;
+  font-weight: 600; cursor: pointer; transition: opacity .15s;
+}
+.btn-notify:hover { opacity: .88; }
+.m-ok {
+  display: none; background: var(--go-dim); color: var(--go);
+  padding: .65rem .9rem; border-radius: var(--r-sm); font-size: .8rem;
+  font-weight: 500; text-align: center; margin-top: .55rem;
+}
+.m-skip {
+  display: block; text-align: center; font-size: .75rem;
+  color: var(--ink-5); cursor: pointer; margin-top: .65rem;
+  text-decoration: underline; text-underline-offset: 2px;
+}
 
-footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:1.5rem 1.25rem;text-align:center}
-footer p{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--gray);margin-top:0.28rem;letter-spacing:0.05em}
-.version-tag{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--orange);border:1px solid rgba(245,158,11,0.3);padding:0.15rem 0.45rem;display:inline-block;margin-bottom:0.5rem}
-.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
-@media(max-width:480px){
-  .stats-bar{flex-wrap:wrap}
-  .stat{min-width:50%;border-right:none;border-bottom:1px solid var(--border)}
-  .stat:nth-child(odd){border-right:1px solid var(--border)}
-  .stat:last-child,.stat:nth-last-child(2):nth-child(odd){border-bottom:none}
-  .url-form{flex-direction:column}
-  .url-input{border-right:1px solid var(--border);border-bottom:none}
-  .apps-grid{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr}
-  .attrib-grid{grid-template-columns:1fr}
-  .analysis-footer{flex-direction:column}
-  h1{font-size:2.2rem}
-  .btn-primary,.btn-ghost{width:100%;text-align:center;display:block}
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--line); padding: 1.5rem 1.25rem;
+  text-align: center; background: var(--paper);
+}
+.f-logo { font-size: .95rem; font-weight: 700; letter-spacing: -.02em; color: var(--ink); margin-bottom: .35rem; }
+footer p { font-size: .72rem; color: var(--ink-5); line-height: 1.7; }
+.f-tag {
+  display: inline-block; font-family: 'Instrument Mono', monospace;
+  font-size: .58rem; padding: .12rem .38rem;
+  background: var(--fire-dim); color: var(--fire);
+  border-radius: 4px; margin-bottom: .5rem; font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .stats-row { flex-wrap: wrap; }
+  .stat { min-width: 50%; }
+  .stat:nth-child(odd) { border-right: 1px solid var(--line); }
+  .stat:nth-child(even) { border-right: none; }
+  .url-row { flex-direction: column; }
+  .app-grid { grid-template-columns: 1fr; }
+  .how-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
 <body>
 
-<!-- COMING SOON MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <span class="modal-icon" id="modalIcon">🧠</span>
-    <h3><span class="modal-app-name" id="modalAppName">Llama 3</span> is Coming to A-Store</h3>
-    <p>We're building this app for your phone right now. Enter your email and we'll notify you the moment it's ready to install.</p>
-    <div class="email-form">
-      <input class="email-input" id="modalEmail" type="email" placeholder="your@email.com"/>
-      <button class="email-submit" onclick="submitEmail()">NOTIFY ME WHEN IT'S LIVE →</button>
-    </div>
-    <div class="modal-success" id="modalSuccess">✓ You're on the list! We'll email you when this app is live.</div>
-    <span class="modal-skip" onclick="closeModal()">No thanks, just browsing</span>
+<div class="modal-bg" id="mb" onclick="closeBg(event)">
+  <div class="modal-box">
+    <button class="modal-x" onclick="closeM()">✕</button>
+    <span class="m-ico" id="mIco">🧠</span>
+    <h3><span class="m-app-name" id="mApp">Llama 3</span> is coming to A-Store</h3>
+    <p>We're building this app right now. Drop your email and we'll notify you the moment it's ready.</p>
+    <input class="email-fld" id="mEmail" type="email" placeholder="your@email.com"/>
+    <button class="btn-notify" onclick="doNotify()">Notify me when it's ready</button>
+    <div class="m-ok" id="mOk">✓ You're on the list.</div>
+    <span class="m-skip" onclick="closeM()">No thanks</span>
   </div>
 </div>
 
 <nav>
-  <div class="logo">A<span>—</span>STORE</div>
-  <a href="request.html" style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--green);border:1px solid var(--green);padding:0.18rem 0.5rem;text-decoration:none;letter-spacing:0.08em;white-space:nowrap">REQUEST APP →</a><div class="nav-badges">
-    <span class="nbadge nbadge-orange">PROTOTYPE v0.1</span>
-    <span class="nbadge nbadge-cyan">BETA COMING SOON</span>
+  <a href="#" class="logo">
+    <div class="logo-mark">A</div>
+    <span class="logo-name">A-Store</span>
+  </a>
+  <div class="nav-r">
+    <span class="nav-proto">PROTOTYPE</span>
+    <a href="request.html" class="nav-btn">Request</a>
   </div>
 </nav>
 
-<div class="proto-banner">
-  <p>⚠ PROTOTYPE v0.1 — This is an early demo. Features are being actively built.</p>
-</div>
-
 <div class="hero">
-  <div class="hero-glow"></div>
-  <span class="hero-tag">THE OPEN-SOURCE AI APP STORE</span>
-  <h1>Every AI Model.<br><span class="accent">One Store.</span><br><span class="stroke">Any Device.</span></h1>
-  <p class="hero-sub">Paste a GitHub repo URL. We convert it into a real app — optimized for your device, ready to install, no terminal required.</p>
-  <div class="hero-btns">
-    <a href="#submit" class="btn-primary">Analyze a Repo →</a>
-    <a href="#apps" class="btn-ghost">Browse Apps</a>
-  </div>
-  <p style="margin-top:1.25rem;font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--gray)">Want a specific app? <a href="request.html" style="color:var(--purple-l);text-decoration:none;border-bottom:1px solid rgba(124,58,237,0.4)">Submit a request and vote →</a></p>
-</div>
-
-<div class="ticker-wrap">
-  <div class="ticker">
-    <span class="ticker-item"><span>▸</span>LLAMA 3 BY META</span>
-    <span class="ticker-item"><span>▸</span>WHISPER BY OPENAI</span>
-    <span class="ticker-item"><span>▸</span>QWEN 2.5 BY ALIBABA</span>
-    <span class="ticker-item"><span>▸</span>KIMI K2 BY MOONSHOT</span>
-    <span class="ticker-item"><span>▸</span>STABLE DIFFUSION</span>
-    <span class="ticker-item"><span>▸</span>MISTRAL 7B</span>
-    <span class="ticker-item"><span>▸</span>DEEPSEEK R1</span>
-    <span class="ticker-item"><span>▸</span>LLAMA 3 BY META</span>
-    <span class="ticker-item"><span>▸</span>WHISPER BY OPENAI</span>
-    <span class="ticker-item"><span>▸</span>QWEN 2.5 BY ALIBABA</span>
-    <span class="ticker-item"><span>▸</span>KIMI K2 BY MOONSHOT</span>
-    <span class="ticker-item"><span>▸</span>STABLE DIFFUSION</span>
-    <span class="ticker-item"><span>▸</span>MISTRAL 7B</span>
-    <span class="ticker-item"><span>▸</span>DEEPSEEK R1</span>
+  <span class="hero-eyebrow">Open-Source AI App Store</span>
+  <h1>Every AI model.<br><em>One store.</em></h1>
+  <p class="hero-body">Paste any GitHub repo URL. We analyze the model, optimize it for your device, and ship it as a real installable app — no terminal, no Python, no setup.</p>
+  <div class="hero-actions">
+    <a href="#apps" class="btn-fill">Browse apps →</a>
+    <a href="#analyze" class="btn-line">Analyze a repo</a>
   </div>
 </div>
 
-<div class="stats-bar">
-  <div class="stat"><span class="stat-n" id="repoCount">—</span><span class="stat-l">REPOS REQUESTED</span></div>
-  <div class="stat"><span class="stat-n" id="emailCount">—</span><span class="stat-l">ON WAITLIST</span></div>
-  <div class="stat"><span class="stat-n">₹0</span><span class="stat-l">TO DOWNLOAD ANY APP</span></div>
-  <div class="stat"><span class="stat-n">100%</span><span class="stat-l">OPEN SOURCE ONLY</span></div>
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span class="mi">Llama 3 by Meta</span>
+    <span class="mi">Whisper by OpenAI</span>
+    <span class="mi">Qwen 2.5 by Alibaba</span>
+    <span class="mi">Stable Diffusion</span>
+    <span class="mi">Mistral 7B</span>
+    <span class="mi">DeepSeek R1</span>
+    <span class="mi">Phi-3 by Microsoft</span>
+    <span class="mi">Gemma by Google</span>
+    <span class="mi">Llama 3 by Meta</span>
+    <span class="mi">Whisper by OpenAI</span>
+    <span class="mi">Qwen 2.5 by Alibaba</span>
+    <span class="mi">Stable Diffusion</span>
+    <span class="mi">Mistral 7B</span>
+    <span class="mi">DeepSeek R1</span>
+    <span class="mi">Phi-3 by Microsoft</span>
+    <span class="mi">Gemma by Google</span>
+  </div>
 </div>
 
-<section>
-  <span class="section-tag">HOW IT WORKS</span>
-  <h2>Three Steps.<br>From Repo to Reality.</h2>
-  <div class="steps reveal">
-    <div class="step"><span class="step-num">STEP 01</span><span class="step-icon">🔗</span><h3>Paste the GitHub URL</h3><p>Any open-source repo. AI models, image generators, speech tools — if it's on GitHub, we handle it.</p></div>
-    <div class="step"><span class="step-num">STEP 02</span><span class="step-icon">⚙️</span><h3>We Build & Optimize</h3><p>Our engine detects the model type, checks licensing, and creates device-matched versions in 24–48 hrs.</p></div>
-    <div class="step"><span class="step-num">STEP 03</span><span class="step-icon">📲</span><h3>Download & Use</h3><p>Install like any normal app. No terminal. No Python. No setup. Just tap and run.</p></div>
-    <div class="step"><span class="step-num">STEP 04</span><span class="step-icon">☁️</span><h3>Run on Cloud</h3><p>Low-end device? Stream full-power models from our cloud. Pay only for what you use.</p></div>
-  </div>
-</section>
+<div class="stats-row">
+  <div class="stat"><span class="stat-num" id="sc">—</span><span class="stat-label">Requested</span></div>
+  <div class="stat"><span class="stat-num" id="ec">—</span><span class="stat-label">Waitlist</span></div>
+  <div class="stat"><span class="stat-num">₹0</span><span class="stat-label">To Download</span></div>
+  <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Open Source</span></div>
+</div>
 
-<section>
-  <span class="section-tag">DEVICE INTELLIGENCE</span>
-  <h2>Right Model. Right Device. Auto.</h2>
-  <div class="device-banner reveal">
-    <span style="font-size:1.3rem">📱</span>
-    <p><strong>Your device is detected automatically.</strong> Low RAM phone gets a 1B model. Mid-range gets 3B. Laptop gets 7B+. Full cloud power available anytime.</p>
-  </div>
-  <div class="apps-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:0">
-    <div class="attrib-card reveal"><span class="attrib-label" style="color:var(--purple-l)">📱 LOW-END (2–3GB RAM)</span><div class="attrib-title">Llama 1B · Whisper Tiny</div><div class="attrib-sub">Runs fully offline. No internet after install.</div></div>
-    <div class="attrib-card reveal"><span class="attrib-label" style="color:var(--cyan)">📱 MID-RANGE (4–6GB RAM)</span><div class="attrib-title">Llama 3B · Whisper Base</div><div class="attrib-sub">Smart and capable. Good quality outputs locally.</div></div>
-    <div class="attrib-card reveal"><span class="attrib-label" style="color:var(--green)">💻 LAPTOP (8GB+ RAM)</span><div class="attrib-title">Llama 7B · Whisper Large</div><div class="attrib-sub">Near full performance. Maximum quality.</div></div>
-    <div class="attrib-card reveal"><span class="attrib-label" style="color:var(--orange)">☁️ ANY DEVICE — CLOUD</span><div class="attrib-title">Full 70B+ Models</div><div class="attrib-sub">Stream the most powerful version. Pay per use.</div></div>
-  </div>
-</section>
+<div class="main">
 
-<section id="apps">
-  <div class="apps-header">
-    <div><span class="section-tag">BROWSE THE STORE</span><h2>Featured Apps</h2></div>
-    <div class="filter-tabs">
-      <button class="tab active" onclick="filterApps('all',this)">ALL</button>
-      <button class="tab" onclick="filterApps('llm',this)">CHAT AI</button>
-      <button class="tab" onclick="filterApps('vision',this)">IMAGE</button>
-      <button class="tab" onclick="filterApps('audio',this)">AUDIO</button>
+  <div class="s-tag">How it works</div>
+  <div class="s-title">From repo to app, automated</div>
+  <div class="how-grid">
+    <div class="how-cell"><div class="how-num">01</div><span class="how-icon">🔗</span><div class="how-name">Paste URL</div><div class="how-desc">Any public GitHub repo — AI models, tools, generators, speech, vision.</div></div>
+    <div class="how-cell"><div class="how-num">02</div><span class="how-icon">⚙️</span><div class="how-name">We Build It</div><div class="how-desc">Our system analyzes the model, detects device requirements, and builds the app.</div></div>
+    <div class="how-cell"><div class="how-num">03</div><span class="how-icon">📲</span><div class="how-name">Download</div><div class="how-desc">Tap download. Installs like any normal app. No terminal. No Python. No setup.</div></div>
+    <div class="how-cell"><div class="how-num">04</div><span class="how-icon">☁️</span><div class="how-name">Cloud or Local</div><div class="how-desc">Small phone gets a smaller model. Big phone gets full power. Cloud always available.</div></div>
+  </div>
+
+  <div class="rule"></div>
+
+  <div id="apps">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.1rem">
+      <div><div class="s-tag">Apps</div><div class="s-title">Browse the store</div></div>
+      <div class="filter-bar" style="margin-bottom:0">
+        <button class="ftab on" onclick="doFilter('all',this)">All</button>
+        <button class="ftab" onclick="doFilter('llm',this)">Chat AI</button>
+        <button class="ftab" onclick="doFilter('audio',this)">Audio</button>
+        <button class="ftab" onclick="doFilter('vision',this)">Image</button>
+      </div>
+    </div>
+    <div class="app-grid" id="ag"></div>
+  </div>
+
+  <div class="rule"></div>
+
+  <div id="analyze">
+    <div class="s-tag" style="margin-bottom:.75rem">Repo Analyzer</div>
+    <div class="az-wrap">
+      <div class="az-title">Analyze any GitHub repo</div>
+      <div class="az-sub">Paste a URL and A-Store will instantly tell you what kind of AI model it is, what hardware it needs, its license, and how we'd build it for your device.</div>
+      <div class="url-row">
+        <input class="url-in" id="urlIn" type="url" placeholder="https://github.com/openai/whisper" onkeydown="if(event.key==='Enter')doAnalyze()"/>
+        <button class="btn-az" onclick="doAnalyze()">Analyze →</button>
+      </div>
+      <div class="az-note">GitHub public API · free · no login needed</div>
+      <div class="prog-wrap" id="pw">
+        <div class="prog-bar"><div class="prog-fill" id="pf"></div></div>
+        <div class="prog-text" id="pt">Fetching repository...</div>
+      </div>
+      <div class="res-card" id="rc"></div>
+      <div class="err-bar" id="eb"></div>
     </div>
   </div>
-  <div class="apps-grid" id="appsGrid"></div>
-</section>
 
-<section>
-  <span class="section-tag">ATTRIBUTION SYSTEM</span>
-  <h2>Credit Where It's Due. Always.</h2>
-  <p style="color:var(--gray-l);max-width:500px;line-height:1.7">Every app in A-Store shows exactly who built the original model and who improved it.</p>
-  <div class="attrib-grid">
-    <div class="attrib-card reveal"><span class="attrib-label" style="color:var(--purple-l)">🏷 ORIGINAL MODEL</span><div class="attrib-title">Llama 3 — Original by Meta</div><div class="attrib-sub">The base model exactly as Meta released it. Unmodified, verified, trusted.</div></div>
-    <div class="attrib-card reveal"><span class="attrib-label" style="color:var(--cyan)">🔧 COMMUNITY EDITION</span><div class="attrib-title">Llama 3 — Improved by @devX</div><div class="attrib-sub">Fine-tuned by a verified community developer. Changes logged and visible.</div></div>
-    <div class="attrib-card reveal"><span class="attrib-label" style="color:var(--green)">⭐ GITHUB STARS SYNCED</span><div class="attrib-title">Discovery via Real Reputation</div><div class="attrib-sub">GitHub stars imported into our ranking. No paid promotion. Pure merit.</div></div>
-  </div>
-</section>
+  <div class="rule"></div>
 
-<section id="submit">
-  <div class="submit-section reveal">
-    <span class="section-tag" style="color:var(--cyan)">LIVE REPO ANALYZER</span>
-    <h2>Paste Any GitHub Repo.<br>See What App It Becomes.</h2>
-    <p>A-Store reads the repository in real time — detects model type, required hardware, license, and saves your request to our public waitlist.</p>
-    <div class="url-form">
-      <input class="url-input" id="repoUrl" type="url" placeholder="https://github.com/openai/whisper" onkeydown="if(event.key==='Enter')analyzeRepo()"/>
-      <button class="url-submit" onclick="analyzeRepo()">ANALYZE →</button>
+  <div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">
+      <div><div class="s-tag">Community</div><div class="s-title">Requested apps</div></div>
+      <a href="request.html" class="btn-line" style="font-size:.8rem;padding:.32rem .75rem">View all & vote →</a>
     </div>
-    <p class="form-note">USES GITHUB PUBLIC API · FREE · NO ACCOUNT NEEDED</p>
-    <div id="analyzeLoader" style="display:none;margin-top:1.5rem">
-      <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
-      <p class="loader-text" id="loaderText">Fetching repository data...</p>
-    </div>
-    <div id="analysisResult" style="display:none;margin-top:1.5rem"></div>
-    <div class="err-box" id="analyzeError"></div>
+    <div class="req-stack" id="rl"><div style="font-size:.8rem;color:var(--ink-5);text-align:center;padding:1.5rem">Loading...</div></div>
   </div>
-</section>
 
-<section id="requested">
-  <span class="section-tag">COMMUNITY REQUESTS</span>
-  <h2>Apps People Want.</h2>
-  <p style="color:var(--gray-l);max-width:500px;line-height:1.7;margin-bottom:0">Every repo submitted appears here. Vote for the apps you want built first — most votes get built first.</p>
-  <a href="request.html" style="display:inline-block;margin-top:1rem;font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--purple-l);border:1px solid rgba(124,58,237,0.4);padding:0.3rem 0.8rem;text-decoration:none;transition:all 0.2s">VIEW ALL REQUESTS + VOTE →</a>
-  <div class="requested-list" id="requestedList">
-    <div style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--gray);text-align:center;padding:2rem">Loading requests...</div>
-  </div>
-</section>
+</div>
 
 <footer>
-  <div class="version-tag">PROTOTYPE v0.1 · BUILT IN PUBLIC</div><br>
-  <div class="logo" style="display:inline-block;margin-bottom:0.35rem">A<span style="color:var(--purple)">—</span>STORE</div>
-  <p>THE OPEN-SOURCE AI APP STORE · BUILT FOR INDIA, MADE FOR THE WORLD</p>
-  <p>© 2025 A-STORE · ALL MODELS REMAIN PROPERTY OF THEIR RESPECTIVE CREATORS</p>
+  <div class="f-tag">PROTOTYPE v0.1</div>
+  <div class="f-logo">A-Store</div>
+  <p>Open-source AI app store · Built in India, made for the world</p>
+  <p>© 2026 A-Store · All models remain property of their original creators</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPA_URL='https://jzqmjvxwtguaubsfklpf.supabase.co';
-const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6cW1qdnh3dGd1YXVic2ZrbHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NDIzNzAsImV4cCI6MjA4ODMxODM3MH0.vuXY2Py1VjcNbD2H7IL68cFN6jkO1tBBUyzIB6yziSA';
-const{createClient}=supabase;
-const db=createClient(SUPA_URL,SUPA_KEY);
-
-// App that's currently selected in modal
-let currentModalApp=null;
-
+const SU='https://jzqmjvxwtguaubsfklpf.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6cW1qdnh3dGd1YXVic2ZrbHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NDIzNzAsImV4cCI6MjA4ODMxODM3MH0.vuXY2Py1VjcNbD2H7IL68cFN6jkO1tBBUyzIB6yziSA';
+const {createClient}=supabase;const db=createClient(SU,SK);
+let cur=null;
 const apps=[
-  {id:'llama3',category:'llm',icon:'🦙',iconBg:'rgba(124,58,237,0.2)',name:'Llama 3 Chat',maker:'META AI',desc:'Full conversational AI. Ask anything, get smart answers. Runs offline on your phone.',stars:'87.4k',accent:'#7c3aed',devices:['1B','3B','7B','CLOUD'],href:'Chat/'},
-  {id:'whisper',category:'audio',icon:'🎙️',iconBg:'rgba(6,182,212,0.2)',name:'Whisper STT',maker:'OPENAI',desc:'Speech to text in 99 languages. Record your voice, get instant accurate transcription.',stars:'74.1k',accent:'#06b6d4',devices:['TINY','BASE','LARGE'],href:'Whisper/'},
-  {id:'qwen',category:'llm',icon:'🌐',iconBg:'rgba(16,185,129,0.2)',name:'Qwen 2.5',maker:'ALIBABA',desc:'Powerful multilingual AI. Excellent at coding, math, and reasoning tasks.',stars:'42.8k',accent:'#10b981',devices:['1.5B','7B','CLOUD']},
-  {id:'sdxl',category:'vision',icon:'🎨',iconBg:'rgba(245,158,11,0.2)',name:'Stable Diffusion',maker:'STABILITY AI',desc:'Generate stunning images from text. Type what you imagine, see it come to life.',stars:'38.2k',accent:'#f59e0b',devices:['LITE','CLOUD']},
-  {id:'mistral',category:'llm',icon:'💨',iconBg:'rgba(167,139,250,0.2)',name:'Mistral 7B',maker:'MISTRAL AI',desc:'Lightning fast, surprisingly smart. Best-in-class for speed on mid-range devices.',stars:'31.5k',accent:'#a78bfa',devices:['7B','CLOUD']},
-  {id:'deepseek',category:'llm',icon:'🔍',iconBg:'rgba(239,68,68,0.2)',name:'DeepSeek R1',maker:'DEEPSEEK AI',desc:'Reasoning model that shows its thinking step by step. Great for complex problems.',stars:'67.3k',accent:'#ef4444',devices:['1.5B','7B','CLOUD']}
+  {id:'whisper',svg:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0369a1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>',cat:'audio',ico:'W',bg:'#f0f9ff',name:'Whisper',by:'OpenAI',desc:'Speech to text in 99 languages. Record voice, get accurate transcription instantly.',stars:'74.1k',tags:['Audio','Offline'],href:'Whisper/'},
+  {id:'llama',svg:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="9" y2="10"/><line x1="12" y1="10" x2="12" y2="10"/><line x1="15" y1="10" x2="15" y2="10"/></svg>',cat:'llm',ico:'🦙',bg:'#f0fdf4',name:'Llama 3 Chat',by:'Meta AI',desc:'Full conversational AI. Ask anything, get smart answers. Multiple model sizes.',stars:'87.4k',tags:['Chat AI','Offline'],href:'Chat/'},
+  {id:'qwen',svg:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',cat:'llm',ico:'🌐',bg:'#fdf4ff',name:'Qwen 2.5',by:'Alibaba',desc:'Powerful multilingual AI. Excellent at coding, math, and complex reasoning.',stars:'42.8k',tags:['Chat AI','Multilingual']},
+  {id:'sd',svg:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',cat:'vision',ico:'🎨',bg:'#fff7ed',name:'Stable Diffusion',by:'Stability AI',desc:'Generate images from text descriptions. Type what you imagine, see it created.',stars:'38.2k',tags:['Image','Creative']},
+  {id:'mistral',svg:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',cat:'llm',ico:'💨',bg:'#fafafa',name:'Mistral 7B',by:'Mistral AI',desc:'Lightning fast and remarkably capable. Best performance per parameter on mobile.',stars:'31.5k',tags:['Chat AI','Fast']},
+  {id:'deepseek',svg:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>',cat:'llm',ico:'🔍',bg:'#fef2f2',name:'DeepSeek R1',by:'DeepSeek',desc:'Reasoning model that shows its thinking step by step. Built for complex problems.',stars:'67.3k',tags:['Chat AI','Reasoning']},
 ];
-
 function renderApps(f){
-  const g=document.getElementById('appsGrid');
-  const list=f==='all'?apps:apps.filter(a=>a.category===f);
-  g.innerHTML=list.map(a=>`
-    <div class="app-card" style="--accent-color:${a.accent}">
-      <div class="card-header">
-        <div class="app-icon" style="background:${a.iconBg}">${a.icon}</div>
-        <div class="card-meta"><h3>${a.name}</h3><span class="maker">${a.maker}</span></div>
+  const list=f==='all'?apps:apps.filter(a=>a.cat===f);
+  document.getElementById('ag').innerHTML=list.map(a=>`
+    <div class="acard">
+      <div class="ac-top">
+        <div class="ac-icon" style="background:${a.bg}">${a.svg}</div>
+        <div><div class="ac-name">${a.name}</div><div class="ac-maker">${a.by}</div></div>
       </div>
-      <p class="app-desc">${a.desc}</p>
-      <div class="card-footer">
-        <span class="stars">★ ${a.stars}</span>
-        <div class="device-tags">${a.devices.map((d,i)=>`<span class="device-tag ${i===0?'fit':''}">${d}</span>`).join('')}</div>
-        ${a.href
-          ? `<a class="get-btn" href="${a.href}" target="_blank">${a.href.includes('whisper')?'OPEN APP →':'TRY DEMO →'}</a>`
-          : `<button class="coming-badge" onclick="openModal('${a.id}','${a.name}','${a.icon}')">NOTIFY ME →</button>`
-        }
+      <div class="ac-desc">${a.desc}</div>
+      <div class="ac-foot">
+        <div class="ac-tags">${a.tags.map(t=>`<span class="atag">${t}</span>`).join('')}</div>
+        <span class="ac-stars">★ ${a.stars}</span>
+        ${a.href?`<a class="btn-open live" href="${a.href}">Open →</a>`:`<button class="btn-open soon" onclick="openM('${a.id}','${a.name}','${a.ico}')">Notify me</button>`}
       </div>
     </div>`).join('');
 }
-
-function filterApps(cat,btn){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  renderApps(cat);
-}
-
-// MODAL
-function openModal(id,name,icon){
-  currentModalApp={id,name};
-  document.getElementById('modalIcon').textContent=icon;
-  document.getElementById('modalAppName').textContent=name;
-  document.getElementById('modalEmail').value='';
-  document.getElementById('modalSuccess').style.display='none';
-  document.getElementById('modalOverlay').classList.add('active');
-  document.body.style.overflow='hidden';
-  setTimeout(()=>document.getElementById('modalEmail').focus(),100);
-}
-
-function closeModal(){
-  document.getElementById('modalOverlay').classList.remove('active');
-  document.body.style.overflow='';
-  currentModalApp=null;
-}
-
-function closeModalOnBg(e){
-  if(e.target===document.getElementById('modalOverlay'))closeModal();
-}
-
-async function submitEmail(){
-  const email=document.getElementById('modalEmail').value.trim();
-  if(!email||!email.includes('@')){
-    document.getElementById('modalEmail').style.borderColor='#ef4444';
-    setTimeout(()=>document.getElementById('modalEmail').style.borderColor='',2000);
-    return;
-  }
-  const btn=document.querySelector('.email-submit');
-  btn.textContent='SAVING...';btn.disabled=true;
-  try{
-    await db.from('email_waitlist').upsert({
-      email,
-      interest:currentModalApp?currentModalApp.name:'general',
-      source:'app_card'
-    },{onConflict:'email,interest'});
-    document.getElementById('modalSuccess').style.display='block';
-    btn.style.display='none';
-    document.getElementById('modalEmail').style.display='none';
-    loadEmailCount();
-    setTimeout(closeModal,2500);
-  }catch(e){
-    btn.textContent='NOTIFY ME WHEN IT\'S LIVE →';
-    btn.disabled=false;
-    document.getElementById('modalEmail').style.borderColor='#ef4444';
-  }
-}
-
-// Allow Enter key in modal
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')closeModal();
-  if(e.key==='Enter'&&document.getElementById('modalOverlay').classList.contains('active'))submitEmail();
-});
-
-window.addEventListener('DOMContentLoaded',()=>{
-  renderApps('all');
-  loadStats();
-  loadEmailCount();
-  loadRequested();
-
-});
-
-async function loadStats(){
-  try{
-    const{count}=await db.from('repo_requests').select('*',{count:'exact',head:true});
-    document.getElementById('repoCount').textContent=count||0;
-  }catch(e){document.getElementById('repoCount').textContent='0';}
-}
-
-async function loadEmailCount(){
-  try{
-    const{count}=await db.from('email_waitlist').select('*',{count:'exact',head:true});
-    document.getElementById('emailCount').textContent=count||0;
-  }catch(e){document.getElementById('emailCount').textContent='0';}
-}
-
-async function loadRequested(){
-  try{
-    const{data,error}=await db.from('repo_requests').select('*').order('submitted_at',{ascending:false}).limit(10);
-    const el=document.getElementById('requestedList');
-    if(error||!data||data.length===0){
-      el.innerHTML='<div style="font-family:\'Space Mono\',monospace;font-size:0.72rem;color:var(--gray);text-align:center;padding:2rem">No requests yet. Be the first to submit a repo above.</div>';
-      return;
-    }
-    el.innerHTML=data.map(r=>`<div class="req-item"><div><div class="req-repo">${r.repo_owner}/${r.repo_name}</div><div class="req-meta">${r.model_type||'AI Tool'}${r.stars?' · ★ '+r.stars:''}</div></div><span class="req-status ${r.status}">${r.status.toUpperCase()}</span></div>`).join('');
-  }catch(e){console.log('load error',e);}
-}
-
-
-
-async function analyzeRepo(){
-  const raw=document.getElementById('repoUrl').value.trim();
-  const errEl=document.getElementById('analyzeError');
-  const loader=document.getElementById('analyzeLoader');
-  const result=document.getElementById('analysisResult');
-  const fill=document.getElementById('loaderFill');
-  const ltxt=document.getElementById('loaderText');
-  errEl.style.display='none';result.style.display='none';
-  const match=raw.match(/github\.com\/([^\/]+)\/([^\/\?#]+)/);
-  if(!raw||!match){
-    errEl.textContent='✗ Need a full repo URL with owner AND repo name — e.g. https://github.com/openai/whisper (not just an org page)';
-    errEl.style.display='block';
-    document.getElementById('repoUrl').style.borderColor='#ef4444';
-    setTimeout(()=>document.getElementById('repoUrl').style.borderColor='',2000);
-    return;
-  }
-  const owner=match[1],repo=match[2].replace(/\.git$/,'');
-  loader.style.display='block';
-  const steps=[[15,'Fetching repository data...'],[35,'Reading description and topics...'],[55,'Detecting model type...'],[72,'Checking license...'],[88,'Estimating device requirements...'],[100,'Analysis complete.']];
-  let si=0;
-  const iv=setInterval(()=>{
-    if(si<steps.length){fill.style.width=steps[si][0]+'%';ltxt.textContent=steps[si][1];si++;}
-    else clearInterval(iv);
-  },480);
-  try{
-    const[rr,readR]=await Promise.all([
-      fetch(`https://api.github.com/repos/${owner}/${repo}`),
-      fetch(`https://api.github.com/repos/${owner}/${repo}/readme`).then(r=>r.ok?r.json():null).catch(()=>null)
-    ]);
-    if(!rr.ok)throw new Error(rr.status===404?'Repository not found. Make sure it is a public repo.':'GitHub API error. Please try again.');
-    const data=await rr.json();
-    let readme='';
-    if(readR&&readR.content){try{readme=atob(readR.content.replace(/\n/g,'')).substring(0,2000);}catch(e){}}
-    clearInterval(iv);fill.style.width='100%';ltxt.textContent='Analysis complete.';
-    setTimeout(()=>{loader.style.display='none';renderAnalysis(data,readme,owner,repo);},500);
-  }catch(err){
-    clearInterval(iv);loader.style.display='none';
-    errEl.textContent='✗ '+err.message;errEl.style.display='block';
-  }
-}
-
-function detectModel(data,rm){
-  const t=((data.description||'')+' '+(data.topics||[]).join(' ')+' '+rm).toLowerCase();
-  if(/whisper|speech|transcri|asr|stt/.test(t))return{type:'Speech-to-Text',icon:'🎙️'};
-  if(/diffusion|text.to.image|image.gen|sdxl|flux/.test(t))return{type:'Image Generation',icon:'🎨'};
-  if(/video.gen|text.to.video/.test(t))return{type:'Video Generation',icon:'🎬'};
-  if(/llm|language.model|llama|mistral|qwen|chat|instruct|deepseek|gemma|phi/.test(t))return{type:'Large Language Model',icon:'🧠'};
-  if(/vision|object.detect|yolo|clip|sam/.test(t))return{type:'Computer Vision',icon:'👁️'};
-  if(/embed|rag|retriev|semantic/.test(t))return{type:'Embedding / RAG',icon:'🔍'};
-  return{type:'AI / ML Tool',icon:'⚡'};
-}
-
-function detectDevice(data,rm){
-  const t=((data.description||'')+' '+rm).toLowerCase();
-  if(/70b|65b|34b|48b/.test(t))return{label:'Cloud Only',sub:'Very large model. Cloud streaming recommended.',col:'var(--orange)'};
-  if(/13b|20b|14b|22b/.test(t))return{label:'Laptop + Cloud',sub:'Runs on 16GB RAM laptop. Cloud for phones.',col:'var(--cyan)'};
-  if(/7b|8b|9b|11b/.test(t))return{label:'Mid-Range Phone (Cloud) / Laptop (Local)',sub:'4–8GB device for local. Cloud for low-end phones.',col:'var(--green)'};
-  if(/3b|2b|phi|tiny|small|lite|mini/.test(t))return{label:'Any Phone — Runs Locally',sub:'Lightweight. Works offline on 2GB+ RAM phones.',col:'var(--green)'};
-  if(/1b|0\.5b/.test(t))return{label:'Any Phone — Ultra Lightweight',sub:'Works even on 2GB RAM phones. Fully offline.',col:'var(--green)'};
-  return{label:'Mid-Range Device Recommended',sub:'Estimated to need a mid-range phone or laptop.',col:'var(--cyan)'};
-}
-
-function detectLicense(data){
-  const l=data.license;
-  if(!l)return{label:'No License Found',note:'Cannot be published without a clear open-source license.',ok:false};
-  const k=(l.spdx_id||'').toLowerCase();
-  if(/mit|apache|bsd|cc|lgpl|mpl/.test(k))return{label:l.name,note:'Open-source license.',ok:true};
-  if(/gpl/.test(k))return{label:l.name,note:'Copyleft license. Requires attribution.',ok:true};
-  return{label:l.name,note:'Custom license — legal review required.',ok:null};
-}
-
-function renderAnalysis(data,rm,owner,repo){
-  const m=detectModel(data,rm),d=detectDevice(data,rm),l=detectLicense(data);
-  const stars=data.stargazers_count>=1000?(data.stargazers_count/1000).toFixed(1)+'k':data.stargazers_count;
-  const lang=data.language||'Not specified';
-  const topics=(data.topics||[]).slice(0,5);
-  const desc=data.description||'No description provided.';
-  const updated=new Date(data.updated_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-  const licIcon=l.ok===true?'✅':l.ok===false?'❌':'⚠️';
-  const sf=s=>s.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  document.getElementById('analysisResult').style.display='block';
-  document.getElementById('analysisResult').innerHTML=`
-<div class="analysis-card">
-  <div class="analysis-top">
-    <div class="analysis-repo-name">▸ github.com/${owner}/${repo}</div>
-    <div class="analysis-title">${data.full_name}</div>
-    <div class="analysis-desc">${desc}</div>
-    <div class="analysis-meta">
-      <span class="meta-pill orange">★ ${stars} stars</span>
-      <span class="meta-pill cyan">${lang}</span>
-      ${topics.map(t=>`<span class="meta-pill">${t}</span>`).join('')}
-      <span class="meta-pill">Updated ${updated}</span>
-    </div>
-  </div>
-  <div class="analysis-rows">
-    <div class="analysis-row"><span class="row-icon">${m.icon}</span><div><div class="row-label">MODEL TYPE DETECTED</div><div class="row-value">${m.type}</div><div class="row-sub">A-Store would list this under the ${m.type} category.</div></div></div>
-    <div class="analysis-row"><span class="row-icon">📱</span><div><div class="row-label">DEVICE REQUIREMENT</div><div class="row-value" style="color:${d.col}">${d.label}</div><div class="row-sub">${d.sub}</div></div></div>
-    <div class="analysis-row"><span class="row-icon">${licIcon}</span><div><div class="row-label">LICENSE</div><div class="row-value">${l.label}</div><div class="row-sub">${l.note}</div></div></div>
-    <div class="analysis-row"><span class="row-icon">🏷</span><div><div class="row-label">ATTRIBUTION</div><div class="row-value">Original by ${data.owner.login}</div><div class="row-sub">A-Store labels this app with the original author. Community improvements get a separate attribution tag.</div></div></div>
-  </div>
-  <div class="analysis-footer">
-    <p>Auto-generated from public GitHub data. Full build review takes 24–48 hours.</p>
-    <a class="get-btn" href="https://github.com/${owner}/${repo}" target="_blank">VIEW ON GITHUB →</a>
-    <button class="get-btn" style="background:var(--green)" onclick="addWaitlist('${sf(data.full_name)}','${data.html_url}','${m.type}','${sf(l.label||'')}',${data.stargazers_count},'${sf(d.label)}','${sf(owner)}','${sf(repo)}')">ADD TO WAITLIST →</button>
-  </div>
-</div>`;
-}
-
-async function addWaitlist(fullName,url,modelType,licenseName,stars,deviceReq,owner,repo){
-  try{
-    const{data:existing}=await db.from('repo_requests').select('id').eq('github_url',url).maybeSingle();
-    if(existing){
-      const fp=document.querySelector('.analysis-footer p');
-      if(fp)fp.innerHTML=`<span style="color:var(--orange)">⚠ This repo is already in the waitlist.</span>`;
-      return;
-    }
-    await db.from('repo_requests').insert({github_url:url,repo_owner:owner,repo_name:repo,model_type:modelType,license_name:licenseName,stars,device_requirement:deviceReq,status:'pending'});
-    const fp=document.querySelector('.analysis-footer p');
-    if(fp)fp.innerHTML=`<span style="color:var(--green)">✓ Added to waitlist — we'll notify you when <strong>${fullName}</strong> is live.</span>`;
-    const btn=document.querySelector('.analysis-footer button');
-    if(btn){btn.textContent='ADDED ✓';btn.style.background='#065f46';btn.disabled=true;}
-    loadStats();loadRequested();
-  }catch(e){
-    const fp=document.querySelector('.analysis-footer p');
-    if(fp)fp.innerHTML=`<span style="color:var(--orange)">Could not save. Please try again.</span>`;
-  }
-}
-
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),i*80);});
-},{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
+function doFilter(cat,btn){document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('on'));btn.classList.add('on');renderApps(cat);}
+function openM(id,name,ico){cur={id,name};document.getElementById('mIco').textContent=ico;document.getElementById('mApp').textContent=name;document.getElementById('mEmail').value='';document.getElementById('mOk').style.display='none';document.querySelector('.btn-notify').style.display='block';document.getElementById('mEmail').style.display='block';document.getElementById('mb').classList.add('on');document.body.style.overflow='hidden';setTimeout(()=>document.getElementById('mEmail').focus(),100);}
+function closeM(){document.getElementById('mb').classList.remove('on');document.body.style.overflow='';cur=null;}
+function closeBg(e){if(e.target===document.getElementById('mb'))closeM();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();if(e.key==='Enter'&&document.getElementById('mb').classList.contains('on'))doNotify();});
+async function doNotify(){const email=document.getElementById('mEmail').value.trim();if(!email||!email.includes('@')){document.getElementById('mEmail').style.borderColor='var(--stop)';setTimeout(()=>document.getElementById('mEmail').style.borderColor='',2000);return;}const btn=document.querySelector('.btn-notify');btn.textContent='Saving...';btn.disabled=true;try{await db.from('email_waitlist').upsert({email,interest:cur?.name||'general',source:'app_card'},{onConflict:'email,interest'});document.getElementById('mOk').style.display='block';btn.style.display='none';document.getElementById('mEmail').style.display='none';loadStats();setTimeout(closeM,2000);}catch(e){btn.textContent='Notify me when it\'s ready';btn.disabled=false;}}
+async function loadStats(){try{const[{count:rc},{count:ec}]=await Promise.all([db.from('repo_requests').select('*',{count:'exact',head:true}),db.from('email_waitlist').select('*',{count:'exact',head:true})]);document.getElementById('sc').textContent=rc||0;document.getElementById('ec').textContent=ec||0;}catch(e){}}
+async function loadReqs(){try{const{data}=await db.from('repo_requests').select('*').order('submitted_at',{ascending:false}).limit(5);const el=document.getElementById('rl');if(!data||!data.length){el.innerHTML='<div style="font-size:.8rem;color:var(--ink-5);text-align:center;padding:1.5rem">No requests yet. Be the first.</div>';return;}el.innerHTML=data.map(r=>`<div class="req-row"><div><div class="req-repo">${r.repo_owner}/${r.repo_name}</div><div class="req-meta">${r.model_type||'AI Tool'}${r.stars?' · ★ '+r.stars:''}</div></div><span class="req-badge ${r.status}">${r.status}</span></div>`).join('');}catch(e){}}
+async function doAnalyze(){const raw=document.getElementById('urlIn').value.trim();const eb=document.getElementById('eb');const pw=document.getElementById('pw');const rc=document.getElementById('rc');const pf=document.getElementById('pf');const pt=document.getElementById('pt');eb.style.display='none';rc.style.display='none';const m=raw.match(/github\.com\/([^\/]+)\/([^\/\?#]+)/);if(!raw||!m){eb.textContent='Please paste a full GitHub URL — e.g. https://github.com/openai/whisper';eb.style.display='block';return;}const owner=m[1],repo=m[2].replace(/\.git$/,'');pw.style.display='block';const steps=[[15,'Fetching repository...'],[40,'Reading description...'],[65,'Detecting model type...'],[85,'Checking license...'],[100,'Done.']];let si=0;const iv=setInterval(()=>{if(si<steps.length){pf.style.width=steps[si][0]+'%';pt.textContent=steps[si][1];si++;}else clearInterval(iv);},500);try{const res=await fetch(`https://api.github.com/repos/${owner}/${repo}`);if(!res.ok)throw new Error(res.status===404?'Repository not found. Make sure it is public.':'GitHub API error. Please try again.');const data=await res.json();clearInterval(iv);pf.style.width='100%';pt.textContent='Done.';setTimeout(()=>{pw.style.display='none';showResult(data,owner,repo);},350);}catch(err){clearInterval(iv);pw.style.display='none';eb.textContent=err.message;eb.style.display='block';}}
+function dm(d){const t=((d.description||'')+' '+(d.topics||[]).join(' ')).toLowerCase();if(/whisper|speech|transcri|asr|stt/.test(t))return{type:'Speech-to-Text',ico:'🎙️'};if(/diffusion|text.to.image|image.gen/.test(t))return{type:'Image Generation',ico:'🎨'};if(/llm|language.model|llama|mistral|qwen|chat|deepseek|gemma|phi/.test(t))return{type:'Large Language Model',ico:'🧠'};if(/vision|yolo|clip|detect/.test(t))return{type:'Computer Vision',ico:'👁️'};return{type:'AI / ML Tool',ico:'⚡'};}
+function dd(d){const t=(d.description||'').toLowerCase();if(/70b|65b|34b/.test(t))return{l:'Cloud Only',c:'var(--fire)'};if(/7b|8b|13b/.test(t))return{l:'Laptop or Cloud',c:'var(--sky)'};if(/1b|2b|3b|tiny|small|lite|mini/.test(t))return{l:'Any Phone',c:'var(--go)'};return{l:'Mid-Range Device',c:'var(--sky)'};}
+function showResult(data,owner,repo){const m=dm(data),d=dd(data),l=data.license;const stars=data.stargazers_count>=1000?(data.stargazers_count/1000).toFixed(1)+'k':data.stargazers_count;const sf=s=>s.replace(/\\/g,'\\\\').replace(/'/g,"\\'");const rc=document.getElementById('rc');rc.style.display='block';rc.innerHTML=`<div class="res-top"><div class="res-path">github.com/${owner}/${repo}</div><div class="res-name">${data.full_name}</div><div class="res-desc">${data.description||'No description.'}</div><div class="res-chips"><span class="chip hi">★ ${stars}</span>${data.language?`<span class="chip">${data.language}</span>`:''} ${(data.topics||[]).slice(0,4).map(t=>`<span class="chip">${t}</span>`).join('')}</div></div><div class="res-body"><div class="rr"><span class="rr-icon">${m.ico}</span><div><div class="rr-tag">Model Type</div><div class="rr-val">${m.type}</div></div></div><div class="rr"><span class="rr-icon">📱</span><div><div class="rr-tag">Device</div><div class="rr-val" style="color:${d.c}">${d.l}</div></div></div><div class="rr"><span class="rr-icon">📄</span><div><div class="rr-tag">License</div><div class="rr-val">${l?l.name:'No License'}</div></div></div><div class="rr"><span class="rr-icon">🏷️</span><div><div class="rr-tag">Attribution</div><div class="rr-val">Original by ${data.owner.login}</div></div></div></div><div class="res-foot"><div class="res-note" id="rn">From public GitHub data. Build review takes 24–48h.</div><div class="res-acts"><a class="btn-line" href="https://github.com/${owner}/${repo}" target="_blank" style="font-size:.78rem;padding:.3rem .7rem">GitHub ↗</a><button class="btn-fill" style="font-size:.78rem;padding:.3rem .7rem" onclick="doWL('${sf(data.full_name)}','${data.html_url}','${m.type}','${sf(l?l.name:'')}',${data.stargazers_count},'${sf(d.l)}','${sf(owner)}','${sf(repo)}')">Add to Waitlist →</button></div></div>`;}
+async function doWL(fn,url,mt,ln,stars,dr,owner,repo){try{const{data:ex}=await db.from('repo_requests').select('id').eq('github_url',url).maybeSingle();if(ex){document.getElementById('rn').textContent='Already in the waitlist.';return;}await db.from('repo_requests').insert({github_url:url,repo_owner:owner,repo_name:repo,model_type:mt,license_name:ln,stars,device_requirement:dr,status:'pending',votes:0});document.getElementById('rn').innerHTML='<span style="color:var(--go)">✓ Added to waitlist.</span>';const btn=document.querySelector('.res-acts .btn-fill');if(btn){btn.textContent='Added ✓';btn.disabled=true;btn.style.background='var(--go)';}loadStats();loadReqs();}catch(e){document.getElementById('rn').textContent='Could not save. Try again.';}}
+window.addEventListener('DOMContentLoaded',()=>{renderApps('all');loadStats();loadReqs();});
 </script>
 </body>
 </html>
