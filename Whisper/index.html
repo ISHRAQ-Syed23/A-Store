@@ -1,540 +1,231 @@
-l<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="Whisper"/>
-<meta name="theme-color" content="#ffffff"/>
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme:light)"/>
+<meta name="theme-color" content="#0c0c0c" media="(prefers-color-scheme:dark)"/>
 <link rel="manifest" href="manifest.json"/>
 <title>Whisper — A-Store</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+:root{--ink:#0c0c0c;--ink-2:#1a1a1a;--ink-3:#404040;--ink-4:#737373;--ink-5:#a3a3a3;--paper:#ffffff;--paper-2:#fafafa;--paper-3:#f5f5f5;--line:#e5e5e5;--line-2:#d4d4d4;--fire:#f97316;--fire-dim:#fff7ed;--fire-ring:#fed7aa;--go:#16a34a;--go-dim:#f0fdf4;--stop:#dc2626;--stop-dim:#fef2f2;--sh:0 1px 2px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.08);--sh-md:0 2px 8px rgba(0,0,0,.08)}
+@media(prefers-color-scheme:dark){:root{--ink:#fafafa;--ink-2:#e5e5e5;--ink-3:#a3a3a3;--ink-4:#737373;--ink-5:#525252;--paper:#0c0c0c;--paper-2:#141414;--paper-3:#1c1c1c;--line:#262626;--line-2:#333333;--fire-dim:#2d1a0a;--fire-ring:#7c2d12;--go-dim:#052e16;--stop-dim:#2d1515;--sh:0 1px 2px rgba(0,0,0,.4);--sh-md:0 2px 8px rgba(0,0,0,.4)}}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#f8f9fa;
-  --white:#ffffff;
-  --surface:#f1f3f5;
-  --border:#e9ecef;
-  --text:#212529;
-  --text-2:#495057;
-  --text-3:#868e96;
-  --primary:#1971c2;
-  --primary-light:#e7f5ff;
-  --green:#2f9e44;
-  --green-light:#ebfbee;
-  --red:#e03131;
-  --red-light:#fff5f5;
-  --orange:#e8590c;
-  --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.05);
-}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden}
-.app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;background:var(--white)}
+html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Instrument Sans',sans-serif;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto}
 
 /* HEADER */
-.header{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1rem;border-bottom:1px solid var(--border);background:var(--white);flex-shrink:0}
-.header-left{display:flex;align-items:center;gap:0.65rem}
-.app-icon{width:36px;height:36px;background:#e7f5ff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
-.app-title{font-size:1rem;font-weight:700;color:var(--text)}
-.app-sub{font-size:0.72rem;color:var(--text-3);margin-top:1px}
-.store-link{font-size:0.72rem;color:var(--primary);text-decoration:none;font-weight:500;border:1px solid var(--border);padding:0.3rem 0.65rem;border-radius:6px}
+.header{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.25rem;border-bottom:1px solid var(--line);flex-shrink:0;background:var(--paper)}
+.h-left{display:flex;align-items:center;gap:.6rem}
+.h-mark{width:30px;height:30px;background:var(--ink);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.h-name{font-size:.95rem;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.h-by{font-size:.67rem;color:var(--ink-5);margin-top:1px;font-family:'Instrument Mono',monospace}
+.h-right{display:flex;align-items:center;gap:.5rem}
+.h-badge{font-family:'Instrument Mono',monospace;font-size:.6rem;font-weight:500;padding:.17rem .42rem;border-radius:100px;background:var(--go-dim);color:var(--go);border:1px solid transparent}
+.h-link{font-size:.72rem;font-weight:500;color:var(--ink-4);text-decoration:none;border:1px solid var(--line);padding:.27rem .6rem;border-radius:6px;transition:all .15s}
+.h-link:hover{background:var(--paper-3);color:var(--ink-3)}
 
-/* CONTENT */
-.content{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.875rem}
-
-/* STATUS BANNER */
-.status-banner{background:var(--primary-light);border:1px solid #a5d8ff;border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.6rem}
-.status-banner.ready{background:var(--green-light);border-color:#b2f2bb}
-.status-banner.error{background:var(--red-light);border-color:#ffc9c9}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);flex-shrink:0}
-.status-banner.ready .status-dot{background:var(--green)}
-.status-banner.error .status-dot{background:var(--red)}
-.status-text{font-size:0.8rem;color:var(--text-2);line-height:1.45}
-.status-text strong{color:var(--text);font-weight:600}
-
-/* PROGRESS */
-.progress-wrap{background:var(--border);border-radius:100px;height:4px;margin-top:0.5rem;overflow:hidden;display:none}
-.progress-fill{height:100%;background:var(--primary);border-radius:100px;transition:width 0.3s ease;width:0%}
-
-/* RECORD CARD */
-.record-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.5rem 1rem;text-align:center;box-shadow:var(--shadow)}
-.mic-btn{width:80px;height:80px;border-radius:50%;background:var(--primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.8rem;transition:all 0.2s;box-shadow:var(--shadow-md)}
-.mic-btn:hover{transform:scale(1.04)}
-.mic-btn.recording{background:var(--red);animation:pulse 1.2s ease-in-out infinite}
-.mic-btn.processing{background:#868e96;cursor:not-allowed}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(224,49,49,0.3)}50%{box-shadow:0 0 0 12px rgba(224,49,49,0)}}
-.record-label{font-size:1rem;font-weight:600;color:var(--text);margin-bottom:0.25rem}
-.record-sub{font-size:0.78rem;color:var(--text-3)}
-.record-timer{font-size:1.25rem;font-weight:700;color:var(--red);margin:0.5rem 0;display:none;font-variant-numeric:tabular-nums}
-
-/* LANGUAGE */
-.lang-row{display:flex;align-items:center;gap:0.5rem;margin-top:1rem}
-.lang-label{font-size:0.78rem;color:var(--text-3);font-weight:500;white-space:nowrap}
-.lang-select{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.45rem 0.65rem;font-family:'Inter',sans-serif;font-size:0.8rem;border-radius:8px;outline:none}
-.lang-select:focus{border-color:var(--primary)}
-
-/* OUTPUT */
-.output-card{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);flex:1;min-height:140px;display:flex;flex-direction:column}
-.output-header{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 1rem;border-bottom:1px solid var(--border);background:var(--surface)}
-.output-label{font-size:0.75rem;font-weight:600;color:var(--text-3);letter-spacing:0.04em;text-transform:uppercase}
-.output-actions{display:flex;gap:0.35rem}
-.btn-sm{font-size:0.72rem;padding:0.28rem 0.6rem;border:1px solid var(--border);color:var(--text-2);background:var(--white);cursor:pointer;border-radius:6px;font-family:'Inter',sans-serif;font-weight:500;transition:all 0.15s}
-.btn-sm:hover{background:var(--surface);border-color:#ced4da}
-.btn-sm:disabled{opacity:0.4;cursor:not-allowed}
-.output-body{flex:1;padding:1rem;font-size:0.88rem;line-height:1.7;color:var(--text);overflow-y:auto;min-height:80px;white-space:pre-wrap;word-break:break-word}
-.output-body.empty{color:var(--text-3);font-size:0.82rem}
-.output-body.error{color:var(--red)}
-
-/* HISTORY */
-.history-card{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
-.history-header{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 1rem;cursor:pointer;background:var(--surface)}
-.history-title{font-size:0.75rem;font-weight:600;color:var(--text-3);letter-spacing:0.04em;text-transform:uppercase}
-.history-toggle{font-size:0.7rem;color:var(--text-3)}
-.history-list{display:none;max-height:180px;overflow-y:auto}
-.history-item{padding:0.65rem 1rem;border-top:1px solid var(--border);cursor:pointer;transition:background 0.15s}
-.history-item:hover{background:var(--surface)}
-.history-text{font-size:0.82rem;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.history-time{font-size:0.68rem;color:var(--text-3);margin-top:0.15rem}
-.history-empty{padding:1rem;font-size:0.78rem;color:var(--text-3);text-align:center}
+/* STATUS */
+.status-strip{padding:.6rem 1.25rem;border-bottom:1px solid var(--line);background:var(--paper-2);flex-shrink:0}
+.status-inner{display:flex;align-items:flex-start;gap:.55rem}
+.s-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;background:var(--fire);transition:background .3s}
+.s-dot.ready{background:var(--go)}
+.s-dot.err{background:var(--stop)}
+.s-text{font-size:.77rem;color:var(--ink-4);line-height:1.5;flex:1}
+.s-text strong{color:var(--ink-3);font-weight:600}
+.prog-bar{height:2px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:.45rem;display:none}
+.prog-fill{height:100%;background:var(--fire);border-radius:2px;transition:width .35s ease;width:0%}
 
 /* USAGE */
-.usage-row{display:flex;align-items:center;gap:0.5rem;padding:0 0.25rem}
-.usage-label{font-size:0.72rem;color:var(--text-3);white-space:nowrap}
-.usage-bar-wrap{flex:1;height:3px;background:var(--border);border-radius:100px;overflow:hidden}
-.usage-fill{height:100%;background:var(--green);border-radius:100px;transition:width 0.4s ease}
-.usage-count{font-size:0.72rem;color:var(--text-3);white-space:nowrap}
+.usage-strip{display:flex;align-items:center;gap:.6rem;padding:.5rem 1.25rem;border-bottom:1px solid var(--line);flex-shrink:0;background:var(--paper)}
+.u-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);white-space:nowrap}
+.u-track{flex:1;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
+.u-fill{height:100%;background:var(--go);border-radius:2px;transition:width .4s ease}
+.u-num{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);white-space:nowrap}
+
+/* SCROLL CONTENT */
+.scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+
+/* RECORD ZONE — the hero of this app */
+.record-zone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem;text-align:center;min-height:240px}
+.mic-ring{
+  width:88px;height:88px;border-radius:50%;
+  background:var(--paper-3);border:1.5px solid var(--line-2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;margin-bottom:1.1rem;
+  box-shadow:var(--sh);
+  font-size:1.8rem;
+}
+.mic-ring:hover:not([disabled]){border-color:var(--ink-3);box-shadow:var(--sh-md);transform:scale(1.03)}
+.mic-ring.rec{background:var(--fire-dim);border-color:var(--fire-ring);animation:throb 1.2s ease infinite}
+.mic-ring.proc{background:var(--paper-3);border-color:var(--line);cursor:not-allowed;opacity:.7}
+.mic-ring[disabled]{cursor:not-allowed;opacity:.5}
+@keyframes throb{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,.2)}50%{box-shadow:0 0 0 14px rgba(249,115,22,0)}}
+.rec-timer{font-family:'Instrument Mono',monospace;font-size:1.3rem;font-weight:500;color:var(--fire);display:none;margin-bottom:.5rem;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.rec-label{font-size:1rem;font-weight:700;letter-spacing:-.025em;color:var(--ink);margin-bottom:.25rem}
+.rec-sub{font-size:.75rem;color:var(--ink-5)}
+
+/* LANGUAGE */
+.lang-row{display:flex;align-items:center;gap:.5rem;padding:.875rem 1.25rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper-2);flex-shrink:0}
+.lang-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+.lang-sel{flex:1;background:transparent;border:none;color:var(--ink);font-family:'Instrument Sans',sans-serif;font-size:.83rem;font-weight:500;outline:none;cursor:pointer}
+.lang-sel option{background:var(--paper)}
+
+/* OUTPUT */
+.output-section{flex-shrink:0;background:var(--paper)}
+.out-header{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1.25rem;border-top:1px solid var(--line)}
+.out-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);text-transform:uppercase;letter-spacing:.08em}
+.out-btns{display:flex;gap:.3rem}
+.obtn{font-size:.7rem;font-weight:500;padding:.24rem .55rem;border:1px solid var(--line);color:var(--ink-4);background:transparent;cursor:pointer;border-radius:6px;transition:all .15s;font-family:'Instrument Sans',sans-serif}
+.obtn:hover{background:var(--paper-3);color:var(--ink-3);border-color:var(--line-2)}.obtn:disabled{opacity:.35;cursor:not-allowed}
+.out-body{padding:.875rem 1.25rem 1rem;font-size:.88rem;line-height:1.7;color:var(--ink-3);min-height:80px;white-space:pre-wrap;word-break:break-word}
+.out-body.empty{color:var(--ink-5);font-size:.8rem;font-style:italic}
+.out-body.error{color:var(--stop)}
+.out-body.ok{color:var(--ink)}
+
+/* HISTORY */
+.hist-section{border-top:1px solid var(--line);flex-shrink:0}
+.hist-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.25rem;cursor:pointer;user-select:none}
+.hist-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);text-transform:uppercase;letter-spacing:.08em}
+.hist-arrow{font-size:.65rem;color:var(--ink-5);transition:transform .2s}
+.hist-list{display:none;max-height:160px;overflow-y:auto}
+.hist-item{padding:.55rem 1.25rem;border-top:1px solid var(--line);cursor:pointer;transition:background .15s}
+.hist-item:hover{background:var(--paper-2)}
+.hi-text{font-size:.8rem;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hi-time{font-family:'Instrument Mono',monospace;font-size:.6rem;color:var(--ink-5);margin-top:.1rem}
+.hist-empty{padding:.875rem 1.25rem;font-size:.75rem;color:var(--ink-5);text-align:center;border-top:1px solid var(--line)}
 
 /* INSTALL */
-.install-banner{background:var(--primary-light);border-top:1px solid #a5d8ff;padding:0.7rem 1rem;display:none;align-items:center;justify-content:space-between;gap:0.75rem;flex-shrink:0}
-.install-text{font-size:0.78rem;color:var(--primary);font-weight:500}
-.btn-install{font-size:0.75rem;padding:0.35rem 0.75rem;background:var(--primary);color:white;border:none;cursor:pointer;border-radius:6px;font-family:'Inter',sans-serif;font-weight:600}
+.install-bar{background:var(--fire-dim);border-bottom:1px solid var(--fire-ring);padding:.55rem 1.25rem;display:none;align-items:center;justify-content:space-between;gap:.75rem;flex-shrink:0}
+.ib-text{font-size:.75rem;color:var(--fire);font-weight:500}
+.ib-btn{font-size:.72rem;font-weight:600;padding:.28rem .65rem;background:var(--fire);color:#fff;border:none;cursor:pointer;border-radius:6px;font-family:'Instrument Sans',sans-serif}
 
 /* FOOTER */
-.footer{padding:0.6rem 1rem;border-top:1px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.footer-credit{font-size:0.68rem;color:var(--text-3)}
-.footer-credit a{color:var(--primary);text-decoration:none;font-weight:500}
-.footer-badge{font-size:0.68rem;color:var(--green);font-weight:600;display:flex;align-items:center;gap:0.3rem}
-.footer-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
-
-@media(prefers-color-scheme:dark){
-  :root{
-    --bg:#1a1b1e;--white:#25262b;--surface:#2c2e33;
-    --border:#373a40;--text:#f8f9fa;--text-2:#ced4da;
-    --text-3:#868e96;--primary:#4dabf7;--primary-light:#1c3a5e;
-    --green-light:#1a3a2a;--red-light:#3a1a1a;
-    --shadow:0 1px 3px rgba(0,0,0,0.3);
-    --shadow-md:0 4px 6px rgba(0,0,0,0.3);
-  }
-  .app{background:var(--white)}
-}
+.footer{padding:.6rem 1.25rem;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--paper-2)}
+.f-credit{font-size:.65rem;color:var(--ink-5)}
+.f-credit a{color:var(--ink-4);text-decoration:none;font-weight:500}
+.f-badge{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--go);font-weight:500}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="install-banner" id="installBanner">
-    <span class="install-text">📲 Add to Home Screen for offline use</span>
-    <button class="btn-install" id="installBtn">Install</button>
+  <div class="install-bar" id="ib">
+    <span class="ib-text">Add to Home Screen for offline use</span>
+    <button class="ib-btn" id="iBtn">Install</button>
   </div>
-
   <div class="header">
-    <div class="header-left">
-      <div class="app-icon">🎙️</div>
-      <div>
-        <div class="app-title">Whisper</div>
-        <div class="app-sub">by OpenAI · runs on your device</div>
-      </div>
+    <div class="h-left">
+      <div class="h-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+      <div><div class="h-name">Whisper</div><div class="h-by">by OpenAI</div></div>
     </div>
-    <a href="https://a-store-ishraq.vercel.app" class="store-link">A-Store ↗</a>
+    <div class="h-right">
+      <span class="h-badge">On-Device</span>
+      <a href="https://a-store-ishraq.vercel.app" class="h-link">A-Store ↗</a>
+    </div>
   </div>
-
-  <div class="content">
-
-    <!-- STATUS -->
-    <div class="status-banner" id="statusBanner">
-      <div class="status-dot"></div>
-      <div>
-        <div class="status-text" id="statusText">
-          <strong>Loading Whisper model...</strong><br>
-          First load downloads ~40MB. Runs offline after that.
-        </div>
-        <div class="progress-wrap" id="progressWrap">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-      </div>
+  <div class="status-strip">
+    <div class="status-inner">
+      <div class="s-dot" id="sd"></div>
+      <div class="s-text" id="st"><strong>Loading Whisper model...</strong> First load is ~40MB and runs offline after.</div>
     </div>
-
-    <!-- USAGE -->
-    <div class="usage-row">
-      <span class="usage-label">Today</span>
-      <div class="usage-bar-wrap"><div class="usage-fill" id="usageFill" style="width:0%"></div></div>
-      <span class="usage-count" id="usageCount">0 / 30</span>
-    </div>
-
-    <!-- RECORD -->
-    <div class="record-card">
-      <button class="mic-btn" id="micBtn" onclick="toggleRecord()" disabled>🎙️</button>
-      <div class="record-timer" id="timer">0:00</div>
-      <div class="record-label" id="recordLabel">Loading model...</div>
-      <div class="record-sub" id="recordSub">Please wait while Whisper loads</div>
-      <div class="lang-row">
-        <span class="lang-label">Language</span>
-        <select class="lang-select" id="langSelect">
-          <option value="en">English</option>
-          <option value="hi">Hindi</option>
-          <option value="te">Telugu</option>
-          <option value="ta">Tamil</option>
-          <option value="ml">Malayalam</option>
-          <option value="kn">Kannada</option>
-          <option value="mr">Marathi</option>
-          <option value="bn">Bengali</option>
-          <option value="gu">Gujarati</option>
-          <option value="pa">Punjabi</option>
-          <option value="ur">Urdu</option>
-          <option value="ar">Arabic</option>
-          <option value="zh">Chinese</option>
-          <option value="fr">French</option>
-          <option value="de">German</option>
-          <option value="es">Spanish</option>
-          <option value="ja">Japanese</option>
-          <option value="ko">Korean</option>
-          <option value="ru">Russian</option>
-          <option value="pt">Portuguese</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- OUTPUT -->
-    <div class="output-card">
-      <div class="output-header">
-        <span class="output-label">Transcription</span>
-        <div class="output-actions">
-          <button class="btn-sm" id="copyBtn" onclick="copyText()" disabled>Copy</button>
-          <button class="btn-sm" id="shareBtn" onclick="shareText()" disabled>Share</button>
-          <button class="btn-sm" onclick="clearOutput()">Clear</button>
-        </div>
-      </div>
-      <div class="output-body empty" id="outputBody">Your transcription will appear here...</div>
-    </div>
-
-    <!-- HISTORY -->
-    <div class="history-card">
-      <div class="history-header" onclick="toggleHistory()">
-        <span class="history-title">Recent Transcriptions</span>
-        <span class="history-toggle" id="histToggle">▼</span>
-      </div>
-      <div class="history-list" id="historyList"></div>
-    </div>
-
+    <div class="prog-bar" id="pb"><div class="prog-fill" id="pf"></div></div>
   </div>
-
+  <div class="usage-strip">
+    <span class="u-tag">Today</span>
+    <div class="u-track"><div class="u-fill" id="uf" style="width:0%"></div></div>
+    <span class="u-num" id="un">0 / 30</span>
+  </div>
+  <div class="scroll">
+    <div class="record-zone">
+      <button class="mic-ring" id="mr" onclick="toggleRec()" disabled><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
+      <div class="rec-timer" id="rt">0:00</div>
+      <div class="rec-label" id="rl">Loading model...</div>
+      <div class="rec-sub" id="rs">Please wait</div>
+    </div>
+    <div class="lang-row">
+      <span class="lang-tag">Language</span>
+      <select class="lang-sel" id="ls">
+        <option value="en">English</option><option value="hi">Hindi</option><option value="te">Telugu</option><option value="ta">Tamil</option><option value="ml">Malayalam</option><option value="kn">Kannada</option><option value="mr">Marathi</option><option value="bn">Bengali</option><option value="gu">Gujarati</option><option value="pa">Punjabi</option><option value="ur">Urdu</option><option value="ar">Arabic</option><option value="zh">Chinese</option><option value="fr">French</option><option value="de">German</option><option value="es">Spanish</option><option value="ja">Japanese</option><option value="ko">Korean</option><option value="ru">Russian</option><option value="pt">Portuguese</option>
+      </select>
+    </div>
+    <div class="output-section">
+      <div class="out-header">
+        <span class="out-tag">Transcription</span>
+        <div class="out-btns">
+          <button class="obtn" id="cb" onclick="doCopy()" disabled>Copy</button>
+          <button class="obtn" id="shb" onclick="doShare()" disabled>Share</button>
+          <button class="obtn" onclick="doClear()">Clear</button>
+        </div>
+      </div>
+      <div class="out-body empty" id="ob">Your transcription will appear here...</div>
+    </div>
+    <div class="hist-section">
+      <div class="hist-header" onclick="toggleHist()">
+        <span class="hist-tag">Recent</span>
+        <span class="hist-arrow" id="ha">▼</span>
+      </div>
+      <div class="hist-list" id="hl"></div>
+    </div>
+  </div>
   <div class="footer">
-    <span class="footer-credit">Part of <a href="https://a-store-ishraq.vercel.app">A-Store</a></span>
-    <span class="footer-badge">On-Device AI</span>
+    <span class="f-credit">Part of <a href="https://a-store-ishraq.vercel.app">A-Store</a></span>
+    <span class="f-badge">On-Device AI</span>
   </div>
 </div>
-
 <script type="module">
-import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1/dist/transformers.min.js';
-
-// Force browser execution — no Node.js
-env.allowLocalModels = false;
-env.useBrowserCache = true;
-
-const DAILY_LIMIT = 30;
-const USAGE_KEY = 'whisper_v2_usage';
-const HIST_KEY = 'whisper_v2_history';
-
-let transcriber = null;
-let isModelReady = false;
-let isRecording = false;
-let mediaRecorder = null;
-let audioChunks = [];
-let timerInterval = null;
-let recordSeconds = 0;
-let deferredPrompt = null;
-
-// ── USAGE ──────────────────────────────────────────────
-function getUsage(){
-  const today = new Date().toDateString();
-  const s = JSON.parse(localStorage.getItem(USAGE_KEY) || '{}');
-  return s.date === today ? (s.count || 0) : 0;
-}
-function addUsage(){
-  const today = new Date().toDateString();
-  const c = getUsage() + 1;
-  localStorage.setItem(USAGE_KEY, JSON.stringify({date:today,count:c}));
-  updateUsageUI(c);
-  return c;
-}
-function updateUsageUI(c){
-  const pct = Math.min((c/DAILY_LIMIT)*100,100);
-  document.getElementById('usageFill').style.width = pct+'%';
-  document.getElementById('usageFill').style.background = pct>80?'#e03131':pct>50?'#e8590c':'#2f9e44';
-  document.getElementById('usageCount').textContent = c+' / '+DAILY_LIMIT;
-}
-
-// ── MODEL LOADING ──────────────────────────────────────
+import{pipeline,env}from'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1/dist/transformers.min.js';
+env.allowLocalModels=false;env.useBrowserCache=true;
+const DL=30,UK='w_v4',HK='w_v4_h';
+let tr=null,rdy=false,isRec=false,mr_=null,chunks=[],tInt=null,sec=0,dp=null;
+function getU(){const t=new Date().toDateString();const s=JSON.parse(localStorage.getItem(UK)||'{}');return s.date===t?s.count||0:0;}
+function addU(){const t=new Date().toDateString();const c=getU()+1;localStorage.setItem(UK,JSON.stringify({date:t,count:c}));uUI(c);}
+function uUI(c){const p=Math.min((c/DL)*100,100);document.getElementById('uf').style.width=p+'%';document.getElementById('uf').style.background=p>80?'#dc2626':p>50?'#f97316':'#16a34a';document.getElementById('un').textContent=c+' / '+DL;}
 async function loadModel(){
-  const banner = document.getElementById('statusBanner');
-  const statusText = document.getElementById('statusText');
-  const progressWrap = document.getElementById('progressWrap');
-  const progressFill = document.getElementById('progressFill');
-
-  progressWrap.style.display = 'block';
-
-  try {
-    transcriber = await pipeline(
-      'automatic-speech-recognition',
-      'onnx-community/whisper-tiny',
-      {
-        dtype: { encoder_model: 'fp32', decoder_model_merged: 'q4' },
-        device: 'webgpu', // falls back to wasm automatically
-        progress_callback: (progress) => {
-          if(progress.status === 'downloading'){
-            const pct = Math.round((progress.loaded / progress.total) * 100) || 0;
-            progressFill.style.width = pct+'%';
-            statusText.innerHTML = `<strong>Downloading model...</strong><br>${pct}% — ${Math.round((progress.loaded||0)/1024/1024)}MB of ${Math.round((progress.total||40*1024*1024)/1024/1024)}MB`;
-          }
-          if(progress.status === 'loading'){
-            statusText.innerHTML = '<strong>Loading into memory...</strong><br>Almost ready';
-          }
-        }
-      }
-    );
-
-    isModelReady = true;
-    banner.className = 'status-banner ready';
-    progressWrap.style.display = 'none';
-    statusText.innerHTML = '<strong>Whisper Tiny ready</strong> — Runs 100% on your device. No internet needed after this.';
-
-    const micBtn = document.getElementById('micBtn');
-    micBtn.disabled = false;
-    document.getElementById('recordLabel').textContent = 'Tap to Record';
-    document.getElementById('recordSub').textContent = 'Speech to text · 99 languages · No API';
-
-  } catch(err) {
-    banner.className = 'status-banner error';
-    progressWrap.style.display = 'none';
-    statusText.innerHTML = `<strong>Failed to load model</strong><br>${err.message}`;
-    console.error(err);
-  }
-}
-
-// ── RECORDING ──────────────────────────────────────────
-window.toggleRecord = async function(){
-  if(!isModelReady) return;
-  if(isRecording){ stopRecording(); return; }
-  await startRecording();
-}
-
-async function startRecording(){
-  if(getUsage() >= DAILY_LIMIT){
-    setOutput('Daily limit reached (30 transcriptions). Come back tomorrow!','error');
-    return;
-  }
+  const sd=document.getElementById('sd'),st=document.getElementById('st'),pb=document.getElementById('pb'),pf=document.getElementById('pf');
+  pb.style.display='block';
   try{
-    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-    const mime = ['audio/webm;codecs=opus','audio/webm','audio/ogg','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t))||'';
-    mediaRecorder = new MediaRecorder(stream, mime?{mimeType:mime}:{});
-    audioChunks = [];
-    mediaRecorder.ondataavailable = e => { if(e.data.size>0) audioChunks.push(e.data); };
-    mediaRecorder.onstop = processAudio;
-    mediaRecorder.start(250);
-    isRecording = true;
-    recordSeconds = 0;
-    startTimer();
-    setRecordingUI(true);
-  }catch(err){
-    setOutput('Microphone access denied. Please allow microphone and try again.','error');
-  }
+    tr=await pipeline('automatic-speech-recognition','onnx-community/whisper-tiny',{dtype:{encoder_model:'fp32',decoder_model_merged:'q4'},device:'webgpu',progress_callback:(p)=>{if(p.status==='downloading'){const pct=Math.round((p.loaded/p.total)*100)||0;pf.style.width=pct+'%';st.innerHTML=`<strong>Downloading...</strong> ${pct}% of ~40MB`;}if(p.status==='loading'){st.innerHTML='<strong>Loading into memory...</strong>';}}});
+    rdy=true;sd.className='s-dot ready';pb.style.display='none';
+    st.innerHTML='<strong>Ready.</strong> Whisper Tiny runs 100% on your device. No internet needed.';
+    document.getElementById('mr').disabled=false;
+    document.getElementById('rl').textContent='Tap to Record';
+    document.getElementById('rs').textContent='Speech to text · 99 languages · no API';
+  }catch(e){sd.className='s-dot err';pb.style.display='none';st.innerHTML=`<strong>Failed to load.</strong> ${e.message}`;}
 }
-
-function stopRecording(){
-  if(mediaRecorder && mediaRecorder.state!=='inactive'){
-    mediaRecorder.stop();
-    mediaRecorder.stream.getTracks().forEach(t=>t.stop());
-  }
-  clearInterval(timerInterval);
-  isRecording = false;
-  setRecordingUI(false);
-  setProcessingUI(true);
-}
-
-function startTimer(){
-  const el = document.getElementById('timer');
-  el.style.display = 'block';
-  timerInterval = setInterval(()=>{
-    recordSeconds++;
-    const m = Math.floor(recordSeconds/60);
-    const s = recordSeconds%60;
-    el.textContent = m+':'+(s<10?'0':'')+s;
-    if(recordSeconds>=60) stopRecording();
-  },1000);
-}
-
-async function processAudio(){
-  const blob = new Blob(audioChunks, {type: audioChunks[0]?.type||'audio/webm'});
-  if(blob.size < 1000){
-    setProcessingUI(false);
-    setOutput('Recording too short. Please hold and speak clearly.','error');
-    return;
-  }
+window.toggleRec=async function(){if(!rdy)return;if(isRec){stopRec();}else await startRec();};
+async function startRec(){
+  if(getU()>=DL){setOut('Daily limit reached (30). Come back tomorrow.','error');return;}
   try{
-    const arrayBuffer = await blob.arrayBuffer();
-    const audioContext = new AudioContext({sampleRate:16000});
-    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-    const float32Array = audioBuffer.getChannelData(0);
-
-    const lang = document.getElementById('langSelect').value;
-    const result = await transcriber(float32Array, {
-      language: lang,
-      task: 'transcribe',
-      chunk_length_s: 30,
-    });
-
-    setProcessingUI(false);
-    const text = result.text?.trim();
-    if(!text){
-      setOutput('Could not detect speech. Please speak clearly and try again.','error');
-      return;
-    }
-    addUsage();
-    setOutput(text,'success');
-    addHistory(text);
-
-  }catch(err){
-    setProcessingUI(false);
-    setOutput('Error: '+err.message,'error');
-  }
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const mime=['audio/webm;codecs=opus','audio/webm','audio/ogg','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+    mr_=new MediaRecorder(stream,mime?{mimeType:mime}:{});chunks=[];
+    mr_.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+    mr_.onstop=procAudio;mr_.start(250);isRec=true;sec=0;startTimer();recUI(true);
+  }catch(e){setOut('Microphone access denied. Please allow and try again.','error');}
 }
-
-// ── UI ──────────────────────────────────────────────────
-function setRecordingUI(recording){
-  const btn = document.getElementById('micBtn');
-  const label = document.getElementById('recordLabel');
-  const sub = document.getElementById('recordSub');
-  const timer = document.getElementById('timer');
-  if(recording){
-    btn.className='mic-btn recording';
-    btn.textContent='⏹️';
-    label.textContent='Recording...';
-    sub.textContent='Tap to stop · max 60 seconds';
-  } else {
-    btn.className='mic-btn';
-    btn.textContent='🎙️';
-    label.textContent='Tap to Record';
-    sub.textContent='Speech to text · 99 languages · No API';
-    timer.style.display='none';
-  }
+function stopRec(){if(mr_&&mr_.state!=='inactive'){mr_.stop();mr_.stream.getTracks().forEach(t=>t.stop());}clearInterval(tInt);isRec=false;recUI(false);procUI(true);}
+function startTimer(){const el=document.getElementById('rt');el.style.display='block';tInt=setInterval(()=>{sec++;const m=Math.floor(sec/60),s=sec%60;el.textContent=m+':'+(s<10?'0':'')+s;if(sec>=60)stopRec();},1000);}
+async function procAudio(){
+  const blob=new Blob(chunks,{type:chunks[0]?.type||'audio/webm'});
+  if(blob.size<1000){procUI(false);setOut('Too short. Please speak clearly and try again.','error');return;}
+  try{
+    const ab=await blob.arrayBuffer();const ac=new AudioContext({sampleRate:16000});const buf=await ac.decodeAudioData(ab);
+    const res=await tr(buf.getChannelData(0),{language:document.getElementById('ls').value,task:'transcribe',chunk_length_s:30});
+    procUI(false);const text=res.text?.trim();
+    if(!text){setOut('Could not detect speech. Please try again.','error');return;}
+    addU();setOut(text,'ok');addHist(text);
+  }catch(e){procUI(false);setOut('Error: '+e.message,'error');}
 }
-
-function setProcessingUI(on){
-  const btn = document.getElementById('micBtn');
-  const label = document.getElementById('recordLabel');
-  const sub = document.getElementById('recordSub');
-  if(on){
-    btn.className='mic-btn processing';
-    btn.disabled=true;
-    btn.textContent='⚡';
-    label.textContent='Transcribing...';
-    sub.textContent='Running Whisper on your device';
-  } else {
-    btn.className='mic-btn';
-    btn.disabled=false;
-    btn.textContent='🎙️';
-    label.textContent='Tap to Record';
-    sub.textContent='Speech to text · 99 languages · No API';
-  }
-}
-
-function setOutput(text,type){
-  const el = document.getElementById('outputBody');
-  el.textContent = text;
-  el.className = 'output-body'+(type==='error'?' error':type==='success'?'':'');
-  document.getElementById('copyBtn').disabled = type!=='success';
-  document.getElementById('shareBtn').disabled = type!=='success';
-}
-
-window.clearOutput = function(){
-  document.getElementById('outputBody').textContent='Your transcription will appear here...';
-  document.getElementById('outputBody').className='output-body empty';
-  document.getElementById('copyBtn').disabled=true;
-  document.getElementById('shareBtn').disabled=true;
-}
-
-window.copyText = function(){
-  const t = document.getElementById('outputBody').textContent;
-  navigator.clipboard?.writeText(t).then(()=>{
-    const btn=document.getElementById('copyBtn');
-    btn.textContent='Copied!';
-    setTimeout(()=>btn.textContent='Copy',1500);
-  });
-}
-
-window.shareText = function(){
-  const t = document.getElementById('outputBody').textContent;
-  if(navigator.share) navigator.share({text:t,title:'Transcribed with Whisper on A-Store'});
-  else window.copyText();
-}
-
-// ── HISTORY ────────────────────────────────────────────
-function addHistory(text){
-  const h = JSON.parse(localStorage.getItem(HIST_KEY)||'[]');
-  h.unshift({text,time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})});
-  if(h.length>20)h.pop();
-  localStorage.setItem(HIST_KEY,JSON.stringify(h));
-  renderHistory();
-}
-
-function renderHistory(){
-  const list = document.getElementById('historyList');
-  const h = JSON.parse(localStorage.getItem(HIST_KEY)||'[]');
-  if(!h.length){
-    list.innerHTML='<div class="history-empty">No transcriptions yet</div>';
-    return;
-  }
-  list.innerHTML = h.map(i=>`
-    <div class="history-item" onclick="loadHistory('${i.text.replace(/'/g,"\\'")}')">
-      <div class="history-text">${i.text}</div>
-      <div class="history-time">${i.time}</div>
-    </div>`).join('');
-}
-
-window.loadHistory = function(t){
-  setOutput(t,'success');
-  document.getElementById('copyBtn').disabled=false;
-  document.getElementById('shareBtn').disabled=false;
-}
-
-window.toggleHistory = function(){
-  const list = document.getElementById('historyList');
-  const toggle = document.getElementById('histToggle');
-  const open = list.style.display==='block';
-  list.style.display = open?'none':'block';
-  toggle.textContent = open?'▼':'▲';
-  if(!open) renderHistory();
-}
-
-// ── PWA ────────────────────────────────────────────────
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault();
-  deferredPrompt=e;
-  document.getElementById('installBanner').style.display='flex';
-});
-document.getElementById('installBtn').addEventListener('click',async()=>{
-  if(!deferredPrompt)return;
-  deferredPrompt.prompt();
-  const{outcome}=await deferredPrompt.userChoice;
-  deferredPrompt=null;
-  document.getElementById('installBanner').style.display='none';
-});
-
-// ── INIT ───────────────────────────────────────────────
-updateUsageUI(getUsage());
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
-loadModel();
-</script>
-</body>
-</html>
+function recUI(r){const b=document.getElementById('mr'),l=document.getElementById('rl'),s=document.getElementById('rs'),t=document.getElementById('rt');if(r){b.className='mic-ring rec';b.innerHTML='<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';l.textContent='Recording...';s.textContent='Tap to stop · max 60 seconds';}else{b.className='mic-ring';b.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';l.textContent='Tap to Record';s.textContent='Speech to text · 99 languages · no API';t.style.display='none';}}
+function procUI(p){const b=document.getElementById('mr'),l=document.getElementById('rl'),s=document.getElementById('rs');if(p){b.className='mic-ring proc';b.disabled=true;b.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';l.textContent='Transcribing...';s.textContent='Running on your device';}else{b.className='mic-ring';b.disabled=false;b.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';l.textContent='Tap to Record';s.textContent='Speech to text · 99 languages · no API';}}
+function setOut(text,type){const el=document.getElementById('ob');el.textContent=text;el.className='out-body '+type;document.getElementById('cb').disabled=type!=='ok';document.getElementById('shb').disabled=type!=='ok';}
+window.doClear=function(){document.getElementById('ob').textContent='Your transcription will appear here...';document.getElementById('ob').className='out-body empty';document.getElementById('cb').disabled=true;document.getElementById('shb').disabled=true;};
+window.doCopy=function(){const t=document.getElementById('ob').textContent;navigator.clipboard?.writeText(t).then(()=>{const b=document.getElementById('cb');b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500);});};
+window.doShare=function(){const t=document.getElementById('ob').textContent;if(navigator.share)navigator.share({text:t,title:'Transcribed with Whisper on A-Store'});else window.doCopy();};
+function addHist(text){const h=JSON.parse(localStorage.getItem(HK)||'[]');h.unshift({text,time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})});if(h.length>20)h.pop();localStorage.setItem(HK,JSON.stringify(h));renderHist();}
+function renderHist(){const list=document.getElementById('hl');const h=JSON.parse(localStorage.getItem(HK)||'[]');if(!h.length){list.innerHTML='<div class="hist-empty">No transcriptions yet</div>';return;}list.innerHTML=h.map(i=>`<div class="hist-item" onclick="loadH('${i.text.replace(/'/g,"\\'")}')"><div class="hi-text">${i.text}</div><div class="hi-time">${i.time}</div></div>`).join('');}
+window.loadH=function(t){setOut(t,'ok');document.getElementById('cb').disabled=false;document.getElementById('shb').disabled=false;};
+window.toggleHist=function(){const l=document.getElementById('hl'),a=document.getElementById('ha');const o=l.style.display==='block';l.style.display=o?'
