@@ -123,7 +123,7 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
       <div class="loading-overlay" id="loadOverlay">
         <div class="spin"></div>
         <div class="loading-text" id="loadText">Generating...</div>
-        <div class="loading-sub">~10–20 seconds</div>
+        <div class="loading-sub" id="loadSub">Usually 15–30 seconds...</div>
       </div>
     </div>
 
@@ -182,8 +182,8 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
         <span class="setting-label">Quality</span>
         <select class="setting-select" id="modelSelect">
           <option value="flux" selected>Flux (fast)</option>
-          <option value="turbo">SDXL Turbo</option>
-          <option value="stable-diffusion-3">SD 3 (slow)</option>
+          <option value="flux-realism">Flux Realism</option>
+          <option value="stable-diffusion-3.5-large">SD 3.5 Large</option>
         </select>
       </div>
     </div>
@@ -237,7 +237,13 @@ async function generate(){
   var errBar=document.getElementById('errBar');errBar.style.display='none';
   var overlay=document.getElementById('loadOverlay');overlay.classList.add('on');
   var btn=document.getElementById('genBtn');btn.disabled=true;
-  document.getElementById('loadText').textContent='Generating...';
+  document.getElementById('loadText').textContent='Generating image...';
+  document.getElementById('loadSub').textContent='Usually 15–30 seconds...';
+  var loadStart=Date.now();
+  var loadTimer=setInterval(function(){
+    var secs=Math.round((Date.now()-loadStart)/1000);
+    document.getElementById('loadSub').textContent=secs+'s elapsed... still working';
+  },3000);
 
   var size=getSize();
   var model=getModel();
@@ -259,7 +265,7 @@ async function generate(){
       img.src=url;
     });
 
-    currentImgUrl=url;
+    clearInterval(loadTimer);currentImgUrl=url;
     img.classList.add('loaded');
     overlay.classList.remove('on');
     document.getElementById('imgActions').classList.add('on');
@@ -271,7 +277,7 @@ async function generate(){
 
   }catch(e){
     overlay.classList.remove('on');
-    document.getElementById('placeholder').style.display='block';
+    clearInterval(loadTimer);document.getElementById('placeholder').style.display='block';
     showErr('Generation failed. Try a different prompt or check your connection.');
   }
   btn.disabled=false;
@@ -321,5 +327,4 @@ document.getElementById('prompt').addEventListener('keydown',function(e){if(e.ke
 uUI(getU());
 </script>
 </body>
-
-</html>
+  </html>
