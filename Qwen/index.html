@@ -207,7 +207,7 @@ async function send(){
   ti.value='';ti.style.height='auto';loading=true;document.getElementById('sb').disabled=true;
   msgs.push({role:'user',content:text});renderMsg('user',text);showTyping();
   try{
-    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:PROMPTS[mode]}].concat(msgs),model:'qwen-qwen2.5-72b-instruct'})});
+    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:PROMPTS[mode]}].concat(msgs),model:'qwen-2.5-32b'})});
     hideTyping();
     if(!res.ok){var e=await res.json().catch(function(){return{};});showErr('Error '+res.status+': '+(e.error||'Try again.'));msgs.pop();return;}
     var data=await res.json();
@@ -224,4 +224,4 @@ async function send(){
 uUI(getU());
 </script>
 </body>
-  </html>
+</html>
