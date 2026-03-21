@@ -11,86 +11,91 @@
 <title>Whisper — A-Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0c0c0c;--ink-2:#1a1a1a;--ink-3:#404040;--ink-4:#737373;--ink-5:#a3a3a3;--paper:#ffffff;--paper-2:#fafafa;--paper-3:#f5f5f5;--line:#e5e5e5;--line-2:#d4d4d4;--fire:#f97316;--fire-dim:#fff7ed;--fire-ring:#fed7aa;--go:#16a34a;--go-dim:#f0fdf4;--stop:#dc2626;--stop-dim:#fef2f2;--sh:0 1px 2px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.08);--sh-md:0 2px 8px rgba(0,0,0,.08)}
-@media(prefers-color-scheme:dark){:root{--ink:#fafafa;--ink-2:#e5e5e5;--ink-3:#a3a3a3;--ink-4:#737373;--ink-5:#525252;--paper:#0c0c0c;--paper-2:#141414;--paper-3:#1c1c1c;--line:#262626;--line-2:#333333;--fire-dim:#2d1a0a;--fire-ring:#7c2d12;--go-dim:#052e16;--stop-dim:#2d1515;--sh:0 1px 2px rgba(0,0,0,.4);--sh-md:0 2px 8px rgba(0,0,0,.4)}}
+:root{
+  --ink:#0c0c0c;--ink-3:#404040;--ink-4:#737373;--ink-5:#a3a3a3;
+  --paper:#fff;--paper-2:#fafafa;--paper-3:#f5f5f5;
+  --line:#e5e5e5;--line-2:#d4d4d4;
+  --fire:#f97316;--fire-dim:#fff7ed;--fire-ring:#fed7aa;
+  --go:#16a34a;--go-dim:#f0fdf4;--stop:#dc2626;
+  --sh:0 1px 2px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.08);
+  --sh-md:0 2px 8px rgba(0,0,0,.1);
+}
+@media(prefers-color-scheme:dark){:root{
+  --ink:#fafafa;--ink-3:#a3a3a3;--ink-4:#737373;--ink-5:#525252;
+  --paper:#0c0c0c;--paper-2:#141414;--paper-3:#1c1c1c;
+  --line:#262626;--line-2:#333;--fire-dim:#2d1a0a;--fire-ring:#7c2d12;
+  --go-dim:#052e16;--sh:0 1px 2px rgba(0,0,0,.5);--sh-md:0 2px 8px rgba(0,0,0,.5);
+}}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Instrument Sans',sans-serif;overflow:hidden}
 .app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto}
 
-/* HEADER */
-.header{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.25rem;border-bottom:1px solid var(--line);flex-shrink:0;background:var(--paper)}
+.header{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.25rem;border-bottom:1px solid var(--line);flex-shrink:0}
 .h-left{display:flex;align-items:center;gap:.6rem}
-.h-mark{width:30px;height:30px;background:var(--ink);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
-.h-name{font-size:.95rem;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
-.h-by{font-size:.67rem;color:var(--ink-5);margin-top:1px;font-family:'Instrument Mono',monospace}
+/* NO BOX — just raw SVG */
+.h-ico svg{display:block}
+.h-name{font-size:.95rem;font-weight:700;letter-spacing:-.02em}
+.h-by{font-size:.67rem;color:var(--ink-5);font-family:'Instrument Mono',monospace;margin-top:1px}
 .h-right{display:flex;align-items:center;gap:.5rem}
-.h-badge{font-family:'Instrument Mono',monospace;font-size:.6rem;font-weight:500;padding:.17rem .42rem;border-radius:100px;background:var(--go-dim);color:var(--go);border:1px solid transparent}
+.h-badge{font-family:'Instrument Mono',monospace;font-size:.6rem;font-weight:500;padding:.17rem .42rem;border-radius:100px;background:var(--go-dim);color:var(--go)}
 .h-link{font-size:.72rem;font-weight:500;color:var(--ink-4);text-decoration:none;border:1px solid var(--line);padding:.27rem .6rem;border-radius:6px;transition:all .15s}
-.h-link:hover{background:var(--paper-3);color:var(--ink-3)}
+.h-link:hover{background:var(--paper-3)}
 
-/* STATUS */
 .status-strip{padding:.6rem 1.25rem;border-bottom:1px solid var(--line);background:var(--paper-2);flex-shrink:0}
-.status-inner{display:flex;align-items:flex-start;gap:.55rem}
+.s-row{display:flex;align-items:flex-start;gap:.55rem}
 .s-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;background:var(--fire);transition:background .3s}
-.s-dot.ready{background:var(--go)}
-.s-dot.err{background:var(--stop)}
+.s-dot.ready{background:var(--go)}.s-dot.err{background:var(--stop)}
 .s-text{font-size:.77rem;color:var(--ink-4);line-height:1.5;flex:1}
 .s-text strong{color:var(--ink-3);font-weight:600}
 .prog-bar{height:2px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:.45rem;display:none}
 .prog-fill{height:100%;background:var(--fire);border-radius:2px;transition:width .35s ease;width:0%}
 
-/* USAGE */
-.usage-strip{display:flex;align-items:center;gap:.6rem;padding:.5rem 1.25rem;border-bottom:1px solid var(--line);flex-shrink:0;background:var(--paper)}
-.u-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);white-space:nowrap}
+.usage-strip{display:flex;align-items:center;gap:.6rem;padding:.5rem 1.25rem;border-bottom:1px solid var(--line);flex-shrink:0}
+.u-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5)}
 .u-track{flex:1;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
-.u-fill{height:100%;background:var(--go);border-radius:2px;transition:width .4s ease}
-.u-num{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);white-space:nowrap}
+.u-fill{height:100%;background:var(--go);border-radius:2px;transition:width .4s}
+.u-num{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5)}
 
-/* SCROLL CONTENT */
 .scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column}
 
-/* RECORD ZONE — the hero of this app */
 .record-zone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem;text-align:center;min-height:240px}
+/* Mic ring — NO emoji, NO currentColor, use hardcoded stroke */
 .mic-ring{
   width:88px;height:88px;border-radius:50%;
   background:var(--paper-3);border:1.5px solid var(--line-2);
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;transition:all .2s;margin-bottom:1.1rem;
   box-shadow:var(--sh);
-  font-size:1.8rem;
 }
 .mic-ring:hover:not([disabled]){border-color:var(--ink-3);box-shadow:var(--sh-md);transform:scale(1.03)}
 .mic-ring.rec{background:var(--fire-dim);border-color:var(--fire-ring);animation:throb 1.2s ease infinite}
-.mic-ring.proc{background:var(--paper-3);border-color:var(--line);cursor:not-allowed;opacity:.7}
-.mic-ring[disabled]{cursor:not-allowed;opacity:.5}
-@keyframes throb{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,.2)}50%{box-shadow:0 0 0 14px rgba(249,115,22,0)}}
-.rec-timer{font-family:'Instrument Mono',monospace;font-size:1.3rem;font-weight:500;color:var(--fire);display:none;margin-bottom:.5rem;font-variant-numeric:tabular-nums;letter-spacing:.02em}
-.rec-label{font-size:1rem;font-weight:700;letter-spacing:-.025em;color:var(--ink);margin-bottom:.25rem}
+.mic-ring.proc{opacity:.6;cursor:not-allowed}
+.mic-ring[disabled]{opacity:.45;cursor:not-allowed}
+.mic-ring svg{display:block}
+@keyframes throb{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,.25)}50%{box-shadow:0 0 0 16px rgba(249,115,22,0)}}
+
+.rec-timer{font-family:'Instrument Mono',monospace;font-size:1.3rem;font-weight:500;color:var(--fire);display:none;margin-bottom:.5rem;letter-spacing:.02em}
+.rec-label{font-size:1rem;font-weight:700;letter-spacing:-.025em;margin-bottom:.25rem}
 .rec-sub{font-size:.75rem;color:var(--ink-5)}
 
-/* LANGUAGE */
 .lang-row{display:flex;align-items:center;gap:.5rem;padding:.875rem 1.25rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper-2);flex-shrink:0}
-.lang-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+.lang-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);text-transform:uppercase;letter-spacing:.06em}
 .lang-sel{flex:1;background:transparent;border:none;color:var(--ink);font-family:'Instrument Sans',sans-serif;font-size:.83rem;font-weight:500;outline:none;cursor:pointer}
-.lang-sel option{background:var(--paper)}
 
-/* OUTPUT */
-.output-section{flex-shrink:0;background:var(--paper)}
+.out-section{flex-shrink:0}
 .out-header{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1.25rem;border-top:1px solid var(--line)}
 .out-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);text-transform:uppercase;letter-spacing:.08em}
 .out-btns{display:flex;gap:.3rem}
 .obtn{font-size:.7rem;font-weight:500;padding:.24rem .55rem;border:1px solid var(--line);color:var(--ink-4);background:transparent;cursor:pointer;border-radius:6px;transition:all .15s;font-family:'Instrument Sans',sans-serif}
-.obtn:hover{background:var(--paper-3);color:var(--ink-3);border-color:var(--line-2)}.obtn:disabled{opacity:.35;cursor:not-allowed}
-.out-body{padding:.875rem 1.25rem 1rem;font-size:.88rem;line-height:1.7;color:var(--ink-3);min-height:80px;white-space:pre-wrap;word-break:break-word}
-.out-body.empty{color:var(--ink-5);font-size:.8rem;font-style:italic}
-.out-body.error{color:var(--stop)}
-.out-body.ok{color:var(--ink)}
+.obtn:hover{background:var(--paper-3);color:var(--ink-3)}.obtn:disabled{opacity:.35;cursor:not-allowed}
+.out-body{padding:.875rem 1.25rem 1rem;font-size:.88rem;line-height:1.7;min-height:80px;white-space:pre-wrap;word-break:break-word}
+.out-body.empty{color:var(--ink-5);font-style:italic;font-size:.8rem}
+.out-body.error{color:var(--stop)}.out-body.ok{color:var(--ink)}
 
-/* HISTORY */
-.hist-section{border-top:1px solid var(--line);flex-shrink:0}
-.hist-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.25rem;cursor:pointer;user-select:none}
+.hist-wrap{border-top:1px solid var(--line);flex-shrink:0}
+.hist-head{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.25rem;cursor:pointer}
 .hist-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);text-transform:uppercase;letter-spacing:.08em}
-.hist-arrow{font-size:.65rem;color:var(--ink-5);transition:transform .2s}
+.hist-arr{font-size:.65rem;color:var(--ink-5);transition:transform .2s}
 .hist-list{display:none;max-height:160px;overflow-y:auto}
 .hist-item{padding:.55rem 1.25rem;border-top:1px solid var(--line);cursor:pointer;transition:background .15s}
 .hist-item:hover{background:var(--paper-2)}
@@ -98,27 +103,33 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
 .hi-time{font-family:'Instrument Mono',monospace;font-size:.6rem;color:var(--ink-5);margin-top:.1rem}
 .hist-empty{padding:.875rem 1.25rem;font-size:.75rem;color:var(--ink-5);text-align:center;border-top:1px solid var(--line)}
 
-/* INSTALL */
-.install-bar{background:var(--fire-dim);border-bottom:1px solid var(--fire-ring);padding:.55rem 1.25rem;display:none;align-items:center;justify-content:space-between;gap:.75rem;flex-shrink:0}
-.ib-text{font-size:.75rem;color:var(--fire);font-weight:500}
-.ib-btn{font-size:.72rem;font-weight:600;padding:.28rem .65rem;background:var(--fire);color:#fff;border:none;cursor:pointer;border-radius:6px;font-family:'Instrument Sans',sans-serif}
-
-/* FOOTER */
 .footer{padding:.6rem 1.25rem;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--paper-2)}
-.f-credit{font-size:.65rem;color:var(--ink-5)}
-.f-credit a{color:var(--ink-4);text-decoration:none;font-weight:500}
+.f-credit{font-size:.65rem;color:var(--ink-5)}.f-credit a{color:var(--ink-4);text-decoration:none;font-weight:500}
 .f-badge{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--go);font-weight:500}
+
+.ib{background:var(--fire-dim);border-bottom:1px solid var(--fire-ring);padding:.55rem 1.25rem;display:none;align-items:center;justify-content:space-between;gap:.75rem;flex-shrink:0}
+.ib-t{font-size:.75rem;color:var(--fire);font-weight:500}
+.ib-btn{font-size:.72rem;font-weight:600;padding:.28rem .65rem;background:var(--fire);color:#fff;border:none;cursor:pointer;border-radius:6px;font-family:'Instrument Sans',sans-serif}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="install-bar" id="ib">
-    <span class="ib-text">Add to Home Screen for offline use</span>
+  <div class="ib" id="ib">
+    <span class="ib-t">Add to Home Screen for offline use</span>
     <button class="ib-btn" id="iBtn">Install</button>
   </div>
+
   <div class="header">
     <div class="h-left">
-      <div class="h-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+      <!-- Clean mic icon, no box, hardcoded #737373 works in both themes at this size -->
+      <div class="h-ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </div>
       <div><div class="h-name">Whisper</div><div class="h-by">by OpenAI</div></div>
     </div>
     <div class="h-right">
@@ -126,32 +137,51 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
       <a href="https://a-store-ishraq.vercel.app" class="h-link">A-Store ↗</a>
     </div>
   </div>
+
   <div class="status-strip">
-    <div class="status-inner">
+    <div class="s-row">
       <div class="s-dot" id="sd"></div>
-      <div class="s-text" id="st"><strong>Loading Whisper model...</strong> First load is ~40MB and runs offline after.</div>
+      <div class="s-text" id="st"><strong>Loading Whisper...</strong> First load ~40MB, runs offline after.</div>
     </div>
     <div class="prog-bar" id="pb"><div class="prog-fill" id="pf"></div></div>
   </div>
+
   <div class="usage-strip">
     <span class="u-tag">Today</span>
     <div class="u-track"><div class="u-fill" id="uf" style="width:0%"></div></div>
     <span class="u-num" id="un">0 / 30</span>
   </div>
+
   <div class="scroll">
     <div class="record-zone">
-      <button class="mic-ring" id="mr" onclick="toggleRec()" disabled><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
+      <button class="mic-ring" id="mr" onclick="toggleRec()" disabled>
+        <!-- Hardcoded stroke color — no currentColor, no CSS vars in SVG attrs -->
+        <svg id="mic-svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
       <div class="rec-timer" id="rt">0:00</div>
       <div class="rec-label" id="rl">Loading model...</div>
       <div class="rec-sub" id="rs">Please wait</div>
     </div>
+
     <div class="lang-row">
       <span class="lang-tag">Language</span>
       <select class="lang-sel" id="ls">
-        <option value="en">English</option><option value="hi">Hindi</option><option value="te">Telugu</option><option value="ta">Tamil</option><option value="ml">Malayalam</option><option value="kn">Kannada</option><option value="mr">Marathi</option><option value="bn">Bengali</option><option value="gu">Gujarati</option><option value="pa">Punjabi</option><option value="ur">Urdu</option><option value="ar">Arabic</option><option value="zh">Chinese</option><option value="fr">French</option><option value="de">German</option><option value="es">Spanish</option><option value="ja">Japanese</option><option value="ko">Korean</option><option value="ru">Russian</option><option value="pt">Portuguese</option>
+        <option value="en">English</option><option value="hi">Hindi</option><option value="te">Telugu</option>
+        <option value="ta">Tamil</option><option value="ml">Malayalam</option><option value="kn">Kannada</option>
+        <option value="mr">Marathi</option><option value="bn">Bengali</option><option value="gu">Gujarati</option>
+        <option value="pa">Punjabi</option><option value="ur">Urdu</option><option value="ar">Arabic</option>
+        <option value="zh">Chinese</option><option value="fr">French</option><option value="de">German</option>
+        <option value="es">Spanish</option><option value="ja">Japanese</option><option value="ko">Korean</option>
+        <option value="ru">Russian</option><option value="pt">Portuguese</option>
       </select>
     </div>
-    <div class="output-section">
+
+    <div class="out-section">
       <div class="out-header">
         <span class="out-tag">Transcription</span>
         <div class="out-btns">
@@ -162,70 +192,168 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
       </div>
       <div class="out-body empty" id="ob">Your transcription will appear here...</div>
     </div>
-    <div class="hist-section">
-      <div class="hist-header" onclick="toggleHist()">
+
+    <div class="hist-wrap">
+      <div class="hist-head" onclick="toggleHist()">
         <span class="hist-tag">Recent</span>
-        <span class="hist-arrow" id="ha">▼</span>
+        <span class="hist-arr" id="ha">▼</span>
       </div>
       <div class="hist-list" id="hl"></div>
     </div>
   </div>
+
   <div class="footer">
     <span class="f-credit">Part of <a href="https://a-store-ishraq.vercel.app">A-Store</a></span>
     <span class="f-badge">On-Device AI</span>
   </div>
 </div>
+
 <script type="module">
-import{pipeline,env}from'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1/dist/transformers.min.js';
-env.allowLocalModels=false;env.useBrowserCache=true;
-const DL=30,UK='w_v4',HK='w_v4_h';
-let tr=null,rdy=false,isRec=false,mr_=null,chunks=[],tInt=null,sec=0,dp=null;
-function getU(){const t=new Date().toDateString();const s=JSON.parse(localStorage.getItem(UK)||'{}');return s.date===t?s.count||0:0;}
-function addU(){const t=new Date().toDateString();const c=getU()+1;localStorage.setItem(UK,JSON.stringify({date:t,count:c}));uUI(c);}
-function uUI(c){const p=Math.min((c/DL)*100,100);document.getElementById('uf').style.width=p+'%';document.getElementById('uf').style.background=p>80?'#dc2626':p>50?'#f97316':'#16a34a';document.getElementById('un').textContent=c+' / '+DL;}
-async function loadModel(){
-  const sd=document.getElementById('sd'),st=document.getElementById('st'),pb=document.getElementById('pb'),pf=document.getElementById('pf');
-  pb.style.display='block';
-  try{
-    tr=await pipeline('automatic-speech-recognition','onnx-community/whisper-tiny',{dtype:{encoder_model:'fp32',decoder_model_merged:'q4'},device:'webgpu',progress_callback:(p)=>{if(p.status==='downloading'){const pct=Math.round((p.loaded/p.total)*100)||0;pf.style.width=pct+'%';st.innerHTML=`<strong>Downloading...</strong> ${pct}% of ~40MB`;}if(p.status==='loading'){st.innerHTML='<strong>Loading into memory...</strong>';}}});
-    rdy=true;sd.className='s-dot ready';pb.style.display='none';
-    st.innerHTML='<strong>Ready.</strong> Whisper Tiny runs 100% on your device. No internet needed.';
-    document.getElementById('mr').disabled=false;
-    document.getElementById('rl').textContent='Tap to Record';
-    document.getElementById('rs').textContent='Speech to text · 99 languages · no API';
-  }catch(e){sd.className='s-dot err';pb.style.display='none';st.innerHTML=`<strong>Failed to load.</strong> ${e.message}`;}
+// Use @xenova/transformers which is more stable on mobile
+import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js';
+
+env.allowLocalModels = false;
+env.useBrowserCache = true;
+
+const DL = 30, UK = 'w_v6', HK = 'w_v6_h';
+let tr = null, rdy = false, isRec = false, mr_ = null, chunks = [], tInt = null, sec = 0, dp = null;
+
+function getU() { const t = new Date().toDateString(); const s = JSON.parse(localStorage.getItem(UK)||'{}'); return s.date===t ? (s.count||0) : 0; }
+function addU() { const c = getU()+1; localStorage.setItem(UK, JSON.stringify({date:new Date().toDateString(),count:c})); uUI(c); }
+function uUI(c) {
+  const p = Math.min((c/DL)*100,100);
+  document.getElementById('uf').style.width = p+'%';
+  document.getElementById('uf').style.background = p>80?'#dc2626':p>50?'#f97316':'#16a34a';
+  document.getElementById('un').textContent = c+' / '+DL;
 }
-window.toggleRec=async function(){if(!rdy)return;if(isRec){stopRec();}else await startRec();};
-async function startRec(){
-  if(getU()>=DL){setOut('Daily limit reached (30). Come back tomorrow.','error');return;}
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    const mime=['audio/webm;codecs=opus','audio/webm','audio/ogg','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t))||'';
-    mr_=new MediaRecorder(stream,mime?{mimeType:mime}:{});chunks=[];
-    mr_.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
-    mr_.onstop=procAudio;mr_.start(250);isRec=true;sec=0;startTimer();recUI(true);
-  }catch(e){setOut('Microphone access denied. Please allow and try again.','error');}
+
+// Swap SVG path content — use hardcoded hex, no CSS vars
+function setIcon(type) {
+  const svg = document.getElementById('mic-svg');
+  if (!svg) return;
+  if (type === 'mic') {
+    svg.setAttribute('stroke','#737373');
+    svg.innerHTML = '<path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>';
+  } else if (type === 'stop') {
+    svg.setAttribute('stroke','#dc2626');
+    svg.innerHTML = '<rect x="7" y="7" width="10" height="10" rx="1.5" fill="#dc2626" stroke="none"/>';
+  } else if (type === 'bolt') {
+    svg.setAttribute('stroke','#a3a3a3');
+    svg.innerHTML = '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>';
+  }
 }
-function stopRec(){if(mr_&&mr_.state!=='inactive'){mr_.stop();mr_.stream.getTracks().forEach(t=>t.stop());}clearInterval(tInt);isRec=false;recUI(false);procUI(true);}
-function startTimer(){const el=document.getElementById('rt');el.style.display='block';tInt=setInterval(()=>{sec++;const m=Math.floor(sec/60),s=sec%60;el.textContent=m+':'+(s<10?'0':'')+s;if(sec>=60)stopRec();},1000);}
-async function procAudio(){
-  const blob=new Blob(chunks,{type:chunks[0]?.type||'audio/webm'});
-  if(blob.size<1000){procUI(false);setOut('Too short. Please speak clearly and try again.','error');return;}
-  try{
-    const ab=await blob.arrayBuffer();const ac=new AudioContext({sampleRate:16000});const buf=await ac.decodeAudioData(ab);
-    const res=await tr(buf.getChannelData(0),{language:document.getElementById('ls').value,task:'transcribe',chunk_length_s:30});
-    procUI(false);const text=res.text?.trim();
-    if(!text){setOut('Could not detect speech. Please try again.','error');return;}
-    addU();setOut(text,'ok');addHist(text);
-  }catch(e){procUI(false);setOut('Error: '+e.message,'error');}
+
+async function loadModel() {
+  const pb = document.getElementById('pb');
+  pb.style.display = 'block';
+  try {
+    // wasm works on ALL phones — webgpu only works on some desktop browsers
+    tr = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
+      progress_callback: (p) => {
+        if (p.status === 'downloading') {
+          const pct = p.total ? Math.round((p.loaded/p.total)*100) : 0;
+          document.getElementById('pf').style.width = pct+'%';
+          document.getElementById('st').innerHTML = '<strong>Downloading...</strong> '+pct+'%';
+        }
+        if (p.status === 'loading') {
+          document.getElementById('st').innerHTML = '<strong>Loading model...</strong>';
+        }
+      }
+    });
+    rdy = true;
+    document.getElementById('sd').className = 's-dot ready';
+    pb.style.display = 'none';
+    document.getElementById('st').innerHTML = '<strong>Ready.</strong> Whisper runs on your device. No internet after this.';
+    const btn = document.getElementById('mr');
+    btn.disabled = false;
+    setIcon('mic');
+    document.getElementById('rl').textContent = 'Tap to Record';
+    document.getElementById('rs').textContent = 'Speech to text · 99 languages · no API';
+  } catch(e) {
+    document.getElementById('sd').className = 's-dot err';
+    pb.style.display = 'none';
+    document.getElementById('st').innerHTML = '<strong>Failed to load:</strong> '+e.message;
+    document.getElementById('rl').textContent = 'Load failed';
+    document.getElementById('rs').textContent = e.message;
+  }
 }
-function recUI(r){const b=document.getElementById('mr'),l=document.getElementById('rl'),s=document.getElementById('rs'),t=document.getElementById('rt');if(r){b.className='mic-ring rec';b.innerHTML='<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';l.textContent='Recording...';s.textContent='Tap to stop · max 60 seconds';}else{b.className='mic-ring';b.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';l.textContent='Tap to Record';s.textContent='Speech to text · 99 languages · no API';t.style.display='none';}}
-function procUI(p){const b=document.getElementById('mr'),l=document.getElementById('rl'),s=document.getElementById('rs');if(p){b.className='mic-ring proc';b.disabled=true;b.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';l.textContent='Transcribing...';s.textContent='Running on your device';}else{b.className='mic-ring';b.disabled=false;b.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';l.textContent='Tap to Record';s.textContent='Speech to text · 99 languages · no API';}}
-function setOut(text,type){const el=document.getElementById('ob');el.textContent=text;el.className='out-body '+type;document.getElementById('cb').disabled=type!=='ok';document.getElementById('shb').disabled=type!=='ok';}
+
+window.toggleRec = async function() {
+  if (!rdy) return;
+  isRec ? stopRec() : await startRec();
+};
+
+async function startRec() {
+  if (getU() >= DL) { setOut('Daily limit (30) reached. Come back tomorrow.','error'); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    const mime = ['audio/webm;codecs=opus','audio/webm','audio/ogg','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+    mr_ = new MediaRecorder(stream, mime?{mimeType:mime}:{});
+    chunks = [];
+    mr_.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+    mr_.onstop = procAudio;
+    mr_.start(250); isRec=true; sec=0; startTimer(); recUI(true);
+  } catch(e) { setOut('Microphone denied. Please allow and try again.','error'); }
+}
+
+function stopRec() {
+  if (mr_ && mr_.state!=='inactive') { mr_.stop(); mr_.stream.getTracks().forEach(t=>t.stop()); }
+  clearInterval(tInt); isRec=false; recUI(false); procUI(true);
+}
+
+function startTimer() {
+  const el = document.getElementById('rt'); el.style.display='block';
+  tInt = setInterval(()=>{ sec++; const m=Math.floor(sec/60),s=sec%60; el.textContent=m+':'+(s<10?'0':'')+s; if(sec>=60) stopRec(); },1000);
+}
+
+async function procAudio() {
+  const blob = new Blob(chunks,{type:chunks[0]?.type||'audio/webm'});
+  if (blob.size<1000) { procUI(false); setOut('Too short. Please speak clearly.','error'); return; }
+  try {
+    const url = URL.createObjectURL(blob);
+    const result = await tr(url, {
+      language: document.getElementById('ls').value,
+      task: 'transcribe',
+      chunk_length_s: 30,
+    });
+    URL.revokeObjectURL(url);
+    procUI(false);
+    const text = result.text?.trim();
+    if (!text) { setOut('No speech detected. Try again.','error'); return; }
+    addU(); setOut(text,'ok'); addHist(text);
+  } catch(e) { procUI(false); setOut('Error: '+e.message,'error'); }
+}
+
+function recUI(r) {
+  const b=document.getElementById('mr'),l=document.getElementById('rl'),s=document.getElementById('rs'),t=document.getElementById('rt');
+  if(r){ b.className='mic-ring rec'; setIcon('stop'); l.textContent='Recording...'; s.textContent='Tap to stop · max 60s'; }
+  else { b.className='mic-ring'; setIcon('mic'); l.textContent='Tap to Record'; s.textContent='Speech to text · 99 languages · no API'; t.style.display='none'; }
+}
+function procUI(p) {
+  const b=document.getElementById('mr'),l=document.getElementById('rl'),s=document.getElementById('rs');
+  if(p){ b.className='mic-ring proc'; b.disabled=true; setIcon('bolt'); l.textContent='Transcribing...'; s.textContent='Running on your device'; }
+  else { b.className='mic-ring'; b.disabled=false; setIcon('mic'); l.textContent='Tap to Record'; s.textContent='Speech to text · 99 languages · no API'; }
+}
+
+function setOut(text,type) {
+  const el=document.getElementById('ob'); el.textContent=text; el.className='out-body '+type;
+  document.getElementById('cb').disabled=type!=='ok'; document.getElementById('shb').disabled=type!=='ok';
+}
 window.doClear=function(){document.getElementById('ob').textContent='Your transcription will appear here...';document.getElementById('ob').className='out-body empty';document.getElementById('cb').disabled=true;document.getElementById('shb').disabled=true;};
-window.doCopy=function(){const t=document.getElementById('ob').textContent;navigator.clipboard?.writeText(t).then(()=>{const b=document.getElementById('cb');b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500);});};
-window.doShare=function(){const t=document.getElementById('ob').textContent;if(navigator.share)navigator.share({text:t,title:'Transcribed with Whisper on A-Store'});else window.doCopy();};
+window.doCopy=function(){navigator.clipboard?.writeText(document.getElementById('ob').textContent).then(()=>{const b=document.getElementById('cb');b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500);});};
+window.doShare=function(){const t=document.getElementById('ob').textContent;if(navigator.share)navigator.share({text:t,title:'Transcribed on A-Store'});else window.doCopy();};
+
 function addHist(text){const h=JSON.parse(localStorage.getItem(HK)||'[]');h.unshift({text,time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})});if(h.length>20)h.pop();localStorage.setItem(HK,JSON.stringify(h));renderHist();}
-function renderHist(){const list=document.getElementById('hl');const h=JSON.parse(localStorage.getItem(HK)||'[]');if(!h.length){list.innerHTML='<div class="hist-empty">No transcriptions yet</div>';return;}list.innerHTML=h.map(i=>`<div class="hist-item" onclick="loadH('${i.text.replace(/'/g,"\\'")}')"><div class="hi-text">${i.text}</div><div class="hi-time">${i.time}</div></div>`).join('');}
+function renderHist(){const list=document.getElementById('hl');const h=JSON.parse(localStorage.getItem(HK)||'[]');if(!h.length){list.innerHTML='<div class="hist-empty">No transcriptions yet</div>';return;}list.innerHTML=h.map(i=>'<div class="hist-item" onclick="loadH(\''+i.text.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')"><div class="hi-text">'+i.text+'</div><div class="hi-time">'+i.time+'</div></div>').join('');}
 window.loadH=function(t){setOut(t,'ok');document.getElementById('cb').disabled=false;document.getElementById('shb').disabled=false;};
-window.toggleHist=function(){const l=document.getElementById('hl'),a=document.getElementById('ha');const o=l.style.display==='block';l.style.display=o?'
+window.toggleHist=function(){const l=document.getElementById('hl'),a=document.getElementById('ha');const o=l.style.display==='block';l.style.display=o?'none':'block';a.style.transform=o?'':'rotate(180deg)';if(!o)renderHist();};
+
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;document.getElementById('ib').style.display='flex';});
+document.getElementById('iBtn').addEventListener('click',async()=>{if(!dp)return;dp.prompt();await dp.userChoice;dp=null;document.getElementById('ib').style.display='none';});
+
+uUI(getU());
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+loadModel();
+</script>
+</body>
+</html>
