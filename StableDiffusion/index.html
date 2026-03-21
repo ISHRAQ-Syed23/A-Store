@@ -181,9 +181,9 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
       <div class="setting-group">
         <span class="setting-label">Quality</span>
         <select class="setting-select" id="modelSelect">
-          <option value="flux" selected>Flux (fast)</option>
-          <option value="flux-realism">Flux Realism</option>
-          <option value="stable-diffusion-3.5-large">SD 3.5 Large</option>
+          <option value="flux" selected>Flux (recommended)</option>
+          <option value="flux-realism">Flux Realism (photo)</option>
+          <option value="turbo">Flux Turbo (fast)</option>
         </select>
       </div>
     </div>
@@ -234,51 +234,52 @@ async function generate(){
   if(!prompt){showErr('Please enter a description first.');return;}
   if(getU()>=DL){showErr('Daily limit (20) reached. Come back tomorrow.');return;}
 
-  var errBar=document.getElementById('errBar');errBar.style.display='none';
+  document.getElementById('errBar').style.display='none';
   var overlay=document.getElementById('loadOverlay');overlay.classList.add('on');
   var btn=document.getElementById('genBtn');btn.disabled=true;
   document.getElementById('loadText').textContent='Generating image...';
-  document.getElementById('loadSub').textContent='Usually 15–30 seconds...';
+  document.getElementById('loadSub').textContent='Takes 15–30 seconds, please wait';
+
   var loadStart=Date.now();
   var loadTimer=setInterval(function(){
-    var secs=Math.round((Date.now()-loadStart)/1000);
-    document.getElementById('loadSub').textContent=secs+'s elapsed... still working';
-  },3000);
+    var s=Math.round((Date.now()-loadStart)/1000);
+    document.getElementById('loadSub').textContent=s+'s — still generating...';
+  },5000);
 
   var size=getSize();
   var model=getModel();
-  var seed=Math.floor(Math.random()*999999);
+  var seed=Math.floor(Math.random()*99999);
   var encoded=encodeURIComponent(prompt);
-
-  // Pollinations.ai — completely free, no API key
-  var url='https://image.pollinations.ai/prompt/'+encoded+'?width='+size.w+'&height='+size.h+'&seed='+seed+'&model='+model+'&nologo=true&enhance=true';
+  var url='https://image.pollinations.ai/prompt/'+encoded
+    +'?width='+size.w+'&height='+size.h
+    +'&seed='+seed+'&model='+model
+    +'&nologo=true&nofeed=true&safe=false';
 
   try{
     var img=document.getElementById('genImg');
     img.classList.remove('loaded');
     document.getElementById('placeholder').style.display='none';
 
-    // Load image
-    await new Promise(function(resolve,reject){
-      img.onload=resolve;
-      img.onerror=reject;
-      img.src=url;
-    });
+    // Use fetch+blob — gets real HTTP errors, not just onerror
+    var resp=await fetch(url);
+    if(!resp.ok) throw new Error('Server returned '+resp.status);
+    var ct=resp.headers.get('content-type')||'';
+    if(!ct.startsWith('image')) throw new Error('Not an image (got '+ct+')');
+    var blob=await resp.blob();
+    var blobUrl=URL.createObjectURL(blob);
 
-    clearInterval(loadTimer);currentImgUrl=url;
-    img.classList.add('loaded');
-    overlay.classList.remove('on');
+    img.src=blobUrl; img.classList.add('loaded');
+    clearInterval(loadTimer); overlay.classList.remove('on');
     document.getElementById('imgActions').classList.add('on');
-    document.getElementById('downloadBtn').href=url;
-
-    // Add to history
-    addHistory(url,prompt);
-    addU();
+    document.getElementById('downloadBtn').href=blobUrl;
+    document.getElementById('downloadBtn').download='astore-'+seed+'.png';
+    currentImgUrl=blobUrl;
+    addHistory(blobUrl,prompt); addU();
 
   }catch(e){
-    overlay.classList.remove('on');
-    clearInterval(loadTimer);document.getElementById('placeholder').style.display='block';
-    showErr('Generation failed. Try a different prompt or check your connection.');
+    clearInterval(loadTimer); overlay.classList.remove('on');
+    document.getElementById('placeholder').style.display='block';
+    showErr('Failed: '+e.message+'. Try a simpler prompt.');
   }
   btn.disabled=false;
 }
@@ -327,4 +328,4 @@ document.getElementById('prompt').addEventListener('keydown',function(e){if(e.ke
 uUI(getU());
 </script>
 </body>
-  </html>
+</html>
