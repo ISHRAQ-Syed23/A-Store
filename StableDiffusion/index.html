@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Stable Diffusion"/>
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme:light)"/>
+<meta name="theme-color" content="#0c0c0c" media="(prefers-color-scheme:dark)"/>
+<title>Stable Diffusion — A-Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0c0c0c;--ink-2:#1a1a1a;--ink-3:#404040;--ink-4:#737373;--ink-5:#a3a3a3;--paper:#fff;--paper-2:#fafafa;--paper-3:#f5f5f5;--line:#e5e5e5;--line-2:#d4d4d4;--acc:#c2410c;--acc-dim:#fff7ed;--acc-ring:#fed7aa;--go:#16a34a;--stop:#dc2626;--sh:0 1px 2px rgba(0,0,0,.06);--sh-md:0 4px 12px rgba(0,0,0,.1)}
+@media(prefers-color-scheme:dark){:root{--ink:#fafafa;--ink-2:#e5e5e5;--ink-3:#a3a3a3;--ink-4:#737373;--ink-5:#525252;--paper:#0c0c0c;--paper-2:#141414;--paper-3:#1c1c1c;--line:#262626;--line-2:#333;--acc:#fb923c;--acc-dim:#2d1a0a;--acc-ring:#7c2d12;--sh:0 1px 2px rgba(0,0,0,.5);--sh-md:0 4px 12px rgba(0,0,0,.4)}}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Instrument Sans',sans-serif;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto}
+.header{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.25rem;border-bottom:1px solid var(--line);flex-shrink:0}
+.h-left{display:flex;align-items:center;gap:.6rem}
+.h-ico svg{display:block}
+.h-name{font-size:.95rem;font-weight:700;letter-spacing:-.02em}
+.h-by{font-size:.67rem;color:var(--ink-5);font-family:'Instrument Mono',monospace;margin-top:1px}
+.h-right{display:flex;align-items:center;gap:.4rem}
+.h-badge{font-family:'Instrument Mono',monospace;font-size:.58rem;font-weight:500;padding:.15rem .4rem;border-radius:100px;background:var(--acc-dim);color:var(--acc);border:1px solid var(--acc-ring)}
+.h-link{font-size:.7rem;font-weight:500;color:var(--ink-4);text-decoration:none;border:1px solid var(--line);padding:.25rem .55rem;border-radius:6px}
+.h-link:hover{background:var(--paper-3)}
+.scroll{flex:1;overflow-y:auto;padding:1.25rem}
+/* CANVAS — image display area */
+.canvas{width:100%;aspect-ratio:1;background:var(--paper-3);border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:center}
+.canvas-placeholder{text-align:center;padding:2rem 1rem}
+.cp-ico{margin:0 auto .75rem}
+.cp-ico svg{display:block;margin:0 auto}
+.cp-title{font-size:.9rem;font-weight:600;color:var(--ink-3);margin-bottom:.3rem}
+.cp-sub{font-size:.75rem;color:var(--ink-5);line-height:1.55}
+.canvas-img{width:100%;height:100%;object-fit:cover;display:none;transition:opacity .3s}
+.canvas-img.loaded{display:block}
+/* LOADING OVERLAY */
+.loading-overlay{display:none;position:absolute;inset:0;background:var(--paper-2);align-items:center;justify-content:center;flex-direction:column;gap:.75rem}
+.loading-overlay.on{display:flex}
+.spin{width:32px;height:32px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:.78rem;color:var(--ink-4);font-family:'Instrument Mono',monospace}
+.loading-sub{font-size:.68rem;color:var(--ink-5);font-family:'Instrument Mono',monospace}
+/* CONTROLS */
+.section-tag{font-family:'Instrument Mono',monospace;font-size:.62rem;color:var(--ink-5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.65rem;display:block}
+/* STYLE PRESETS */
+.presets{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.preset{font-size:.72rem;font-weight:500;padding:.28rem .65rem;border-radius:100px;border:1px solid var(--line);color:var(--ink-4);background:transparent;cursor:pointer;transition:all .15s;font-family:'Instrument Sans',sans-serif}
+.preset:hover{background:var(--acc-dim);border-color:var(--acc-ring);color:var(--acc)}
+.preset.on{background:var(--acc);border-color:var(--acc);color:#fff}
+/* PROMPT */
+.prompt-wrap{position:relative;margin-bottom:.875rem}
+.prompt-in{width:100%;background:var(--paper-2);border:1px solid var(--line-2);border-radius:10px;padding:.75rem 1rem;font-family:'Instrument Sans',sans-serif;font-size:.88rem;color:var(--ink);outline:none;resize:none;min-height:72px;max-height:120px;transition:border-color .15s;line-height:1.55}
+.prompt-in::placeholder{color:var(--ink-5)}.prompt-in:focus{border-color:var(--acc);background:var(--paper)}
+/* SETTINGS ROW */
+.settings-row{display:flex;gap:.6rem;margin-bottom:1rem}
+.setting-group{flex:1}
+.setting-label{font-size:.65rem;font-weight:500;color:var(--ink-5);font-family:'Instrument Mono',monospace;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;display:block}
+.setting-select{width:100%;background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:.4rem .6rem;font-family:'Instrument Sans',sans-serif;font-size:.78rem;color:var(--ink);outline:none;cursor:pointer}
+/* GENERATE BUTTON */
+.btn-gen{width:100%;background:var(--acc);color:#fff;border:none;border-radius:10px;padding:.75rem;font-family:'Instrument Sans',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:.5rem;letter-spacing:-.01em}
+.btn-gen:hover{opacity:.9;transform:translateY(-1px);box-shadow:var(--sh-md)}.btn-gen:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-gen svg{display:block}
+/* IMAGE ACTIONS */
+.img-actions{display:none;gap:.5rem;margin-top:.875rem}
+.img-actions.on{display:flex}
+.btn-action{flex:1;background:var(--paper-2);border:1px solid var(--line);color:var(--ink-3);border-radius:8px;padding:.5rem;font-size:.78rem;font-weight:500;cursor:pointer;transition:all .15s;font-family:'Instrument Sans',sans-serif;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:.3rem}
+.btn-action:hover{background:var(--paper-3);border-color:var(--line-2)}
+/* HISTORY STRIP */
+.hist-strip{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.25rem;margin-top:.875rem}
+.hist-strip::-webkit-scrollbar{display:none}
+.hist-thumb{width:56px;height:56px;border-radius:8px;object-fit:cover;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0}
+.hist-thumb:hover{border-color:var(--acc);transform:scale(1.05)}
+.hist-thumb.selected{border-color:var(--acc)}
+/* USAGE */
+.usage-strip{display:flex;align-items:center;gap:.6rem;padding:.45rem 1.25rem;border-bottom:1px solid var(--line);background:var(--paper-2);flex-shrink:0}
+.u-tag{font-family:'Instrument Mono',monospace;font-size:.6rem;color:var(--ink-5)}
+.u-track{flex:1;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
+.u-fill{height:100%;background:var(--acc);border-radius:2px;transition:width .4s}
+.u-num{font-family:'Instrument Mono',monospace;font-size:.6rem;color:var(--ink-5)}
+.err-bar{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:.6rem .875rem;font-size:.78rem;color:var(--stop);margin-bottom:.875rem;display:none}
+@media(prefers-color-scheme:dark){.err-bar{background:#2d1515;border-color:#7f1d1d}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="h-left">
+      <div class="h-ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      </div>
+      <div><div class="h-name">Stable Diffusion</div><div class="h-by">by Stability AI</div></div>
+    </div>
+    <div class="h-right">
+      <span class="h-badge">FREE</span>
+      <a href="https://a-store-ishraq.vercel.app" class="h-link">A-Store</a>
+    </div>
+  </div>
+  <div class="usage-strip">
+    <span class="u-tag">Today</span>
+    <div class="u-track"><div class="u-fill" id="uf" style="width:0%"></div></div>
+    <span class="u-num" id="un">0 / 20</span>
+  </div>
+  <div class="scroll">
+    <!-- IMAGE CANVAS -->
+    <div class="canvas" id="canvas">
+      <div class="canvas-placeholder" id="placeholder">
+        <div class="cp-ico">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </div>
+        <div class="cp-title">Your image will appear here</div>
+        <div class="cp-sub">Type a description below<br>and tap Generate</div>
+      </div>
+      <img id="genImg" class="canvas-img" alt="Generated image"/>
+      <div class="loading-overlay" id="loadOverlay">
+        <div class="spin"></div>
+        <div class="loading-text" id="loadText">Generating...</div>
+        <div class="loading-sub">~10–20 seconds</div>
+      </div>
+    </div>
+
+    <!-- IMAGE ACTIONS -->
+    <div class="img-actions" id="imgActions">
+      <a class="btn-action" id="downloadBtn" download="a-store-generated.png">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Save
+      </a>
+      <button class="btn-action" id="shareBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+      <button class="btn-action" id="variationBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        Variation
+      </button>
+    </div>
+
+    <!-- HISTORY -->
+    <div id="histWrap" style="display:none;margin-top:.875rem">
+      <span class="section-tag">History</span>
+      <div class="hist-strip" id="histStrip"></div>
+    </div>
+
+    <div style="height:1px;background:var(--line);margin:1.1rem 0"></div>
+
+    <!-- PROMPT INPUT -->
+    <span class="section-tag">Prompt</span>
+    <div class="prompt-wrap">
+      <textarea class="prompt-in" id="prompt" placeholder="A serene mountain lake at golden hour, photorealistic, 8k..." rows="3"></textarea>
+    </div>
+
+    <!-- STYLE PRESETS -->
+    <span class="section-tag">Style</span>
+    <div class="presets" id="presets">
+      <button class="preset on" data-style="">Default</button>
+      <button class="preset" data-style="photorealistic, 8k, detailed">Photo</button>
+      <button class="preset" data-style="digital art, vibrant colors, artstation">Digital Art</button>
+      <button class="preset" data-style="oil painting, impressionist, classical">Oil Paint</button>
+      <button class="preset" data-style="anime style, studio ghibli, soft colors">Anime</button>
+      <button class="preset" data-style="cinematic, film grain, dramatic lighting">Cinematic</button>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="settings-row">
+      <div class="setting-group">
+        <span class="setting-label">Size</span>
+        <select class="setting-select" id="sizeSelect">
+          <option value="512x512">512 × 512</option>
+          <option value="768x768" selected>768 × 768</option>
+          <option value="1024x1024">1024 × 1024</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <span class="setting-label">Quality</span>
+        <select class="setting-select" id="modelSelect">
+          <option value="flux" selected>Flux (fast)</option>
+          <option value="turbo">SDXL Turbo</option>
+          <option value="stable-diffusion-3">SD 3 (slow)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="err-bar" id="errBar"></div>
+
+    <button class="btn-gen" id="genBtn" onclick="generate()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Generate Image
+    </button>
+
+    <div style="height:.5rem"></div>
+    <div style="font-size:.67rem;color:var(--ink-5);font-family:'Instrument Mono',monospace;text-align:center;line-height:1.6">Powered by Pollinations.ai · Free · No API key needed</div>
+    <div style="height:1rem"></div>
+  </div>
+</div>
+<script>
+var DL=20,UK='sd_v1';
+var currentStyle='',currentImgUrl='',history=[];
+
+function getU(){var t=new Date().toDateString();var s=JSON.parse(localStorage.getItem(UK)||'{}');return s.date===t?(s.count||0):0;}
+function addU(){var c=getU()+1;localStorage.setItem(UK,JSON.stringify({date:new Date().toDateString(),count:c}));uUI(c);}
+function uUI(c){var p=Math.min((c/DL)*100,100);document.getElementById('uf').style.width=p+'%';document.getElementById('uf').style.background=p>80?'#dc2626':'#c2410c';document.getElementById('un').textContent=c+' / '+DL;}
+
+// Style presets
+document.getElementById('presets').addEventListener('click',function(e){
+  var btn=e.target.closest('.preset');if(!btn)return;
+  currentStyle=btn.dataset.style;
+  document.querySelectorAll('.preset').forEach(function(p){p.classList.remove('on');});
+  btn.classList.add('on');
+});
+
+function buildPrompt(){
+  var base=document.getElementById('prompt').value.trim();
+  if(!base)return null;
+  return currentStyle?base+', '+currentStyle:base;
+}
+
+function getSize(){
+  var v=document.getElementById('sizeSelect').value.split('x');
+  return{w:parseInt(v[0]),h:parseInt(v[1])};
+}
+
+function getModel(){return document.getElementById('modelSelect').value;}
+
+async function generate(){
+  var prompt=buildPrompt();
+  if(!prompt){showErr('Please enter a description first.');return;}
+  if(getU()>=DL){showErr('Daily limit (20) reached. Come back tomorrow.');return;}
+
+  var errBar=document.getElementById('errBar');errBar.style.display='none';
+  var overlay=document.getElementById('loadOverlay');overlay.classList.add('on');
+  var btn=document.getElementById('genBtn');btn.disabled=true;
+  document.getElementById('loadText').textContent='Generating...';
+
+  var size=getSize();
+  var model=getModel();
+  var seed=Math.floor(Math.random()*999999);
+  var encoded=encodeURIComponent(prompt);
+
+  // Pollinations.ai — completely free, no API key
+  var url='https://image.pollinations.ai/prompt/'+encoded+'?width='+size.w+'&height='+size.h+'&seed='+seed+'&model='+model+'&nologo=true&enhance=true';
+
+  try{
+    var img=document.getElementById('genImg');
+    img.classList.remove('loaded');
+    document.getElementById('placeholder').style.display='none';
+
+    // Load image
+    await new Promise(function(resolve,reject){
+      img.onload=resolve;
+      img.onerror=reject;
+      img.src=url;
+    });
+
+    currentImgUrl=url;
+    img.classList.add('loaded');
+    overlay.classList.remove('on');
+    document.getElementById('imgActions').classList.add('on');
+    document.getElementById('downloadBtn').href=url;
+
+    // Add to history
+    addHistory(url,prompt);
+    addU();
+
+  }catch(e){
+    overlay.classList.remove('on');
+    document.getElementById('placeholder').style.display='block';
+    showErr('Generation failed. Try a different prompt or check your connection.');
+  }
+  btn.disabled=false;
+}
+
+function showErr(msg){var b=document.getElementById('errBar');b.textContent=msg;b.style.display='block';setTimeout(function(){b.style.display='none';},4000);}
+
+function addHistory(url,prompt){
+  history.unshift({url:url,prompt:prompt});
+  if(history.length>10)history.pop();
+  renderHistory();
+}
+
+function renderHistory(){
+  var strip=document.getElementById('histStrip');
+  var wrap=document.getElementById('histWrap');
+  if(!history.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  strip.innerHTML=history.map(function(h,i){return '<img class="hist-thumb'+(i===0?' selected':'')+'" src="'+h.url+'" title="'+h.prompt+'" onclick="selectHistory('+i+')"/>';}).join('');
+}
+
+window.selectHistory=function(i){
+  var item=history[i];if(!item)return;
+  var img=document.getElementById('genImg');
+  img.src=item.url;img.classList.add('loaded');
+  document.getElementById('placeholder').style.display='none';
+  currentImgUrl=item.url;
+  document.getElementById('prompt').value=item.prompt;
+  document.getElementById('imgActions').classList.add('on');
+  document.getElementById('downloadBtn').href=item.url;
+  document.querySelectorAll('.hist-thumb').forEach(function(t,j){t.classList.toggle('selected',j===i);});
+};
+
+// Share
+document.getElementById('shareBtn').addEventListener('click',function(){
+  if(!currentImgUrl)return;
+  if(navigator.share){navigator.share({url:currentImgUrl,title:'Generated with Stable Diffusion on A-Store'});}
+  else{navigator.clipboard&&navigator.clipboard.writeText(currentImgUrl).then(function(){var b=document.getElementById('shareBtn');b.textContent='Copied!';setTimeout(function(){b.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share';},1500);})}
+});
+
+// Variation — regenerate with same prompt, different seed
+document.getElementById('variationBtn').addEventListener('click',function(){generate();});
+
+// Enter to generate
+document.getElementById('prompt').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.metaKey){generate();}});
+
+uUI(getU());
+</script>
+</body>
+
+</html>
