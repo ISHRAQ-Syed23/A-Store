@@ -181,9 +181,9 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
       <div class="setting-group">
         <span class="setting-label">Quality</span>
         <select class="setting-select" id="modelSelect">
-          <option value="flux" selected>Flux (recommended)</option>
+          <option value="flux" selected>Flux (fastest)</option>
           <option value="flux-realism">Flux Realism (photo)</option>
-          <option value="turbo">Flux Turbo (fast)</option>
+          <option value="flux-realism">Flux Realism (photo)</option>
         </select>
       </div>
     </div>
@@ -260,26 +260,26 @@ async function generate(){
     img.classList.remove('loaded');
     document.getElementById('placeholder').style.display='none';
 
-    // Use fetch+blob — gets real HTTP errors, not just onerror
-    var resp=await fetch(url);
-    if(!resp.ok) throw new Error('Server returned '+resp.status);
-    var ct=resp.headers.get('content-type')||'';
-    if(!ct.startsWith('image')) throw new Error('Not an image (got '+ct+')');
-    var blob=await resp.blob();
-    var blobUrl=URL.createObjectURL(blob);
+    // img.src bypasses CORS — correct for Pollinations
+    await new Promise(function(resolve,reject){
+      var t=setTimeout(function(){reject(new Error('Timed out. Try shorter prompt.'));},60000);
+      img.onload=function(){clearTimeout(t);resolve();};
+      img.onerror=function(){clearTimeout(t);reject(new Error('Image failed. Try different prompt.'));};
+      img.src=url;
+    });
 
-    img.src=blobUrl; img.classList.add('loaded');
+    img.classList.add('loaded');
     clearInterval(loadTimer); overlay.classList.remove('on');
     document.getElementById('imgActions').classList.add('on');
-    document.getElementById('downloadBtn').href=blobUrl;
+    document.getElementById('downloadBtn').href=url;
     document.getElementById('downloadBtn').download='astore-'+seed+'.png';
-    currentImgUrl=blobUrl;
-    addHistory(blobUrl,prompt); addU();
+    currentImgUrl=url;
+    addHistory(url,prompt); addU();
 
   }catch(e){
     clearInterval(loadTimer); overlay.classList.remove('on');
     document.getElementById('placeholder').style.display='block';
-    showErr('Failed: '+e.message+'. Try a simpler prompt.');
+    showErr(e.message||'Generation failed. Try a different prompt.');
   }
   btn.disabled=false;
 }
