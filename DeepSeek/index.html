@@ -196,7 +196,7 @@ async function send(){
   ti.value='';ti.style.height='auto';loading=true;document.getElementById('sb').disabled=true;
   msgs.push({role:'user',content:text});renderMsg('user',text);showTyping();
   try{
-    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are DeepSeek R1, a reasoning AI. Think carefully through problems step by step.'}].concat(msgs),model:'deepseek-r1-distill-llama-70b'})});
+    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are DeepSeek R1, a reasoning AI. Think carefully through problems step by step.'}].concat(msgs),model:'deepseek-r1-distill-qwen-32b'})});
     hideTyping();
     if(!res.ok){var e=await res.json().catch(function(){return{};});showErr('Error '+res.status+': '+(e.error||'Try again.'));msgs.pop();return;}
     var data=await res.json();
@@ -212,4 +212,4 @@ async function send(){
 uUI(getU());
 </script>
 </body>
-  </html>
+</html>
