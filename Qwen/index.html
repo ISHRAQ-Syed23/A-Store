@@ -28,17 +28,14 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
 .h-link:hover{background:var(--paper-3)}
 .usage-line{height:2px;background:var(--line);flex-shrink:0}
 .usage-fill{height:100%;background:var(--acc);transition:width .4s ease}
-/* MODE TABS */
 .mode-bar{display:flex;border-bottom:1px solid var(--line);flex-shrink:0;background:var(--paper-2)}
 .mode-tab{flex:1;padding:.55rem .5rem;font-size:.72rem;font-weight:600;font-family:'Instrument Mono',monospace;color:var(--ink-5);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;letter-spacing:.03em;text-transform:uppercase}
 .mode-tab.on{color:var(--acc);border-bottom-color:var(--acc)}
 .mode-tab:hover:not(.on){color:var(--ink-3)}
 .msgs{flex:1;overflow-y:auto;padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.875rem}
 .msgs::-webkit-scrollbar{width:2px}
-.msgs::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:2px}
 .welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.875rem;padding:2rem 1rem}
-.w-ico{margin:0 auto .25rem}
-.w-ico svg{display:block}
+.w-ico svg{display:block;margin:0 auto}
 .w-title{font-size:1.05rem;font-weight:700;letter-spacing:-.025em}
 .w-sub{font-size:.82rem;color:var(--ink-4);line-height:1.65;max-width:280px}
 .w-sugs{display:flex;flex-direction:column;gap:.4rem;width:100%;max-width:340px;margin-top:.25rem}
@@ -48,21 +45,19 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
 @keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .msg.user{flex-direction:row-reverse}
 .m-av{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.msg.user .m-av{background:var(--ink)}
+.msg.user .m-av{background:#0c0c0c}
 .msg.ai .m-av{background:var(--acc-dim);border:1px solid var(--acc-ring)}
 .m-av svg{display:block}
 .m-wrap{max-width:82%}
 .m-bub{padding:.62rem .875rem;font-size:.85rem;line-height:1.65;word-break:break-word;position:relative}
-.msg.user .m-bub{background:var(--ink);color:var(--paper);border-radius:10px 10px 3px 10px}
+.msg.user .m-bub{background:#0c0c0c;color:#fafafa;border-radius:10px 10px 3px 10px}
 .msg.ai .m-bub{background:var(--paper-2);border:1px solid var(--line);color:var(--ink-3);border-radius:10px 10px 10px 3px}
 .msg.ai .m-bub strong{color:var(--ink-2)}
 .msg.ai .m-bub code{font-family:'Instrument Mono',monospace;font-size:.78rem;background:var(--paper-3);padding:.1rem .3rem;border-radius:4px;color:var(--acc)}
 .msg.ai .m-bub pre{font-family:'Instrument Mono',monospace;font-size:.75rem;background:var(--paper-3);padding:.75rem 1rem;border-radius:8px;overflow-x:auto;margin:.5rem 0;line-height:1.6;border:1px solid var(--line)}
 .m-time{font-family:'Instrument Mono',monospace;font-size:.56rem;color:var(--ink-5);margin-top:.2rem;display:block}
 .m-copy{position:absolute;top:.3rem;right:.35rem;font-size:.56rem;color:var(--ink-5);background:none;border:none;cursor:pointer;opacity:0;transition:opacity .15s;padding:.1rem .28rem;border-radius:4px}
-.m-bub:hover .m-copy{opacity:1}.m-copy:hover{color:var(--ink-3)}
-.thinking-block{background:var(--acc-dim);border:1px solid var(--acc-ring);border-radius:8px;padding:.6rem .875rem;margin-bottom:.5rem;font-size:.75rem;color:var(--acc);font-family:'Instrument Mono',monospace;line-height:1.6}
-.thinking-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-bottom:.3rem;display:block}
+.m-bub:hover .m-copy{opacity:1}
 .typing{display:flex;gap:.5rem;align-items:center}
 .t-bub{display:flex;gap:4px;align-items:center;background:var(--paper-2);border:1px solid var(--line);padding:.5rem .875rem;border-radius:10px 10px 10px 3px}
 .dot{width:5px;height:5px;border-radius:50%;background:var(--ink-4);animation:dp 1.2s ease-in-out infinite}
@@ -84,15 +79,14 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
     <div class="h-left">
       <div class="h-ico">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="2" y1="12" x2="22" y2="12"/>
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
         </svg>
       </div>
       <div><div class="h-name">Qwen 2.5</div><div class="h-by">by Alibaba</div></div>
     </div>
     <div class="h-right">
-      <span class="h-model" id="hm">QWEN 2.5 72B</span>
+      <span class="h-model">QWEN3 32B</span>
       <button class="h-clear" id="clearBtn">✕</button>
       <a href="https://a-store-ishraq.vercel.app" class="h-link">A-Store</a>
     </div>
@@ -108,8 +102,7 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
     <div class="welcome" id="wc">
       <div class="w-ico">
         <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="2" y1="12" x2="22" y2="12"/>
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
         </svg>
       </div>
@@ -134,13 +127,13 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
 </div>
 <script>
 var API='https://jzqmjvxwtguaubsfklpf.supabase.co/functions/v1/chat';
-var DL=50,UK='qwen_v1';
+var DL=50,UK='qwen_v2';
 var msgs=[],loading=false,mode='chat';
 var PROMPTS={
-  chat:'You are Qwen 2.5, a helpful multilingual AI by Alibaba. Be concise and clear.',
-  code:'You are Qwen 2.5 in coding mode. Format all code with proper markdown code blocks (```language). Explain what the code does. Be precise.',
-  math:'You are Qwen 2.5 in math mode. Show step-by-step working for every problem. Use clear notation.',
-  translate:'You are Qwen 2.5 in translation mode. You are fluent in English, Hindi, Telugu, Tamil, Malayalam, Kannada, Bengali, and all major Indian languages plus Arabic, Chinese, French, German, Spanish. Provide accurate translations with context when helpful.'
+  chat:'You are Qwen, a helpful multilingual AI by Alibaba. Be concise and clear.',
+  code:'You are Qwen in coding mode. Format all code in markdown code blocks. Explain clearly.',
+  math:'You are Qwen in math mode. Show step-by-step working for every problem.',
+  translate:'You are Qwen in translation mode. Fluent in English, Hindi, Telugu, Tamil, Malayalam, Kannada, Bengali, and all major languages. Give accurate translations.'
 };
 var PLACEHOLDERS={chat:'Ask anything...',code:'Describe the code you need...',math:'Enter a math problem...',translate:'Enter text to translate...'};
 
@@ -148,54 +141,59 @@ function getU(){var t=new Date().toDateString();var s=JSON.parse(localStorage.ge
 function addU(){var c=getU()+1;localStorage.setItem(UK,JSON.stringify({date:new Date().toDateString(),count:c}));uUI(c);}
 function uUI(c){var p=Math.min((c/DL)*100,100);document.getElementById('uf').style.width=p+'%';document.getElementById('uf').style.background=p>80?'#dc2626':'#7c3aed';}
 
+function getErrMsg(e){
+  if(!e)return'Try again.';
+  if(e.error&&e.error.message)return e.error.message;
+  if(e.error&&typeof e.error==='string')return e.error;
+  if(e.message)return e.message;
+  return JSON.stringify(e);
+}
+
 document.querySelector('.mode-bar').addEventListener('click',function(e){
   var btn=e.target.closest('.mode-tab');if(!btn)return;
   mode=btn.dataset.mode;
   document.querySelectorAll('.mode-tab').forEach(function(t){t.classList.remove('on');});
   btn.classList.add('on');
   document.getElementById('ti').placeholder=PLACEHOLDERS[mode];
-  msgs=[];clearWelcome();
-  var c=document.getElementById('msgs');
-  c.innerHTML='<div class="welcome" id="wc"><div class="w-ico"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="w-title">'+mode.charAt(0).toUpperCase()+mode.slice(1)+' Mode</div><div class="w-sub">'+getModeDesc(mode)+'</div></div>';
+  msgs=[];
+  document.getElementById('msgs').innerHTML='<div class="welcome" id="wc"><div class="w-ico"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="w-title">'+mode.charAt(0).toUpperCase()+mode.slice(1)+' Mode</div><div class="w-sub">'+{chat:'General chat — multilingual, fast, capable.',code:'Write, review and explain code.',math:'Step-by-step solutions for any math problem.',translate:'Translate between English and all Indian languages.'}[mode]+'</div></div>';
 });
-function getModeDesc(m){return{chat:'General chat — multilingual, fast, capable.',code:'Optimized for writing, reviewing and explaining code.',math:'Step-by-step solutions for any math problem.',translate:'Translate between English and all major Indian languages.'}[m];}
 
 document.getElementById('clearBtn').addEventListener('click',function(){msgs=[];document.getElementById('msgs').innerHTML='<div class="welcome" id="wc"><div class="w-ico"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="w-title">Qwen 2.5 by Alibaba</div><div class="w-sub">Multilingual AI. Switch modes for coding, math, and translation.</div></div>';});
 document.getElementById('sugs').addEventListener('click',function(e){var btn=e.target.closest('.sug');if(!btn)return;document.getElementById('ti').value=btn.textContent.trim();send();});
 document.getElementById('ti').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
 document.getElementById('ti').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';});
 document.getElementById('sb').addEventListener('click',send);
-function clearWelcome(){}
+
 function fmt(){return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
 function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function userAv(){return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';}
 function aiAv(){return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';}
 
 function formatAI(text){
-  // code blocks
   text=text.replace(/```(\w*)\n?([\s\S]*?)```/g,function(_,lang,code){return '<pre><code>'+(lang?'<span style="font-size:.6rem;opacity:.6;display:block;margin-bottom:.3rem">'+escH(lang)+'</span>':'')+escH(code.trim())+'</code></pre>';});
-  // inline code
   text=text.replace(/`([^`]+)`/g,'<code>$1</code>');
-  // bold
   text=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-  // newlines
   text=text.replace(/\n/g,'<br>');
   return text;
 }
 
-function renderMsg(role,text,thinking){
+function renderMsg(role,text){
   var c=document.getElementById('msgs');
   var w=document.getElementById('wc');if(w)w.remove();
   var isU=role==='user';
   var d=document.createElement('div');d.className='msg '+(isU?'user':'ai');
   var html=isU?escH(text):formatAI(text);
-  var avBg=isU?'background:#0c0c0c':'background:var(--acc-dim);border:1px solid var(--acc-ring)';
-  var thinkHtml='';
-  if(thinking&&thinking.trim()){thinkHtml='<div class="thinking-block"><span class="thinking-label">Reasoning</span>'+escH(thinking.trim().slice(0,300))+(thinking.length>300?'...':'')+'</div>';}
-  d.innerHTML='<div class="m-av" style="'+avBg+'">'+( isU?userAv():aiAv())+'</div><div class="m-wrap"><div class="m-bub">'+thinkHtml+html+(isU?'':'<button class="m-copy" data-copy>copy</button>')+'</div><span class="m-time">'+fmt()+'</span></div>';
+  d.innerHTML='<div class="m-av" style="'+(isU?'background:#0c0c0c':'background:var(--acc-dim);border:1px solid var(--acc-ring)')+'">'+( isU?userAv():aiAv())+'</div><div class="m-wrap"><div class="m-bub">'+html+(isU?'':'<button class="m-copy" data-copy>copy</button>')+'</div><span class="m-time">'+fmt()+'</span></div>';
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
-document.getElementById('msgs').addEventListener('click',function(e){var btn=e.target.closest('[data-copy]');if(!btn)return;var text=btn.closest('.m-bub').innerText.replace('copy','').trim();navigator.clipboard&&navigator.clipboard.writeText(text).then(function(){btn.textContent='✓';setTimeout(function(){btn.textContent='copy';},1500);});});
+
+document.getElementById('msgs').addEventListener('click',function(e){
+  var btn=e.target.closest('[data-copy]');if(!btn)return;
+  var text=btn.closest('.m-bub').innerText.replace('copy','').trim();
+  navigator.clipboard&&navigator.clipboard.writeText(text).then(function(){btn.textContent='✓';setTimeout(function(){btn.textContent='copy';},1500);});
+});
+
 function showTyping(){var c=document.getElementById('msgs');var d=document.createElement('div');d.className='typing';d.id='typ';d.innerHTML='<div class="m-av" style="background:var(--acc-dim);border:1px solid var(--acc-ring)">'+aiAv()+'</div><div class="t-bub"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
 function hideTyping(){var el=document.getElementById('typ');if(el)el.remove();}
 function showErr(text){var c=document.getElementById('msgs');var d=document.createElement('div');d.className='msg ai';d.innerHTML='<div class="m-av" style="background:var(--paper-3);border:1px solid var(--line)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><div class="err-bub">'+escH(text)+'</div></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
@@ -207,18 +205,27 @@ async function send(){
   ti.value='';ti.style.height='auto';loading=true;document.getElementById('sb').disabled=true;
   msgs.push({role:'user',content:text});renderMsg('user',text);showTyping();
   try{
-    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:PROMPTS[mode]}].concat(msgs),model:'qwen-2.5-32b'})});
+    var res=await fetch(API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        messages:[{role:'system',content:PROMPTS[mode]}].concat(msgs),
+        model:'qwen-2.5-32b'  // ✅ CORRECT model ID for Groq free tier
+      })
+    });
     hideTyping();
-    if(!res.ok){var e=await res.json().catch(function(){return{};});showErr('Error '+res.status+': '+(e.error||'Try again.'));msgs.pop();return;}
+    if(!res.ok){
+      var e=await res.json().catch(function(){return{};});
+      showErr('Error '+res.status+': '+getErrMsg(e));
+      msgs.pop();return;
+    }
     var data=await res.json();
     var reply=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'No response.';
-    // extract thinking if present
-    var thinking='',mainReply=reply;
-    var thinkMatch=reply.match(/<think>([\s\S]*?)<\/think>/i);
-    if(thinkMatch){thinking=thinkMatch[1];mainReply=reply.replace(/<think>[\s\S]*?<\/think>/i,'').trim();}
-    msgs.push({role:'assistant',content:reply});renderMsg('ai',mainReply,thinking);addU();
+    // Strip any <think> blocks Qwen3 might return
+    reply=reply.replace(/<think>[\s\S]*?<\/think>/gi,'').trim();
+    msgs.push({role:'assistant',content:reply});renderMsg('ai',reply);addU();
     if(msgs.length>20)msgs=msgs.slice(-20);
-  }catch(e){hideTyping();showErr('Network error.');msgs.pop();}
+  }catch(e){hideTyping();showErr('Network error: '+e.message);msgs.pop();}
   finally{loading=false;document.getElementById('sb').disabled=false;document.getElementById('ti').focus();}
 }
 uUI(getU());
