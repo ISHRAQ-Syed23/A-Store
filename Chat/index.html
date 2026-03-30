@@ -11,25 +11,13 @@
 <title>Llama Chat — A-Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --ink:#0c0c0c;--ink-2:#1a1a1a;--ink-3:#404040;--ink-4:#737373;--ink-5:#a3a3a3;
-  --paper:#fff;--paper-2:#fafafa;--paper-3:#f5f5f5;--line:#e5e5e5;--line-2:#d4d4d4;
-  --fire:#f97316;--fire-dim:#fff7ed;--fire-ring:#fed7aa;
-  --go:#16a34a;--go-dim:#f0fdf4;--stop:#dc2626;
-  --sh:0 1px 2px rgba(0,0,0,.06);
-}
-@media(prefers-color-scheme:dark){:root{
-  --ink:#fafafa;--ink-2:#e5e5e5;--ink-3:#a3a3a3;--ink-4:#737373;--ink-5:#525252;
-  --paper:#0c0c0c;--paper-2:#141414;--paper-3:#1c1c1c;--line:#262626;--line-2:#333;
-  --fire-dim:#2d1a0a;--fire-ring:#7c2d12;--go-dim:#052e16;--sh:0 1px 2px rgba(0,0,0,.5);
-}}
+:root{--ink:#0c0c0c;--ink-2:#1a1a1a;--ink-3:#404040;--ink-4:#737373;--ink-5:#a3a3a3;--paper:#fff;--paper-2:#fafafa;--paper-3:#f5f5f5;--line:#e5e5e5;--line-2:#d4d4d4;--fire:#f97316;--fire-dim:#fff7ed;--fire-ring:#fed7aa;--go:#16a34a;--go-dim:#f0fdf4;--stop:#dc2626;--sh:0 1px 2px rgba(0,0,0,.06)}
+@media(prefers-color-scheme:dark){:root{--ink:#fafafa;--ink-2:#e5e5e5;--ink-3:#a3a3a3;--ink-4:#737373;--ink-5:#525252;--paper:#0c0c0c;--paper-2:#141414;--paper-3:#1c1c1c;--line:#262626;--line-2:#333;--fire-dim:#2d1a0a;--fire-ring:#7c2d12;--go-dim:#052e16;--sh:0 1px 2px rgba(0,0,0,.5)}}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Instrument Sans',sans-serif;overflow:hidden}
 .app{display:flex;flex-direction:column;height:100%;max-width:520px;margin:0 auto}
-
 .header{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.25rem;border-bottom:1px solid var(--line);flex-shrink:0}
 .h-left{display:flex;align-items:center;gap:.6rem}
-/* NO BOX — raw SVG */
 .h-ico svg{display:block}
 .h-name{font-size:.95rem;font-weight:700;letter-spacing:-.02em}
 .h-by{font-size:.67rem;color:var(--ink-5);font-family:'Instrument Mono',monospace;margin-top:1px}
@@ -39,16 +27,12 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
 .h-clear:hover{color:var(--stop);border-color:var(--stop)}
 .h-link{font-size:.7rem;font-weight:500;color:var(--ink-4);text-decoration:none;border:1px solid var(--line);padding:.25rem .55rem;border-radius:6px;transition:all .15s}
 .h-link:hover{background:var(--paper-3)}
-
 .usage-line{height:2px;background:var(--line);flex-shrink:0}
 .usage-fill{height:100%;background:var(--go);transition:width .4s ease}
-
 .msgs{flex:1;overflow-y:auto;padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.875rem}
 .msgs::-webkit-scrollbar{width:2px}
 .msgs::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:2px}
-
 .welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.875rem;padding:2rem 1rem}
-/* welcome icon — just the SVG, no box */
 .w-ico{margin:0 auto 0.25rem}
 .w-ico svg{display:block}
 .w-title{font-size:1.05rem;font-weight:700;letter-spacing:-.025em}
@@ -56,7 +40,6 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
 .w-sugs{display:flex;flex-direction:column;gap:.4rem;width:100%;max-width:320px;margin-top:.25rem}
 .sug{background:transparent;border:1px solid var(--line);padding:.58rem .875rem;text-align:left;cursor:pointer;font-size:.8rem;color:var(--ink-3);transition:all .15s;font-family:'Instrument Sans',sans-serif;border-radius:8px}
 .sug:hover{background:var(--paper-2);border-color:var(--line-2);color:var(--ink-2)}
-
 .msg{display:flex;gap:.5rem;align-items:flex-start;animation:pop .2s ease}
 @keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .msg.user{flex-direction:row-reverse}
@@ -72,14 +55,12 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
 .m-time{font-family:'Instrument Mono',monospace;font-size:.56rem;color:var(--ink-5);margin-top:.2rem;display:block}
 .m-copy{position:absolute;top:.3rem;right:.35rem;font-size:.56rem;color:var(--ink-5);background:none;border:none;cursor:pointer;opacity:0;transition:opacity .15s;padding:.1rem .28rem;border-radius:4px}
 .m-bub:hover .m-copy{opacity:1}.m-copy:hover{color:var(--ink-3)}
-
 .typing{display:flex;gap:.5rem;align-items:center}
 .t-bub{display:flex;gap:4px;align-items:center;background:var(--paper-2);border:1px solid var(--line);padding:.5rem .875rem;border-radius:10px 10px 10px 3px}
 .dot{width:5px;height:5px;border-radius:50%;background:var(--ink-4);animation:dp 1.2s ease-in-out infinite}
 .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
 @keyframes dp{0%,60%,100%{opacity:.2;transform:scale(.8)}30%{opacity:1;transform:scale(1)}}
 .err-bub{background:var(--paper-2);border:1px solid var(--line);color:var(--stop);padding:.6rem .875rem;border-radius:10px;font-size:.78rem;max-width:82%}
-
 .input-area{padding:.75rem 1.25rem .9rem;border-top:1px solid var(--line);background:var(--paper);flex-shrink:0}
 .model-row{display:flex;gap:.3rem;margin-bottom:.55rem;flex-wrap:wrap}
 .m-chip{font-family:'Instrument Mono',monospace;font-size:.58rem;font-weight:500;padding:.2rem .5rem;border-radius:100px;border:1px solid var(--line);color:var(--ink-4);background:transparent;cursor:pointer;transition:all .15s}
@@ -91,7 +72,6 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
 .btn-send{background:var(--ink);border:none;color:var(--paper);width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
 .btn-send:hover{background:var(--ink-2);transform:translateY(-1px)}.btn-send:disabled{background:var(--ink-5);cursor:not-allowed;transform:none}
 .btn-send svg{display:block}
-
 .ib{background:var(--fire-dim);border-bottom:1px solid var(--fire-ring);padding:.55rem 1.25rem;display:none;align-items:center;justify-content:space-between;gap:.75rem;flex-shrink:0}
 .ib-t{font-size:.73rem;color:var(--fire);font-weight:500}
 .ib-btn{font-size:.7rem;font-weight:600;padding:.27rem .6rem;background:var(--fire);color:#fff;border:none;cursor:pointer;border-radius:6px;font-family:'Instrument Sans',sans-serif}
@@ -103,10 +83,8 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
     <span class="ib-t">Add Llama Chat to your Home Screen</span>
     <button class="ib-btn" id="iBtn">Install</button>
   </div>
-
   <div class="header">
     <div class="h-left">
-      <!-- Clean chat icon, no box, hardcoded stroke -->
       <div class="h-ico">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -120,9 +98,7 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
       <a href="https://a-store-ishraq.vercel.app" class="h-link">A-Store</a>
     </div>
   </div>
-
   <div class="usage-line"><div class="usage-fill" id="uf" style="width:0%"></div></div>
-
   <div class="msgs" id="msgs">
     <div class="welcome" id="wc">
       <div class="w-ico">
@@ -143,7 +119,6 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
       </div>
     </div>
   </div>
-
   <div class="input-area">
     <div class="model-row" id="modelRow">
       <button class="m-chip on" data-model="llama-3.1-8b-instant" data-label="LLAMA 3.1 8B">LLAMA 3.1 8B</button>
@@ -153,25 +128,29 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
     <div class="input-row">
       <textarea class="txt-in" id="ti" placeholder="Ask anything..." rows="1"></textarea>
       <button class="btn-send" id="sb">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="22" y1="2" x2="11" y2="13"/>
-          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-        </svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </div>
   </div>
 </div>
-
 <script>
-var API = 'https://jzqmjvxwtguaubsfklpf.supabase.co/functions/v1/chat';
-var DL = 50, UK = 'llama_v5';
-var msgs = [], model = 'llama-3.1-8b-instant', loading = false, dp = null;
+var API='https://jzqmjvxwtguaubsfklpf.supabase.co/functions/v1/chat';
+var DL=50,UK='llama_v5';
+var msgs=[],model='llama-3.1-8b-instant',loading=false,dp=null;
 
 function getU(){var t=new Date().toDateString();var s=JSON.parse(localStorage.getItem(UK)||'{}');return s.date===t?(s.count||0):0;}
 function addU(){var c=getU()+1;localStorage.setItem(UK,JSON.stringify({date:new Date().toDateString(),count:c}));uUI(c);}
 function uUI(c){var p=Math.min((c/DL)*100,100);document.getElementById('uf').style.width=p+'%';document.getElementById('uf').style.background=p>80?'#dc2626':p>50?'#f97316':'#16a34a';}
 
-// Model chips — data attributes, single event listener
+// ✅ FIXED: properly extract error message from Groq's nested error object
+function getErrMsg(e){
+  if(!e)return'Try again.';
+  if(e.error&&e.error.message)return e.error.message;
+  if(e.error&&typeof e.error==='string')return e.error;
+  if(e.message)return e.message;
+  return JSON.stringify(e);
+}
+
 document.getElementById('modelRow').addEventListener('click',function(e){
   var btn=e.target.closest('.m-chip');if(!btn)return;
   model=btn.dataset.model;
@@ -180,31 +159,16 @@ document.getElementById('modelRow').addEventListener('click',function(e){
   btn.classList.add('on');
 });
 
-// Suggestions — event delegation
 document.getElementById('sugs').addEventListener('click',function(e){
   var btn=e.target.closest('.sug');if(!btn)return;
   document.getElementById('ti').value=btn.textContent.trim();send();
 });
 
-// Clear chat
 document.getElementById('clearBtn').addEventListener('click',function(){
   msgs=[];
   var c=document.getElementById('msgs');
-  c.innerHTML=
-    '<div class="welcome" id="wc">'+
-    '<div class="w-ico"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="9" y2="10" stroke-width="2.5"/><line x1="12" y1="10" x2="12" y2="10" stroke-width="2.5"/><line x1="15" y1="10" x2="15" y2="10" stroke-width="2.5"/></svg></div>'+
-    '<div class="w-title">Llama 3 by Meta</div>'+
-    '<div class="w-sub">Open-source AI via A-Store. Fast, free, and private.</div>'+
-    '<div class="w-sugs" id="sugs">'+
-    '<button class="sug">Write a cover letter for a software internship</button>'+
-    '<button class="sug">Explain calculus in simple terms</button>'+
-    '<button class="sug">Give me 5 startup ideas for India in 2026</button>'+
-    '<button class="sug">How do I debug a JavaScript error?</button>'+
-    '</div></div>';
-  document.getElementById('sugs').addEventListener('click',function(e){
-    var btn=e.target.closest('.sug');if(!btn)return;
-    document.getElementById('ti').value=btn.textContent.trim();send();
-  });
+  c.innerHTML='<div class="welcome" id="wc"><div class="w-ico"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="9" y2="10" stroke-width="2.5"/><line x1="12" y1="10" x2="12" y2="10" stroke-width="2.5"/><line x1="15" y1="10" x2="15" y2="10" stroke-width="2.5"/></svg></div><div class="w-title">Llama 3 by Meta</div><div class="w-sub">Open-source AI via A-Store. Fast, free, and private.</div><div class="w-sugs" id="sugs"><button class="sug">Write a cover letter for a software internship</button><button class="sug">Explain calculus in simple terms</button><button class="sug">Give me 5 startup ideas for India in 2026</button><button class="sug">How do I debug a JavaScript error?</button></div></div>';
+  document.getElementById('sugs').addEventListener('click',function(e){var btn=e.target.closest('.sug');if(!btn)return;document.getElementById('ti').value=btn.textContent.trim();send();});
 });
 
 document.getElementById('ti').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
@@ -213,8 +177,6 @@ document.getElementById('sb').addEventListener('click',send);
 
 function fmt(){return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
 function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-// Avatar SVGs — hardcoded hex, no CSS vars in attrs
 function userAv(){return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';}
 function aiAv(){return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';}
 
@@ -225,13 +187,10 @@ function renderMsg(role,text){
   var d=document.createElement('div');d.className='msg '+(isU?'user':'ai');
   var html=isU?escH(text):escH(text).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
   var avBg=isU?'background:#0c0c0c':'background:#f5f5f5;border:1px solid #e5e5e5';
-  d.innerHTML=
-    '<div class="m-av" style="'+avBg+'">'+( isU?userAv():aiAv())+'</div>'+
-    '<div class="m-wrap"><div class="m-bub">'+html+(isU?'':'<button class="m-copy" data-copy>copy</button>')+'</div><span class="m-time">'+fmt()+'</span></div>';
+  d.innerHTML='<div class="m-av" style="'+avBg+'">'+( isU?userAv():aiAv())+'</div><div class="m-wrap"><div class="m-bub">'+html+(isU?'':'<button class="m-copy" data-copy>copy</button>')+'</div><span class="m-time">'+fmt()+'</span></div>';
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
 
-// Copy via delegation
 document.getElementById('msgs').addEventListener('click',function(e){
   var btn=e.target.closest('[data-copy]');if(!btn)return;
   var text=btn.closest('.m-bub').innerText.replace('copy','').trim();
@@ -240,7 +199,6 @@ document.getElementById('msgs').addEventListener('click',function(e){
 
 function showTyping(){var c=document.getElementById('msgs');var d=document.createElement('div');d.className='typing';d.id='typ';d.innerHTML='<div class="m-av" style="background:#f5f5f5;border:1px solid #e5e5e5">'+aiAv()+'</div><div class="t-bub"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
 function hideTyping(){var el=document.getElementById('typ');if(el)el.remove();}
-
 function showErr(text){var c=document.getElementById('msgs');var d=document.createElement('div');d.className='msg ai';d.innerHTML='<div class="m-av" style="background:#f5f5f5;border:1px solid #e5e5e5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><div class="err-bub">'+escH(text)+'</div></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
 
 async function send(){
@@ -252,12 +210,13 @@ async function send(){
   try{
     var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are a helpful assistant running via A-Store — an open-source AI app store built in India. Be concise and useful.'}].concat(msgs),model:model})});
     hideTyping();
-    if(!res.ok){var e=await res.json().catch(function(){return{};});showErr('Error '+res.status+': '+(e.error||'Try again.'));msgs.pop();return;}
+    // ✅ FIXED: extract nested error message properly
+    if(!res.ok){var e=await res.json().catch(function(){return{};});showErr('Error '+res.status+': '+getErrMsg(e));msgs.pop();return;}
     var data=await res.json();
     var reply=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'No response.';
     msgs.push({role:'assistant',content:reply});renderMsg('ai',reply);addU();
     if(msgs.length>20)msgs=msgs.slice(-20);
-  }catch(e){hideTyping();showErr('Network error. Check connection.');msgs.pop();}
+  }catch(e){hideTyping();showErr('Network error: '+e.message);msgs.pop();}
   finally{loading=false;document.getElementById('sb').disabled=false;document.getElementById('ti').focus();}
 }
 
