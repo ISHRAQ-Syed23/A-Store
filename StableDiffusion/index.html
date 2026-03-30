@@ -183,7 +183,7 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
         <select class="setting-select" id="modelSelect">
           <option value="flux" selected>Flux (fastest)</option>
           <option value="flux-realism">Flux Realism (photo)</option>
-          <option value="flux-realism">Flux Realism (photo)</option>
+          <option value="turbo">Flux Turbo (fast)</option>
         </select>
       </div>
     </div>
@@ -253,7 +253,7 @@ async function generate(){
   var url='https://image.pollinations.ai/prompt/'+encoded
     +'?width='+size.w+'&height='+size.h
     +'&seed='+seed+'&model='+model
-    +'&nologo=true&nofeed=true&safe=false';
+    +'&nologo=true&nofeed=true';
 
   try{
     var img=document.getElementById('genImg');
