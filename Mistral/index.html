@@ -26,7 +26,6 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
 .h-clear:hover{color:var(--stop);border-color:var(--stop)}
 .h-link{font-size:.7rem;font-weight:500;color:var(--ink-4);text-decoration:none;border:1px solid var(--line);padding:.25rem .55rem;border-radius:6px}
 .h-link:hover{background:var(--paper-3)}
-/* SPEED METER */
 .speed-bar{display:flex;align-items:center;gap:.6rem;padding:.45rem 1.25rem;border-bottom:1px solid var(--line);background:var(--paper-2);flex-shrink:0}
 .sp-label{font-family:'Instrument Mono',monospace;font-size:.6rem;color:var(--ink-5);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
 .sp-track{flex:1;height:3px;background:var(--line);border-radius:100px;overflow:hidden}
@@ -55,7 +54,7 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:'Inst
 .msg.user .m-bub{background:var(--ink);color:var(--paper);border-radius:10px 10px 3px 10px}
 .msg.ai .m-bub{background:var(--paper-2);border:1px solid var(--line);color:var(--ink-3);border-radius:10px 10px 10px 3px}
 .msg.ai .m-bub strong{color:var(--ink-2)}
-.m-time{font-family:'Instrument Mono',monospace;font-size:.56rem;color:var(--ink-5);margin-top:.2rem;display:block;display:flex;align-items:center;gap:.3rem}
+.m-time{font-family:'Instrument Mono',monospace;font-size:.56rem;color:var(--ink-5);margin-top:.2rem;display:block;align-items:center;gap:.3rem}
 .m-copy{font-size:.56rem;color:var(--ink-5);background:none;border:none;cursor:pointer;opacity:0;transition:opacity .15s;padding:.1rem .28rem;border-radius:4px}
 .m-bub:hover .m-copy{opacity:1}
 .typing{display:flex;gap:.5rem;align-items:center}
@@ -131,6 +130,15 @@ function getU(){var t=new Date().toDateString();var s=JSON.parse(localStorage.ge
 function addU(){var c=getU()+1;localStorage.setItem(UK,JSON.stringify({date:new Date().toDateString(),count:c}));uUI(c);}
 function uUI(c){var p=Math.min((c/DL)*100,100);document.getElementById('uf').style.width=p+'%';}
 
+// ✅ FIXED: properly extract error message from Groq's nested error object
+function getErrMsg(e){
+  if(!e)return'Try again.';
+  if(e.error&&e.error.message)return e.error.message;
+  if(e.error&&typeof e.error==='string')return e.error;
+  if(e.message)return e.message;
+  return JSON.stringify(e);
+}
+
 function setSpeed(tps){if(!tps)return;var fill=document.getElementById('spFill');var num=document.getElementById('spNum');var pct=Math.min((tps/300)*100,100);fill.style.width=pct+'%';num.textContent=Math.round(tps)+' tok/s';}
 
 document.getElementById('clearBtn').addEventListener('click',function(){msgs=[];document.getElementById('msgs').innerHTML='<div class="welcome" id="wc"><div class="w-ico"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.4"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div class="w-title">Mistral 7B</div><div class="w-sub">The fastest open-source AI.</div></div>';});
@@ -151,9 +159,8 @@ function renderMsg(role,text,ms){
   var d=document.createElement('div');d.className='msg '+(isU?'user':'ai');
   var html=isU?escH(text):text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
   var avBg=isU?'background:#0c0c0c':'background:var(--acc-dim);border:1px solid var(--acc-ring)';
-  var timeStr=fmt();
   var extra=(!isU&&ms)?'<span style="color:var(--acc);opacity:.7"> · '+ms+'ms</span>':'';
-  d.innerHTML='<div class="m-av" style="'+avBg+'">'+( isU?userAv():aiAv())+'</div><div class="m-wrap"><div class="m-bub">'+html+(isU?'':'<button class="m-copy" data-copy>copy</button>')+'</div><span class="m-time">'+timeStr+extra+'</span></div>';
+  d.innerHTML='<div class="m-av" style="'+avBg+'">'+( isU?userAv():aiAv())+'</div><div class="m-wrap"><div class="m-bub">'+html+(isU?'':'<button class="m-copy" data-copy>copy</button>')+'</div><span class="m-time">'+fmt()+extra+'</span></div>';
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
 document.getElementById('msgs').addEventListener('click',function(e){var btn=e.target.closest('[data-copy]');if(!btn)return;var text=btn.closest('.m-bub').innerText.replace('copy','').trim();navigator.clipboard&&navigator.clipboard.writeText(text).then(function(){btn.textContent='✓';setTimeout(function(){btn.textContent='copy';},1500);});});
@@ -169,17 +176,21 @@ async function send(){
   var t0=Date.now();
   msgs.push({role:'user',content:text});renderMsg('user',text);showTyping();
   try{
-    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are Mistral 7B, a fast and capable AI assistant. Be concise and direct.'}].concat(msgs),model:'mixtral-8x7b-32768'})});
+    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      messages:[{role:'system',content:'You are a fast and capable AI assistant. Be concise and direct.'}].concat(msgs),
+      model:'llama-3.1-8b-instant' // ✅ FIXED: mixtral-8x7b-32768 deprecated March 2025
+    })});
     var elapsed=Date.now()-t0;
     hideTyping();
-    if(!res.ok){var e=await res.json().catch(function(){return{};});showErr('Error '+res.status+': '+(e.error||'Try again.'));msgs.pop();return;}
+    // ✅ FIXED: extract nested error message properly
+    if(!res.ok){var e=await res.json().catch(function(){return{};});showErr('Error '+res.status+': '+getErrMsg(e));msgs.pop();return;}
     var data=await res.json();
     var reply=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'No response.';
     var tps=data.usage&&data.usage.completion_tokens?(data.usage.completion_tokens/(elapsed/1000)):null;
     if(tps)setSpeed(tps);
     msgs.push({role:'assistant',content:reply});renderMsg('ai',reply,elapsed);addU();
     if(msgs.length>20)msgs=msgs.slice(-20);
-  }catch(e){hideTyping();showErr('Network error.');msgs.pop();}
+  }catch(e){hideTyping();showErr('Network error: '+e.message);msgs.pop();}
   finally{loading=false;document.getElementById('sb').disabled=false;document.getElementById('ti').focus();}
 }
 uUI(getU());
